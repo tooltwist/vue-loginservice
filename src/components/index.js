@@ -15,6 +15,7 @@ let _authservice = null
 
 
 function install (Vue, options) {
+  console.log('vue-loginservice.install()', options)
 
   if (_authservice) {
     console.error("Vue.use(Authservice) has already been called.")
@@ -118,5 +119,6 @@ export default LoginServiceLib
 
 
 if (typeof window !== "undefined" && window.Vue) {
-  window.Vue.use(LoginServiceLib);
+  //window.Vue.use(LoginServiceLib);
+  window._loginservice = LoginServiceLib
 }
