@@ -1,6 +1,6 @@
 {
   "name": "vue-loginservice",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": "./dist/vue-loginservice.common.js",
   "license": "MIT",
   "description": "VueJS plugin for loginservice.io",
