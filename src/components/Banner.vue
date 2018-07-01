@@ -1,6 +1,10 @@
 <template>
   <div class="banner" :style="bannerStyles" :class="`banner__${position}`">
     THIS IS THE BANNER
+    <p v-if="msg")
+      <br />({{msg}})
+    </p>
+
     <br />
     <slot></slot>
   </div>
@@ -12,6 +16,9 @@ const defaultStyles = {
 };
 export default {
   props: {
+    msg: {
+      type: String
+    },
     position: {
       type: String,
       default: 'top',
