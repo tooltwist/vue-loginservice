@@ -1,10 +1,11 @@
 {
   "name": "vue-loginservice",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "./dist/vue-loginservice.common.js",
   "license": "MIT",
   "description": "VueJS plugin for loginservice.io",
-  "author": "Philip Callender <philip.callender@tooltwist.com",  "private": false,
+  "author": "Philip Callender <philip.callender@tooltwist.com",
+  "private": false,
   "scripts": {
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
