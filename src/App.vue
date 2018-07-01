@@ -1,6 +1,9 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
+    <br />Banner goes here <br>
+    <banner></banner>
+    <br />After the Banner<br>
     <HelloWorld msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
