@@ -1,10 +1,11 @@
 <template>
   <div class="banner" :style="bannerStyles" :class="`banner__${position}`">
-    THIS IS THE BANNER2
-    <p v-if="msg")
-      <br />({{msg}})
-    </p>
+    THIS IS THE BANNER
+    <p v-if="msg">
 
+    </p>
+    <br />
+    ({{msg}})
     <br />
     <slot></slot>
   </div>
@@ -45,7 +46,8 @@ export default {
 .banner {
   padding: 12px;
   background-color: #fcf6cd;
-  color: #f6a623;
+  //color: #f6a623;
+  color: red;
   text-align: left;
   //position: fixed;
   //z-index: 2;

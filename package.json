@@ -1,44 +1,30 @@
 {
   "name": "vue-loginservice",
   "version": "0.1.4",
-  "main": "./dist/vue-loginservice.common.js",
-  "license": "MIT",
-  "description": "VueJS plugin for loginservice.io",
-  "author": "Philip Callender <philip.callender@tooltwist.com",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
-    "build-bundle": "vue-cli-service build --target lib --name vue-loginservice ./src/components/index.js",
     "test": "vue-cli-service build",
     "e2e": "vue-cli-service e2e",
     "lint": "vue-cli-service lint",
+    "build-bundle": "vue-cli-service build --target lib --name vue-loginservice ./src/components/index.js",
     "e2e:open": "vue-cli-service e2e:open",
-    "patch-release": "npm version patch && npm publish && git push --follow-tags"
+    "patch-release": "npm version patch && npm publish && git push --follow-tags",
+    "test:e2e": "vue-cli-service test:e2e",
+    "test:unit": "vue-cli-service test:unit"
   },
-  "keywords": [
-    "vue",
-    "tooltwist",
-    "loginservice"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/tooltwist/vue-loginservice.git"
-  },
-  "files": [
-    "dist/*",
-    "src/*",
-    "public/*",
-    "*.json",
-    "*.js"
-  ],
   "dependencies": {
     "vue": "^2.5.16"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.0-beta.15",
+    "@vue/cli-plugin-e2e-cypress": "^3.0.0-rc.3",
     "@vue/cli-plugin-eslint": "^3.0.0-beta.15",
+    "@vue/cli-plugin-unit-mocha": "^3.0.0-beta.15",
     "@vue/cli-service": "^3.0.0-beta.15",
+    "@vue/test-utils": "^1.0.0-beta.16",
+    "chai": "^4.1.2",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.3",
     "vue-template-compiler": "^2.5.16"
@@ -66,5 +52,25 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tooltwist/vue-loginservice.git"
+  },
+  "files": [
+    "dist/*",
+    "src/*",
+    "public/*",
+    "*.json",
+    "*.js"
+  ],
+  "author": "Philip Callender <philip.callender@tooltwist.com",
+  "description": "VueJS plugin for loginservice.io",
+  "license": "MIT",
+  "main": "./dist/vue-loginservice.common.js",
+  "keywords": [
+    "vue",
+    "tooltwist",
+    "loginservice"
   ]
 }
