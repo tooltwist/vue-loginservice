@@ -1,6 +1,6 @@
 <template>
   <div class="banner" :style="bannerStyles" :class="`banner__${position}`">
-    THIS IS THE BANNER
+    THIS IS THE BANNER2
     <p v-if="msg")
       <br />({{msg}})
     </p>
