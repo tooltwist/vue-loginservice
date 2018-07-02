@@ -118,15 +118,12 @@
         strong {{$authservice.user.fullname}}
         | &nbsp;({{$authservice.user.authority}})
         br
-        br
-
         img(v-if="$authservice.user.avatar", :src="$authservice.user.avatar", alt="")
-        br
-        textarea(readonly, :value="$authservice.user")
         br
         | $login.user:
         br
-        | {{$authservice.user}}
+        .is-size.5
+          | {{$authservice.user}}
         br
         a(v-on:click="doSignout()") {{signin ? 'Sign out' : 'Logout'}}
 
