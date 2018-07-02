@@ -122,7 +122,7 @@
         br
         | $login.user:
         br
-        .is-size-5
+        .card.is-size-7
           | {{$authservice.user}}
         br
         a(v-on:click="doSignout()") {{signin ? 'Sign out' : 'Logout'}}
