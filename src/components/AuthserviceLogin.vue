@@ -123,8 +123,7 @@
 
         img(v-if="$authservice.user.avatar", :src="$authservice.user.avatar", alt="")
         br
-        br
-        router-link(to='/app-settings/applications') Settings
+        textarea(readonly, :value="$authservice.user")
         br
         a(v-on:click="doSignout()") {{signin ? 'Sign out' : 'Logout'}}
         // | {{$authservice.user}}

@@ -15,8 +15,8 @@
         //- b-dropdown-item(aria-describedby="header1") Another action
 
         img(v-if="$authservice.user.avatar", :src="$authservice.user.avatar", alt="")
-      b-dropdown-item
-        router-link(to='/applications') Settings
+      //b-dropdown-item
+      //  router-link(to='/applications') Settings
       b-dropdown-divider
       //- span(v-if="!user.avatar").fa-stack.fa
       //-   i.fa.fa-circle.fa-stack-2x
