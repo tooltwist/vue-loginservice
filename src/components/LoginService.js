@@ -61,10 +61,9 @@ class LoginService {
       }
     }
 
-    this.protocol = options.protocol
-
-    // Which icon set to use. Loosely based on
-    // https://buefy.github.io/#/documentation/constructor-options
+    // Decide which icon set to use with a defaultIconPack option.
+    // Loosely based on:
+    //    https://buefy.github.io/#/documentation/constructor-options
     //
     // Currently recognise:
     //    fa (font-awsome 4)
