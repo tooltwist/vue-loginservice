@@ -118,7 +118,8 @@ Object.defineProperty(LoginServiceLib, '_authservice', {
 export default LoginServiceLib
 
 
+//if (typeof window !== "undefined" && window.Vue) {
 if (typeof window !== "undefined" && window.Vue) {
   //window.Vue.use(LoginServiceLib);
-  window._loginservice = LoginServiceLib
+  window.LoginService = LoginServiceLib
 }
