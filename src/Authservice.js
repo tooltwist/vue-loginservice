@@ -8,7 +8,7 @@
 // import Vuex from 'vuex'
 
 // Vue.use(Vuex)
-console.log('(index.js) 1')
+console.log('(Authservice.js) 1')
 
 //import { install } from './install'
 import jwtDecode from 'jwt-decode'
@@ -19,7 +19,7 @@ import { assert, inBrowser } from './components/misc'
 
 
 // const debug = process.env.NODE_ENV !== 'production'
-console.log('(index.js) 2')
+console.log('(Authservice.js) 2')
 
 const JWT_COOKIE_NAME = 'authservice-jwt'
 const LOGIN_TIMEOUT_DAYS = 3
@@ -964,11 +964,14 @@ class Authservice {
     return absoluteURL
   }
 }
+console.log('(Authservice.js) 3')
 
 //Authservice.install = install // The imported install()
 Authservice.version = '__VERSION__'
-if (inBrowser && window.Vue) {
-  window.Vue.use(Authservice)
-}
+//if (inBrowser && window.Vue) {
+//  console.log('(Authservice.js) 4')
+//  window.Vue.use(Authservice)
+//}
+console.log('(Authservice.js) 5')
 
 export default Authservice
