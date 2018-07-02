@@ -117,7 +117,6 @@
         | You are logged in as&nbsp;
         strong {{$authservice.user.fullname}}
         | &nbsp;({{$authservice.user.authority}})
-        //- b-dropdown-item(aria-describedby="header1") Another action
         br
         br
 
@@ -125,8 +124,11 @@
         br
         textarea(readonly, :value="$authservice.user")
         br
+        | $login.user:
+        br
+        | {{$authservice.user}}
+        br
         a(v-on:click="doSignout()") {{signin ? 'Sign out' : 'Logout'}}
-        // | {{$authservice.user}}
 
 
 

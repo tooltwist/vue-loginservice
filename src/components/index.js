@@ -49,29 +49,11 @@ function install (Vue, options) {
         this._authservice = _authservice
         // this._authservice.init(this)
         Vue.util.defineReactive(this, '_authservice', this.$authservice)
-        // Vue.util.defineReactive(this, '_authservice', this._authservice.jwt)
-        // Vue.util.defineReactive(this, '_authservice', this._authservice.fromCache)
+        // Vue.util.defineReactive(this, '_loginservice', this.$authservice)
       } else {
         this._authserviceRoot = (this.$parent && this.$parent._authserviceRoot) || this
       }
 
-      /*
-      // this.$options is the options passed to new Vue({ })
-      if (isDef(this.$options.authservice)) {
-        // This must be the root, since we found authservice in it's options.
-        this._authserviceRoot = this
-        this._authservice = this.$options.authservice
-        // this._authservice.init(this)
-        Vue.util.defineReactive(this, '_authservice', this.$authservice)
-        // Vue.util.defineReactive(this, '_authservice', this._authservice.jwt)
-        // Vue.util.defineReactive(this, '_authservice', this._authservice.fromCache)
-
-        this._authservice.checkInitialLoginStatus(false)
-      } else {
-        this._authserviceRoot = (this.$parent && this.$parent._authserviceRoot) || this
-      }
-      // registerInstance(this, this)
-      */
     },
     destroyed () {
       // registerInstance(this)
@@ -83,6 +65,12 @@ function install (Vue, options) {
   // that points to the instance where 'authservice' was passed to new Vue({  }).
   // Note that it's _authserviceRoot might actually point to itself.
   Object.defineProperty(Vue.prototype, '$authservice', {
+    get () { return this._authserviceRoot._authservice }
+  })
+  Object.defineProperty(Vue.prototype, '$loginservice', {
+    get () { return this._authserviceRoot._authservice }
+  })
+  Object.defineProperty(Vue.prototype, '$login', {
     get () { return this._authserviceRoot._authservice }
   })
 
