@@ -555,7 +555,7 @@
   // }
 
   /*
-   *    Get the current URL, and remove any Authservice parameters.
+   *    Get the current URL, and remove any LoginService parameters.
    */
   // function currentPageURL () {
   //   let l = window.location

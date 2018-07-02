@@ -1,7 +1,7 @@
 //import Vue from 'vue'
 // export default Vue => Vue.component(Component.name, Component)
 
-import Authservice from '../Authservice'
+import LoginService from './LoginService'
 import AuthserviceLogin from './AuthserviceLogin.vue'
 import AuthserviceBounceComponent from './AuthserviceBounceComponent.vue'
 import AuthserviceUserList from './AuthserviceUserList.vue'
@@ -18,12 +18,12 @@ function install (Vue, options) {
   console.log('vue-loginservice.install()', options)
 
   if (_authservice) {
-    console.error("Vue.use(Authservice) has already been called.")
+    console.error("Vue.use(LoginService) has already been called.")
     return
   }
 
-  // Create ourselves an Authservice Object
-  _authservice = new Authservice(options)
+  // Create ourselves an LoginService Object
+  _authservice = new LoginService(options)
   _authservice.checkInitialLoginStatus(false)
 
 
@@ -92,6 +92,12 @@ function install (Vue, options) {
   Vue.component('authservice-change-password', AuthserviceChangePassword)
   Vue.component('authservice-user-list', AuthserviceUserList)
   Vue.component('authservice-user-details', AuthserviceUserDetails)
+
+  Vue.component('loginservice-login', AuthserviceLogin)
+  Vue.component('loginservice-bounce-component', AuthserviceBounceComponent)
+  Vue.component('loginservice-change-password', AuthserviceChangePassword)
+  Vue.component('loginservice-user-list', AuthserviceUserList)
+  Vue.component('loginservice-user-details', AuthserviceUserDetails)
 
   // Vue.component('authservice-navbar', AuthserviceNavbar)
   // Vue.component('authservice-navbar-blu', AuthserviceNavbarBlu)

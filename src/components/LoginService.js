@@ -1,37 +1,37 @@
 /* @flZZow */
 
 /*
- *  Client API for Authservice.io
+ *  Client API for LoginService.io
  *  See https://authservice.io
  */
 // import Vue from 'vue'
 // import Vuex from 'vuex'
 
 // Vue.use(Vuex)
-console.log('(Authservice.js) 1')
 
 //import { install } from './install'
 import jwtDecode from 'jwt-decode'
 import axios from 'axios'
 import QueryString from 'query-string'
-import { assert, inBrowser } from './components/misc'
+import { assert, inBrowser } from './misc'
 
+console.log('(LoginService.js) 1')
 
 
 // const debug = process.env.NODE_ENV !== 'production'
-console.log('(Authservice.js) 2')
+console.log('(LoginService.js) 2')
 
 const JWT_COOKIE_NAME = 'authservice-jwt'
 const LOGIN_TIMEOUT_DAYS = 3
 const NETWORK_ERROR_MSG = 'Could not contact authentication server'
 
-class Authservice {
+class LoginService {
   // static install: (Vue) => void;
   // static version: string;
 
   // static install (Vue) {
   //   alert('Install 2...')
-  //   // Vue.prototype.$auth = new Authservice()
+  //   // Vue.prototype.$auth = new LoginService()
   //   Vue.prototype.$auth = 123
   //
   //   Object.defineProperty(Vue.prototype, '$authservice', {
@@ -40,7 +40,7 @@ class Authservice {
   // }
 
   constructor (options) {
-    console.log('&&& Authservice constructor', options)
+    console.log('&&& LoginService constructor', options)
     this.host = options.host ? options.host : 'api.authservice.io'
     this.port = options.port ? options.port : 80
     this.version = options.version ? options.version : 'v2'
@@ -57,10 +57,10 @@ class Authservice {
 
     // See if we are supporting email login (default to yes)
     if (options.hints && options.hints.login && typeof(options.hints.login.email) !== 'undefined' && !options.hints.login.email) {
-      console.log(`Authservice(): Email is NOT enabled`);
+      console.log(`LoginService(): Email is NOT enabled`);
       this.emailSupported = false;
     } else {
-      console.log(`Authservice(): Email IS enabled`);
+      console.log(`LoginService(): Email IS enabled`);
       this.emailSupported = true;
     }
 
@@ -106,12 +106,12 @@ class Authservice {
     // See if registration is allowed
     if (!this.emailSupported) {
       // login.email: false
-      console.log(`Authservice(): Registration is NOT supported`);
+      console.log(`LoginService(): Registration is NOT supported`);
       console.log(`(because email is not supported)`)
       this.registrationSupported = false;
     } else if (options.hints && typeof(options.hints.register) !== 'undefined' && !options.hints.register) {
       // Check for hints.register: false
-      console.log(`Authservice(): Registration is NOT supported`);
+      console.log(`LoginService(): Registration is NOT supported`);
       this.registrationSupported = false;
     } else {
       // We WILL allow registration. Check we have what we need.
@@ -120,11 +120,11 @@ class Authservice {
         console.error('options.hints.register must be false, or an object')
       } else if (!options.hints.register.resumeURL) {
         this.registrationSupported = false;
-        console.log(`Authservice(): Registration is NOT supported`);
+        console.log(`LoginService(): Registration is NOT supported`);
         console.error('options.hints.register.resumeURL must be provided')
       } else if (typeof(options.hints.register.resumeURL) !== 'string') {
         this.registrationSupported = false;
-        console.log(`Authservice(): Registration is NOT supported`);
+        console.log(`LoginService(): Registration is NOT supported`);
         console.error('options.hints.register.resumeURL must be a string')
       } else {
 
@@ -132,12 +132,12 @@ class Authservice {
         this.registerResume = this.URLOnThisWebsite(options.hints.register.resumeURL)
         if (this.registerResume === null) {
           // The resumeURL is absolute, but not to the current website's domain.
-          console.error(`Authservice(): Registration will NOT be supported`);
+          console.error(`LoginService(): Registration will NOT be supported`);
           console.log(`options.hints.register.resumeURL not on this website: (${options.hints.register.resumeURL})`)
           this.registrationSupported = false;
         } else {
           // All good for registration
-          console.log(`Authservice(): Registration enabled`);
+          console.log(`LoginService(): Registration enabled`);
           this.registrationSupported = true;
         }
       }
@@ -146,7 +146,7 @@ class Authservice {
     // See if forgotten password is allowed
     if (!this.emailSupported) {
       // Email is not used (options.login.email is false)
-      console.error(`Authservice(): Forgotten password will NOT be supported`);
+      console.error(`LoginService(): Forgotten password will NOT be supported`);
       console.log(`(because email is not supported)`)
       this.forgottenPasswordSupported = false;
     } else if (options.hints && typeof(options.hints.forgot) !== 'undefined' && !options.hints.forgot) {
@@ -155,16 +155,16 @@ class Authservice {
     } else {
       // We WILL allow forgot password. Check we have what we need.
       if (typeof(options.hints.forgot) !== 'object') {
-        console.error(`Authservice(): Forgotten password will NOT be supported`);
+        console.error(`LoginService(): Forgotten password will NOT be supported`);
         console.log('options.hints.forgot must be false, or an object')
         this.forgottenPasswordSupported = false;
       } else if (!options.hints.forgot || !options.hints.forgot.resumeURL) {
-        console.error(`Authservice(): Forgotten password will NOT be supported`);
+        console.error(`LoginService(): Forgotten password will NOT be supported`);
         console.log('options.hints.forgot.resumeURL must be provided')
         this.forgottenPasswordSupported = false;
       }
       else if (typeof(options.hints.forgot.resumeURL) !== 'string') {
-        console.error(`Authservice(): Forgotten password will NOT be supported`);
+        console.error(`LoginService(): Forgotten password will NOT be supported`);
         console.log('options.hints.forgot.resumeURL must be a string')
         this.forgottenPasswordSupported = false;
       } else {
@@ -172,12 +172,12 @@ class Authservice {
         this.forgotResume = this.URLOnThisWebsite(options.hints.forgot.resumeURL)
         if (this.forgotResume === null) {
           // The resumeURL is absolute, but not to the current website's domain.
-          console.error(`Authservice(): Forgotten password will NOT be supported`);
+          console.error(`LoginService(): Forgotten password will NOT be supported`);
           console.log(`options.hints.forgot.resumeURL not on this website: (${options.hints.forgot.resumeURL})`)
           this.forgottenPasswordSupported = false;
         } else {
           // All good for forgotten password
-          console.log(`Authservice(): Forgotten password enabled`);
+          console.log(`LoginService(): Forgotten password enabled`);
           this.forgottenPasswordSupported = true;
         }
       }
@@ -199,7 +199,7 @@ class Authservice {
     // alert('za init()')
     process.env.NODE_ENV !== 'production' && assert(
       install.installed,
-      `not installed. Make sure to call \`Vue.use(Authservice)\` ` +
+      `not installed. Make sure to call \`Vue.use(LoginService, options)\` ` +
       `before creating root instance.`
     )
   }
@@ -964,14 +964,14 @@ class Authservice {
     return absoluteURL
   }
 }
-console.log('(Authservice.js) 3')
+console.log('(LoginService.js) 3')
 
-//Authservice.install = install // The imported install()
-Authservice.version = '__VERSION__'
+//LoginService.install = install // The imported install()
+LoginService.version = '__VERSION__'
 //if (inBrowser && window.Vue) {
-//  console.log('(Authservice.js) 4')
-//  window.Vue.use(Authservice)
+//  console.log('(LoginService.js) 4')
+//  window.Vue.use(LoginService)
 //}
-console.log('(Authservice.js) 5')
+console.log('(LoginService.js) 5')
 
-export default Authservice
+export default LoginService

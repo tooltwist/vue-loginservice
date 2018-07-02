@@ -2,7 +2,11 @@ module.exports = {
   env: {
     mocha: true
   },
-  rules: {
+  extends: [
+      // add more generic rulesets here, such as:
+      // 'eslint:recommended',
+      'plugin:vue/essential'
+    ],  rules: {
     'import/no-extraneous-dependencies': 'off',
     'no-console': 'off'
   }
