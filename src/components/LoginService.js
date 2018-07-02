@@ -47,9 +47,9 @@ class LoginService {
     this.apikey = options.apikey
 
     // Determine what protocol to use
-    this.protocol = 80
-    if (options.protocol && (this.protocol==='http' || this.protocol==='https')) {
-      this.protocol = this.protocol
+    this.protocol = 'http'
+    if (options.protocol && (options.protocol==='http' || options.protocol==='https')) {
+      this.protocol = options.protocol
     } else {
       // See if we can determine the protocol from the port
       if (this.port === 80) {
