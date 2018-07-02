@@ -42,9 +42,26 @@ class LoginService {
   constructor (options) {
     console.log('&&& LoginService constructor', options)
     this.host = options.host ? options.host : 'api.authservice.io'
-    this.port = options.port ? options.port : 80
+    this.port = options.port ? options.port : 443
     this.version = options.version ? options.version : 'v2'
     this.apikey = options.apikey
+
+    // Determine what protocol to use
+    if (options.protocol && (this.protocol==='http' || this.protocol==='https')) {
+      this.protocol = this.protocol
+    } else {
+      // See if we can determine the protocol from the port
+      if (this.port === 80) {
+        this.protocol = 'http'
+      } else if (port === 443) {
+        this.protocol = 'https'
+      } else {
+        // Non-standard port, probably during development
+        this.protocol = 80
+      }
+    }
+
+    this.protocol = options.protocol
 
     // Which icon set to use. Loosely based on
     // https://buefy.github.io/#/documentation/constructor-options
@@ -204,10 +221,15 @@ class LoginService {
     )
   }
 
+  // Work out the server's endpoint
   endpoint () {
-    // console.log('endpoint():', this)
-    const protocol = this.protocol ? this.protocol : 'http'
-    const endpoint = protocol + '://' + this.host + ':' + this.port + '/' + this.version + '/' + this.apikey
+    let portStuff = ''
+    if (this.protocol === 'http' && this.port !== 80) {
+      portStuff = `:${this.port}`
+    } else if (this.protocol === 'https' && this.port !== 443) {
+      portStuff = `:${this.port}`
+    }
+    const endpoint = `${this.protocol}://${this.host}${portStuff}/${this.version}/${this.apikey}`
     return endpoint
   }
 
@@ -416,7 +438,7 @@ class LoginService {
     console.log('failURL=' + failURL)
     console.log('failURL=' + encodeURIComponent(failURL))
 
-    let url = `http://${this.host}:${this.port}/${this.version}/oauth2/initiate/${this.apikey}/${authority}`
+    let url = `${protocol}://${this.host}:${this.port}/${this.version}/oauth2/initiate/${this.apikey}/${authority}`
     url += '?success=' + encodeURIComponent(successURL)
     url += '&fail=' + encodeURIComponent(failURL)
     // alert('Initiate URL:' + url)
