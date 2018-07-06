@@ -120,7 +120,7 @@
         br
         img(v-if="$authservice.user.avatar", :src="$authservice.user.avatar", alt="")
         br
-        | $login.user:
+        | $loginservice.user:
         br
         .box.is-size-7
           | {{$authservice.user}}

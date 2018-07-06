@@ -70,9 +70,9 @@ function install (Vue, options) {
   Object.defineProperty(Vue.prototype, '$loginservice', {
     get () { return this._authserviceRoot._authservice }
   })
-  Object.defineProperty(Vue.prototype, '$login', {
-    get () { return this._authserviceRoot._authservice }
-  })
+  // Object.defineProperty(Vue.prototype, '$login', {
+  //   get () { return this._authserviceRoot._authservice }
+  // })
 
   // Define the components
   Vue.component('authservice-login', AuthserviceLogin)

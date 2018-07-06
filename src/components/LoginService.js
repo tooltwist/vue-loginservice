@@ -249,7 +249,7 @@ class LoginService {
         if (debug) {
           console.log("***")
           console.log("***")
-          console.log("*** AUTHSERVICE_JWT IN URL")
+          console.log("*** LOGINSERVICE_JWT IN URL")
           console.log("***")
           console.log("***")
         }
@@ -272,7 +272,7 @@ class LoginService {
       if (debug) {
         console.log("***")
         console.log("***")
-        console.log("*** AUTHSERVICE_JWT IN A COOKIE")
+        console.log("*** LOGINSERVICE_JWT IN A COOKIE")
         console.log("***")
         console.log("***")
       }
@@ -292,7 +292,7 @@ class LoginService {
     if (debug) {
       console.log("***")
       console.log("***")
-      console.log("*** AUTHSERVICE_JWT NOT IN URL OR COOKIE")
+      console.log("*** LOGINSERVICE_JWT NOT IN URL OR COOKIE")
       console.log("***")
       console.log("***")
     }
@@ -400,7 +400,7 @@ class LoginService {
       const l = window.location
       console.log('resume to current page after oauth login', l)
       const parsed = QueryString.parse(l.search)
-      delete parsed['AUTHSERVICE_JWT']
+      delete parsed['LOGINSERVICE_JWT']
       delete parsed['AUTHSERVICE_ERROR']
       const params = QueryString.stringify(parsed)
       // console.log(parsed)
