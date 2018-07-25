@@ -460,7 +460,11 @@
     //     })// new promise
     //   }
       loginWithEmail: function () {
-        return !!this.optionValue('hints.login.email', true)
+        return this.options.hints.login.email
+        // return !!this.optionValue('hints.email', false)
+      },
+      apiOnlyRegistration: function () {
+        return this.options.hints.login.apiOnlyRegistration
       },
       loginWithUsername: function () {
         let val = this.optionValue('hints.usernames', false)
@@ -468,19 +472,24 @@
         return !!this.optionValue('hints.usernames', false)
       },
       allowFacebookLogin: function () {
-        return !!this.optionValue('hints.login.facebook', false)
+        return this.options.hints.login.facebook
+        // return !!this.optionValue('hints.facebook', false)
       },
       allowGithubLogin: function () {
-        return !!this.optionValue('hints.login.github', false)
+        return this.options.hints.login.github
+        // return !!this.optionValue('hints.github', false)
       },
       allowGoogleLogin: function () {
-        return !!this.optionValue('hints.login.google', false)
+        return this.options.hints.login.google
+        // return !!this.optionValue('hints.google', false)
       },
       allowLinkedinLogin: function () {
-        return !!this.optionValue('hints.login.linkedin', false)
+        return this.options.hints.login.linkedin
+        // return !!this.optionValue('hints.linkedin', false)
       },
       allowTwitterLogin: function () {
-        return !!this.optionValue('hints.login.twitter', false)
+        return this.options.hints.login.twitter
+        // return !!this.optionValue('hints.twitter', false)
       },
       allowSocialLogin: function () {
         return (
@@ -524,10 +533,12 @@
         return (this.$authservice && this.$authservice.isEmailSupported())
       },
       provideRegistration: function () {
-        return (this.$authservice && this.$authservice.isRegistrationSupported())
+        return this.options.hints.login.registration
+        // return (this.$authservice && this.$authservice.isRegistrationSupported())
       },
       provideForgottenPassword: function () {
-        return (this.$authservice && this.$authservice.isForgottenPasswordSupported())
+        return this.options.hints.login.forgotPassword
+        // return (this.$authservice && this.$authservice.isForgottenPasswordSupported())
       }
     },
     // Once the componented has been created, see if we are already
@@ -744,6 +755,19 @@
         this.mode = mode
         return false
       }
+    },
+    mounted () {
+      this.$authservice.getLoginOptions().then(response => {
+        this.options.hints.login.email = response.a_email_login_enabled == '1' ? true : false
+        this.options.hints.login.registration = response.a_registration_enabled == '1' ? true : false
+        this.options.hints.login.forgotPassword = response.a_forgotPassword_enabled == '1' ? true : false
+        this.options.hints.login.apiOnlyRegistration = response.a_apiOnlyRegistration_enabled == '1' ? true : false
+        this.options.hints.login.facebook = response.a_facebook_login_enabled == '1' ? true : false
+        this.options.hints.login.github = response.a_github_login_enabled == '1' ? true : false
+        this.options.hints.login.google = response.a_google_login_enabled == '1' ? true : false
+        this.options.hints.login.linkedin = response.a_linkedin_login_enabled == '1' ? true : false
+        this.options.hints.login.twitter = response.a_twitter_login_enabled == '1' ? true : false
+      })
     }
   }
 
