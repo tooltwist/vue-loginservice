@@ -243,14 +243,13 @@
           p.card-header-title
             | Forgot your Login Information?
         .card-content
-          | No problem. Enter your email address
-          | &nbsp;and we'll well send an email with recovery instructions.
+          | Enter your email address and we'll send you an email with recovery instructions.
           br
           br
 
           .field
             label.label
-              | Email Address
+              | Email
             .control.has-icons-left
               input.input(v-model.trim="forgotEmail" type="text" v-on:keydown.native="keyhandler" placeholder="Enter your Email Address")
               span.icon.is-small.is-left

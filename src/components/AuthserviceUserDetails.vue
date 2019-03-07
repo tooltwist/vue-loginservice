@@ -233,7 +233,7 @@ import axiosError from '../axiosError.js'
 import AuthserviceChangePassword from './AuthserviceChangePassword'
 
 export default {
-  name: 'authservice-profile',
+  name: 'authservice-user-details',
   components: {
     AuthserviceChangePassword
   },
@@ -372,36 +372,38 @@ export default {
       console.log(`haveAdminPrivileges()`)
       console.log(`$authservice.user=`, this.$authservice.user)
       console.log(`this.user=`, this.user)
-      console.log(`$route.params.username=`, this.$route.params.username)
-      console.log(`$route.params.appname=`, this.$route.params.appname)
+      // console.log(`$route.params.username=`, this.$route.params.username)
+      // console.log(`$route.params.appname=`, this.$route.params.appname)
       //return false
 
-      // See if this is some sort of admin user
+      // See if this is a user logged into A3 (Tooltwist site)
       if (this.$authservice.user.tenant === 'genesis/a3') {
-        //  1. An genesis/a3 admin user may access anything.
+
+        // 1. Logged into A3 and an A3 admin user.
         if (this.$authservice.user.isAdmin) {
           console.log(`- A3 admin`)
           return true
         }
-        //  2. A user has full access to users in their own applications.
-        if (this.$route.params.username === this.$authservice.user.username) {
+
+        // 2. Logged into A3 and a user looking at one of their own apps.
+        if (accountOf(this.$authservice.user.tenant) === accountOf(this.user.tenant)) {
           console.log(`- Owner of the application`)
           return true
         }
       }
 
-      //  3. An admin user has full access to users in the application
-      //    they are logged into.
+      // 3. Logged into an application, and admin of that application,
+      //    and the user we are looking at is in that same application.
       if (
         this.$authservice.user.isAdmin &&
-        this.$authservice.user.tenant === `${this.$route.params.username}/${this.$route.params.appname}`
+        this.$authservice.user.tenant === this.user.tenant
       ) {
         console.log(`- Current application's admin`)
         return true
       }
 
       //  4. A user who is a member of an organisation has access to all
-      //    the organisations application, and admin permissions according
+      //    the organisation's applications, and admin permissions according
       //    to their member record.
       //  5. A user granted access to an application has access according
       //     to the grant definition.
@@ -434,8 +436,17 @@ export default {
       if (this.editingOwnDetails) {
         // If we came into the page with a AUTHSERVICE_EMAIL_TOKEN parameter in
         // the URL, then jump straight into the change password screen.
-        let token = this.$route.query['AUTHSERVICE_EMAIL_TOKEN']
-        return token
+        if (this.$route) {
+          // Using vue-router
+          let token = this.$route.query['AUTHSERVICE_EMAIL_TOKEN']
+          return token
+        } else if (window) {
+          // Get the parameters from the browser window object
+          //ZZZZ Untested
+          let url = new URL(window.location.href);
+          let token = url.searchParams.get('AUTHSERVICE_EMAIL_TOKEN');
+          return token
+        }
       }
       return null
     }
