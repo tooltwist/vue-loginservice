@@ -47,9 +47,10 @@ function install (Vue, options) {
         // This must be the root, since we found authservice in it's options.
         this._authserviceRoot = this
         this._authservice = _authservice
+        this._loginservice = _authservice
         // this._authservice.init(this)
         Vue.util.defineReactive(this, '_authservice', this.$authservice)
-        // Vue.util.defineReactive(this, '_loginservice', this.$authservice)
+        Vue.util.defineReactive(this, '_loginservice', this.$authservice)
       } else {
         this._authserviceRoot = (this.$parent && this.$parent._authserviceRoot) || this
       }
@@ -111,8 +112,7 @@ Object.defineProperty(LoginServiceLib, '_authservice', {
 
 export default LoginServiceLib
 
-
-//if (typeof window !== "undefined" && window.Vue) {
+// This is used when the npm package is included directly into an HTML page
 if (typeof window !== "undefined" && window.Vue) {
   //window.Vue.use(LoginServiceLib);
   window.LoginService = LoginServiceLib

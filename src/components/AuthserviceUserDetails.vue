@@ -372,26 +372,31 @@ export default {
       console.log(`haveAdminPrivileges()`)
       console.log(`$authservice.user=`, this.$authservice.user)
       console.log(`this.user=`, this.user)
-      console.log(`$route.params.username=`, this.$route.params.username)
-      console.log(`$route.params.appname=`, this.$route.params.appname)
+      // console.log(`$route.params.username=`, this.$route.params.username)
+      // console.log(`$route.params.appname=`, this.$route.params.appname)
       //return false
 
-      // See if this is some sort of admin user
+      // See if this is a user logged into A3 (Tooltwist site)
       if (this.$authservice.user.tenant === 'genesis/a3') {
-        //  1. An genesis/a3 admin user may access anything.
+
+	//  1. Logged into A3 and an A3 admin user.
+        //  (A genesis/a3 admin user may access anything)
         if (this.$authservice.user.isAdmin) {
           console.log(`- A3 admin`)
           return true
         }
-        //  2. A user has full access to users in their own applications.
+
+        //  2. Logged into A3 and a user looking at one of their own apps.
+        //  (A user has full access to users in their own applications)
         if (this.$route.params.username === this.$authservice.user.username) {
           console.log(`- Owner of the application`)
           return true
         }
       }
 
-      //  3. An admin user has full access to users in the application
-      //    they are logged into.
+      // 3. Logged into an application, and admin of that application, and the
+      //    user we are looking at is in that same application.
+      //    (An admin user has full access to users in the application they are logged into)
       if (
         this.$authservice.user.isAdmin &&
         this.$authservice.user.tenant === `${this.$route.params.username}/${this.$route.params.appname}`
@@ -401,7 +406,7 @@ export default {
       }
 
       //  4. A user who is a member of an organisation has access to all
-      //    the organisations application, and admin permissions according
+      //    the organisation's applications, and admin permissions according
       //    to their member record.
       //  5. A user granted access to an application has access according
       //     to the grant definition.
