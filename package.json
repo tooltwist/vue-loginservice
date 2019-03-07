@@ -1,5 +1,5 @@
 {
-  "name": "vue-loginservice",
+  "name": "@tooltwist/vue-loginservice",
   "version": "0.1.28",
   "private": false,
   "scripts": {
@@ -10,7 +10,7 @@
     "lint": "vue-cli-service lint",
     "build-bundle": "vue-cli-service build --target lib --name vue-loginservice ./src/components/index.js",
     "e2e:open": "vue-cli-service e2e:open",
-    "patch-release": "npm version patch && npm publish --registry=https://registry.npmjs.org/ && git push --follow-tags",
+    "patch-release": "npm version patch && npm publish --registry=https://registry.npmjs.org/ --access public && git push --follow-tags",
     "p1": "npm version patch",
     "p2": "npm publish",
     "p3": "git push --follow-tags",
