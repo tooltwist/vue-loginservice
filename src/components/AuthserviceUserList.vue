@@ -170,9 +170,6 @@
         // Select the users for this username/app (i.e. tenant).
         console.log('authservice-user-list is selecting users')
         let url = `${this.$authservice.endpoint()}/${this.tenant}/users`
-// const url = 'http://localhost:9090/v2/API17AATGGPTFSP2LBR4Q9IYCT1WA/genesis/mbc/users'
-
-        url += `?relationship=trainer_student&relationship_entity_1=me`
 
         var params = {
           method: 'get',

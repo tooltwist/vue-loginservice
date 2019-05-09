@@ -15,11 +15,9 @@ import axios from 'axios'
 import QueryString from 'query-string'
 import { assert, inBrowser } from './misc'
 
-console.log('(LoginService.js) 1')
 
 
 // const debug = process.env.NODE_ENV !== 'production'
-console.log('(LoginService.js) 2')
 
 const JWT_COOKIE_NAME = 'authservice-jwt'
 const LOGIN_TIMEOUT_DAYS = 3
@@ -985,7 +983,6 @@ class LoginService {
     return absoluteURL
   }
 }
-console.log('(LoginService.js) 3')
 
 //LoginService.install = install // The imported install()
 LoginService.version = '__VERSION__'
@@ -993,6 +990,5 @@ LoginService.version = '__VERSION__'
 //  console.log('(LoginService.js) 4')
 //  window.Vue.use(LoginService)
 //}
-console.log('(LoginService.js) 5')
 
 export default LoginService
