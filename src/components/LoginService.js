@@ -932,6 +932,7 @@ class LoginService {
    *  Cookie handling
    */
   setCookie (cname, cvalue, exdays) {
+    cname = `${cname}-${this.apikey}`
     // console.log('setCookie(' + cname + ', ' + cvalue + ')')
     if (cvalue) {
       console.log('setting cookie (' + cname + ')')
@@ -945,6 +946,7 @@ class LoginService {
   }// setCookie()
 
   getCookie (cname) {
+    cname = `${cname}-${this.apikey}`
     // console.log('getCookie(' + cname + ')')
     var name = cname + "="
     var ca = document.cookie.split(';')
