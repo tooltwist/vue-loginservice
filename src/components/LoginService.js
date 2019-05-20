@@ -349,8 +349,8 @@ class LoginService {
           } else {
             // We did not sucessfully login
             // -> No current user
-            const isFromCache = false
-            this.setCurrentUserFromJWT(null, isFromCache)
+            const isFromCookie = false
+            this.setCurrentUserFromJWT(null, isFromCookie)
             this.removeCookie(JWT_COOKIE_NAME)
             reject(response.data.message)
             return
@@ -722,13 +722,41 @@ class LoginService {
 
     let haveUser = false
     let ident = null
+    let notBefore = 0 // nbf
+    let issuedAt = 0 // iat
+    let expiryTime = 0 // exp
     if (jwt) {
       // See https://github.com/auth0/jwt-decode
       try {
-        var decoded = jwtDecode(jwt)
+        let decoded = jwtDecode(jwt)
         console.log('decoded=', decoded)
         ident = decoded.identity
+        if (typeof(decoded.nbf) !== 'undefined') {
+          notBefore = decoded.nbf * 1000 // Convert from Unix to Javascript time (s->ms)
+          console.log(`Have not-before time: ${new Date(notBefore)}`);
+        }
+        if (typeof(decoded.iat) !== 'undefined') {
+          issuedAt = decoded.iat * 1000 // Convert from Unix to Javascript time (s->ms)
+          console.log(`Have issuedAt time: ${new Date(issuedAt)}`);
+        }
+        if (typeof(decoded.exp) !== 'undefined') {
+          expiryTime = decoded.exp * 1000 // Convert from Unix to Javascript time (s->ms)
+          console.log(`Have expiry time: ${new Date(expiryTime)}`);
+        }
         haveUser = true
+
+        // Check the token has not expired
+        if (expiryTime) {
+          const LENIENCY = 2 * 60 * 1000 // Two minutes in ms, to allow for badly set clock.
+          let nowMs = new Date().getTime()
+          let expiresMs = expiryTime + LENIENCY
+          let remaining = expiryTime - nowMs
+          console.log(`Token expires in ${remaining} ms`);
+          if (remaining < 0) {
+            console.log(`Token has expired`);
+            haveUser = false
+          }
+        }
       } catch (e) {
         console.log('Error decoding JWT: ', e)
         // alert('Error decoding invalid JWT')
@@ -782,12 +810,18 @@ class LoginService {
       this.user = user
       this.jwt = jwt
       this.fromCache = fromCookie
+      this.issuedAt = issuedAt
+      this.notBefore = notBefore
+      this.expiryTime = expiryTime
       return true
     } else {
       // No longer logged in
       this.user = null
       this.jwt = null
       this.fromCache = false
+      this.issuedAt = 0
+      this.notBefore = 0
+      this.expiryTime = 0
       return false
     }
   }// setCurrentUserFromJWT
