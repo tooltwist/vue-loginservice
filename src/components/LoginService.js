@@ -44,6 +44,16 @@ class LoginService {
     this.version = options.version ? options.version : 'v2'
     this.apikey = options.apikey
 
+    // Check the UrlPrefix only has a trailing slash
+    this.urlPrefix = options.urlPrefix ? options.urlPrefix : 'loginservice'
+    while (this.urlPrefix.startsWith('/')) {
+      this.urlPrefix = this.urlPrefix.substring(1)
+    }
+    while (this.urlPrefix.endsWith('/')) {
+      this.urlPrefix = this.urlPrefix.substring(0, this.urlPrefix.length - 1)
+    }
+    this.urlPrefix += '/'
+
     // Determine what protocol to use
     this.protocol = 'http'
     if (options.protocol && (options.protocol==='http' || options.protocol==='https')) {
@@ -226,7 +236,8 @@ class LoginService {
     } else if (this.protocol === 'https' && this.port !== 443) {
       portStuff = `:${this.port}`
     }
-    const endpoint = `${this.protocol}://${this.host}${portStuff}/${this.version}/${this.apikey}`
+    const endpoint = `${this.protocol}://${this.host}${portStuff}/${this.urlPrefix}${this.version}/${this.apikey}`
+    // console.log(`endpoint=${endpoint}`);
     return endpoint
   }
 
