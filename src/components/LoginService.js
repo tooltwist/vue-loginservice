@@ -446,7 +446,7 @@ class LoginService {
     console.log('failURL=' + failURL)
     console.log('failURL=' + encodeURIComponent(failURL))
 
-    let url = `${protocol}://${this.host}:${this.port}/${this.version}/oauth2/initiate/${this.apikey}/${authority}`
+    let url = `${this.protocol}://${this.host}:${this.port}/${this.version}/oauth2/initiate/${this.apikey}/${authority}`
     url += '?success=' + encodeURIComponent(successURL)
     url += '&fail=' + encodeURIComponent(failURL)
     // alert('Initiate URL:' + url)

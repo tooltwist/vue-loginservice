@@ -48,6 +48,13 @@
                   i.fa.fa-twitter.has-text-white(v-else)
                 .social-button-text &nbsp; Login with Twitter
               br
+            div(v-if="allowPropertyMeLogin")
+              a.button.social-button.is-primary(v-on:click="propertyMeLogin()" tabindex="38")
+                .social-button-icon
+                  i.fab.fa-home.has-text-white(v-if="$authservice.icons('fas')")
+                  i.fa.fa-home.has-text-white(v-else)
+                .social-button-text &nbsp; Login with PropertyMe
+              br
           div.has-text-centered(v-if="allowSocialLogin && loginWithEmail")
             br
             b - or -&nbsp;&nbsp;&nbsp;
@@ -481,13 +488,17 @@
       allowTwitterLogin: function () {
         return !!this.optionValue('hints.login.twitter', false)
       },
+      allowPropertyMeLogin: function () {
+        return !!this.optionValue('hints.login.propertyMe', false)
+      },
       allowSocialLogin: function () {
         return (
           this.allowFacebookLogin ||
           this.allowGithubLogin ||
           this.allowGoogleLogin ||
           this.allowLinkedinLogin ||
-          this.allowTwitterLogin
+          this.allowTwitterLogin ||
+          this.allowPropertyMeLogin
         )
       },
       loginSignupMessage: function () {
@@ -640,6 +651,10 @@
       twitterLogin: function () {
         //alert('twitter login, ' + this.username + ', ' + this.password)
         this.$authservice.initiateOAuth(this, 'twitter')
+      },
+      propertyMeLogin: function () {
+        // alert('propertyMe login, ' + this.username + ', ' + this.password)
+        this.$authservice.initiateOAuth(this, 'propertyMe')
       },
 
       // See if a username is used
@@ -888,9 +903,9 @@
     padding-bottom: 0px;
   }
 
-  .my-button {
-    margin-top: 8px;
-  }
+  // .my-button {
+  //   margin-top: 8px;
+  // }
 
   .social-button {
     width: 210px;
