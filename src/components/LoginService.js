@@ -45,14 +45,19 @@ class LoginService {
     this.apikey = options.apikey
 
     // Check the UrlPrefix only has a trailing slash
-    this.urlPrefix = options.urlPrefix ? options.urlPrefix : 'loginservice'
+    this.urlPrefix = 'loginservice'
+    if (typeof(options.urlPrefix) !== 'undefined') {
+      this.urlPrefix = options.urlPrefix
+    }
     while (this.urlPrefix.startsWith('/')) {
       this.urlPrefix = this.urlPrefix.substring(1)
     }
     while (this.urlPrefix.endsWith('/')) {
       this.urlPrefix = this.urlPrefix.substring(0, this.urlPrefix.length - 1)
     }
-    this.urlPrefix += '/'
+    if (this.urlPrefix) {
+      this.urlPrefix += '/'
+    }
 
     // Determine what protocol to use
     this.protocol = 'http'
@@ -133,13 +138,14 @@ class LoginService {
       console.log(`LoginService(): Registration is NOT supported`);
       console.log(`(because email is not supported)`)
       this.registrationSupported = false;
-    } else if (options.hints && typeof(options.hints.register) !== 'undefined' && !options.hints.register) {
-      // Check for hints.register: false
-      console.log(`LoginService(): Registration is NOT supported`);
-      this.registrationSupported = false;
-    } else {
-      // We WILL allow registration. Check we have what we need.
-      if (typeof(options.hints.register) !== 'object') {
+    } else if (options.hints) {
+
+      // Perhaps allow registration. Check we have what we need.
+      if (typeof(options.hints.register) !== 'undefined' && !options.hints.register) {
+        // Check for hints.register: false
+        console.log(`LoginService(): Registration is NOT supported`);
+        this.registrationSupported = false;
+      } else if (typeof(options.hints.register) !== 'object') {
         this.registrationSupported = false;
         console.error('options.hints.register must be false, or an object')
       } else if (!options.hints.register.resumeURL) {
@@ -173,12 +179,13 @@ class LoginService {
       console.error(`LoginService(): Forgotten password will NOT be supported`);
       console.log(`(because email is not supported)`)
       this.forgottenPasswordSupported = false;
-    } else if (options.hints && typeof(options.hints.forgot) !== 'undefined' && !options.hints.forgot) {
-      // Forgot password is specifically disallowed (options.hints.register is false)
-      this.forgottenPasswordSupported = false;
-    } else {
-      // We WILL allow forgot password. Check we have what we need.
-      if (typeof(options.hints.forgot) !== 'object') {
+    } else if (options.hints) {
+
+      // Maybe allow forgot password. Check we have what we need.
+      if (typeof(options.hints.forgot) !== 'undefined' && !options.hints.forgot) {
+        // Forgot password is specifically disallowed (options.hints.forgot is false)
+        this.forgottenPasswordSupported = false;
+      } else if (typeof(options.hints.forgot) !== 'object') {
         console.error(`LoginService(): Forgotten password will NOT be supported`);
         console.log('options.hints.forgot must be false, or an object')
         this.forgottenPasswordSupported = false;
