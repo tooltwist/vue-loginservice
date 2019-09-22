@@ -25,11 +25,16 @@
     },
     computed: {
       bounceURL () {
+        if (this.debug) {
+          console.log(`AuthserviceBounceComponent:bounceURL() - url is `, this.$route.params.url)
+        }
         return this.$route.params.url
       }
     },
     created: function () {
+      console.log('AuthserviceBounceComponent:created() YARP 00')
       if (this.$route && this.$route.params && typeof(window) != 'undefined') {
+        console.log('AuthserviceBounceComponent:created() YARP 01')
         bounce(this, false)
       }
     }
@@ -41,23 +46,28 @@
   //  3. If there is a 'AUTHSERVICE_EMAIL_TOKEN' parameter, we add it to the 'next' URL.
   function bounce (me, debug) {
 
+console.log('AuthserviceBounceComponent:bounce() YARP 1')
     // See what parameters we've been passed
     const parsed = QueryString.parse(window.location.search)
+    console.log('AuthserviceBounceComponent:bounce() YARP 2')
     const jwt = parsed['AUTHSERVICE_JWT']
     const next64 = parsed['next']
     //const debug |= parsed['debug']
     if (parsed['debug']) {
       debug = true
     }
+    console.log('AuthserviceBounceComponent:bounce() YARP 3')
 
     if (jwt && !Date) {
       console.log(`*** setting JWT cookie ${JWT_COOKIE_NAME}`)
       setCookie(JWT_COOKIE_NAME, jwt, LOGIN_TIMEOUT_DAYS)
     }
+    console.log('AuthserviceBounceComponent:bounce() YARP 4')
 
     // See where we are going to next
     let next = new Buffer(next64, 'base64').toString('ascii')
     //- console.log(`next=${next}`)
+    console.log('AuthserviceBounceComponent:bounce() YARP 5')
 
     // If we have an email token, add it the the new URL
     const emailToken = parsed['AUTHSERVICE_EMAIL_TOKEN']
@@ -68,6 +78,7 @@
       next = URL.format(nextParsed)
       //- console.log(`Revised next=`, next)
     }
+    console.log('AuthserviceBounceComponent:bounce() YARP 6')
 
     //debug = true
     if (debug) {
@@ -78,6 +89,7 @@
     } else {
       window.location = next
     }
+    console.log('AuthserviceBounceComponent:bounce() YARP 7')
   }
 
   function setCookie (cname, cvalue, exdays) {
