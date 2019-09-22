@@ -58,6 +58,7 @@ class LoginService {
     if (this.urlPrefix) {
       this.urlPrefix += '/'
     }
+    console.log(`urlPrefix is ${this.urlPrefix}`)
 
     // Determine what protocol to use
     this.protocol = 'http'
@@ -402,8 +403,9 @@ class LoginService {
   /*
    *  Kick off the OAuth2 login process.
    */
-  initiateOAuth (me, authority) {
+  initiateOAuth (me, authority, options/*optional*/) {
     console.log(`initiateOAuth(me, ${authority})`)
+    console.log(`options=`, options)
 
     // Where to go if the login succeeds?
     let resumeURL
@@ -453,10 +455,14 @@ class LoginService {
     console.log('failURL=' + failURL)
     console.log('failURL=' + encodeURIComponent(failURL))
 
-    let url = `${this.protocol}://${this.host}:${this.port}/${this.version}/oauth2/initiate/${this.apikey}/${authority}`
+    //let url = `${this.protocol}://${this.host}:${this.port}/${this.version}/oauth2/initiate/${this.apikey}/${authority}`
+    let url = `${this.protocol}://${this.host}:${this.port}/${this.urlPrefix}v2/oauth2/initiate/${this.apikey}/${authority}`
     url += '?success=' + encodeURIComponent(successURL)
     url += '&fail=' + encodeURIComponent(failURL)
-    // alert('Initiate URL:' + url)
+console.log(`url is ${url}`)
+    if (options && options.debug) {
+      alert('Initiate URL:' + url)
+    }
     window.location = url
   }// initiateOAuth2
 
