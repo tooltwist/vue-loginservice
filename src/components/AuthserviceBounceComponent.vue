@@ -70,7 +70,7 @@ console.log(`window.location.search=`, window.location.search)
       //}
 
     } else {
-      this.errorMsg = `Missing mandatory parameter (jwt)`
+      me.errorMsg = `Missing mandatory parameter (jwt)`
       return
     }
     console.log('AuthserviceBounceComponent:bounce() YARP 4')
@@ -81,7 +81,7 @@ console.log(`window.location.search=`, window.location.search)
       next = new Buffer(next64, 'base64').toString('ascii')
       //- console.log(`next=${next}`)
     } else {
-      this.errorMsg = `Missing mandatory parameter (next)`
+      me.errorMsg = `Missing mandatory parameter (next)`
       return
     }
     console.log('AuthserviceBounceComponent:bounce() YARP 5')
