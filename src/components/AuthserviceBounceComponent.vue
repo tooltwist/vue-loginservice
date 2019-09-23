@@ -5,6 +5,8 @@
     | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     a(:href="url")
       | {{url}}
+  p(v-show="errorMsg !== ''")
+    | {{errorMsg}}
 
 </template>
 
@@ -20,7 +22,8 @@
     props: ['debug'],
     data () {
       return {
-        url: ''
+        url: '',
+        errorMsg: ''
       }
     },
     computed: {
@@ -47,6 +50,7 @@
   function bounce (me, debug) {
 
 console.log('AuthserviceBounceComponent:bounce() YARP 1')
+console.log(`window.location.search=`, window.location.search)
     // See what parameters we've been passed
     const parsed = QueryString.parse(window.location.search)
     console.log('AuthserviceBounceComponent:bounce() YARP 2')
@@ -58,15 +62,28 @@ console.log('AuthserviceBounceComponent:bounce() YARP 1')
     }
     console.log('AuthserviceBounceComponent:bounce() YARP 3')
 
-    if (jwt && !Date) {
+    // Save the JWT (Javascript Web Token)
+    if (jwt) {
+      //if (jwt && !Date) {
       console.log(`*** setting JWT cookie ${JWT_COOKIE_NAME}`)
       setCookie(JWT_COOKIE_NAME, jwt, LOGIN_TIMEOUT_DAYS)
+      //}
+
+    } else {
+      this.errorMsg = `Missing mandatory parameter (jwt)`
+      return
     }
     console.log('AuthserviceBounceComponent:bounce() YARP 4')
 
     // See where we are going to next
-    let next = new Buffer(next64, 'base64').toString('ascii')
-    //- console.log(`next=${next}`)
+    let next
+    if (next64) {
+      next = new Buffer(next64, 'base64').toString('ascii')
+      //- console.log(`next=${next}`)
+    } else {
+      this.errorMsg = `Missing mandatory parameter (next)`
+      return
+    }
     console.log('AuthserviceBounceComponent:bounce() YARP 5')
 
     // If we have an email token, add it the the new URL
@@ -87,7 +104,7 @@ console.log('AuthserviceBounceComponent:bounce() YARP 1')
       //-   window.location = next
       //- }, 5000)
     } else {
-      window.location = next
+      //ZZZZ window.location = next
     }
     console.log('AuthserviceBounceComponent:bounce() YARP 7')
   }
