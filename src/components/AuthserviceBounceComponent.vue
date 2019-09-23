@@ -38,6 +38,12 @@
     },
     created: function () {
       console.log('AuthserviceBounceComponent:created() YARP 000')
+      console.log(`this.$route.query=`, this.$route.query)
+      console.log(`this.$route.params=`, this.$route.params)
+      if (window && window.location) {
+        console.log(`window.location=`, window.location)
+        console.log(`window.location.search=`, window.location.search)
+      }
       if (this.$route && this.$route.params && typeof(window) != 'undefined') {
         console.log('AuthserviceBounceComponent:created() YARP 001')
         bounce(this, false)
