@@ -1,12 +1,14 @@
 <template lang="pug">
 
   p
+    | YARPS!
     br
     | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     a(:href="url")
       | {{url}}
-  p(v-show="errorMsg !== ''")
-    | {{errorMsg}}
+      br
+    div(v-show="errorMsg !== ''")
+      | {{errorMsg}}
 
 </template>
 
@@ -35,9 +37,9 @@
       }
     },
     created: function () {
-      console.log('AuthserviceBounceComponent:created() YARP 00')
+      console.log('AuthserviceBounceComponent:created() YARP 000')
       if (this.$route && this.$route.params && typeof(window) != 'undefined') {
-        console.log('AuthserviceBounceComponent:created() YARP 01')
+        console.log('AuthserviceBounceComponent:created() YARP 001')
         bounce(this, false)
       }
     }
@@ -71,6 +73,7 @@ console.log(`window.location.search=`, window.location.search)
 
     } else {
       me.errorMsg = `Missing mandatory parameter (jwt)`
+      console.log(me.errorMsg)
       return
     }
     console.log('AuthserviceBounceComponent:bounce() YARP 4')
@@ -82,6 +85,7 @@ console.log(`window.location.search=`, window.location.search)
       //- console.log(`next=${next}`)
     } else {
       me.errorMsg = `Missing mandatory parameter (next)`
+      console.log(me.errorMsg)
       return
     }
     console.log('AuthserviceBounceComponent:bounce() YARP 5')
