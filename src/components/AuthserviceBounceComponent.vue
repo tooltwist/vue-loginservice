@@ -63,7 +63,6 @@ console.log(`window.location.search=`, window.location.search)
     let jwt
     let next64
     let emailToken
-    let debug
 
     const useRoute = true
     if (useRoute && me.$route.query) {
