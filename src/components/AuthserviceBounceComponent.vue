@@ -9,7 +9,6 @@
       br
     div(v-show="errorMsg !== ''")
       | {{errorMsg}}
-
 </template>
 
 <script>
@@ -44,10 +43,11 @@
         console.log(`window.location=`, window.location)
         console.log(`window.location.search=`, window.location.search)
       }
-      if (this.$route && this.$route.params && typeof(window) != 'undefined') {
-        console.log('AuthserviceBounceComponent:created() YARP 001')
-        bounce(this, false)
-      }
+      // if (this.$route && this.$route.params && typeof(window) != 'undefined') {
+      //   console.log('AuthserviceBounceComponent:created() YARP 001')
+      //   bounce(this, false)
+      // }
+      bounce(this, false)
     }
   }
 
@@ -59,15 +59,51 @@
 
 console.log('AuthserviceBounceComponent:bounce() YARP 1')
 console.log(`window.location.search=`, window.location.search)
-    // See what parameters we've been passed
-    const parsed = QueryString.parse(window.location.search)
-    console.log('AuthserviceBounceComponent:bounce() YARP 2')
-    const jwt = parsed['AUTHSERVICE_JWT']
-    const next64 = parsed['next']
-    //const debug |= parsed['debug']
-    if (parsed['debug']) {
-      debug = true
+
+    let jwt
+    let next64
+    let emailToken
+    let debug
+
+    const useRoute = true
+    if (useRoute && me.$route.query) {
+
+      // Use the route's query
+      console.log(`Getting params from this.$route.query`);
+      jwt = me.$route.query.AUTHSERVICE_JWT
+      next64 = me.$route.query.next
+      if (me.$route.query.debug) {
+        debug = true
+      }
+      emailToken = me.$route.query.AUTHSERVICE_EMAIL_TOKEN
+    } else  if (window) {
+
+      // Get query parameters from the window object
+      console.log(`Getting params from window.location.search`);
+      let query = window.location.search
+      while (query.startsWith('?')) {
+        query = query.substring(1)
+      }
+      const parsed = QueryString.parse(query)
+      jwt = parsed['AUTHSERVICE_JWT']
+      next64 = parsed['next']
+      //const debug |= parsed['debug']
+      if (parsed['debug']) {
+        debug = true
+      }
+      emailToken = parsed['AUTHSERVICE_EMAIL_TOKEN']
+
+    } else {
+      console.log('Missing window object.')
+      return;
     }
+    console.log('AuthserviceBounceComponent:bounce() YARP 2')
+    console.log(`jwt=`, jwt);
+    console.log(`next64=`, next64);
+    console.log(`debug=`, debug);
+    console.log(`emailToken=`, emailToken);
+
+    // See what parameters we've been passed
     console.log('AuthserviceBounceComponent:bounce() YARP 3')
 
     // Save the JWT (Javascript Web Token)
@@ -97,7 +133,6 @@ console.log(`window.location.search=`, window.location.search)
     console.log('AuthserviceBounceComponent:bounce() YARP 5')
 
     // If we have an email token, add it the the new URL
-    const emailToken = parsed['AUTHSERVICE_EMAIL_TOKEN']
     if (emailToken) {
       let nextParsed = URL.parse(next, true)
       //- console.log(`next:`, nextParsed)
