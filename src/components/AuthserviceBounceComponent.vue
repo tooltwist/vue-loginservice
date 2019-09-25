@@ -143,12 +143,12 @@ console.log(`window.location.search=`, window.location.search)
 
     //debug = true
     if (debug) {
-      // Debugging, so don't actually redirect.
-      //- setTimeout(function () {
-      //-   window.location = next
-      //- }, 5000)
+      // Debugging, so don't redirect immediately.
+      setTimeout(function () {
+        window.location = next
+      }, 10000)
     } else {
-      //ZZZZ window.location = next
+      window.location = next
     }
     console.log('AuthserviceBounceComponent:bounce() YARP 7')
   }
