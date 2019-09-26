@@ -152,7 +152,7 @@ class LoginService {
       } else if (!options.hints.register.resumeURL) {
         this.registrationSupported = false;
         console.log(`LoginService(): Registration is NOT supported`);
-        console.error('options.hints.register.resumeURL must be provided')
+        console.error('options.hints.register.resumeURL must be provided if register is enabled')
       } else if (typeof(options.hints.register.resumeURL) !== 'string') {
         this.registrationSupported = false;
         console.log(`LoginService(): Registration is NOT supported`);
@@ -256,7 +256,7 @@ class LoginService {
   //
   checkInitialLoginStatus (debug) {
     debug = true
-    console.log('+++++ checkInitialLoginStatus ++++++')
+    //console.log('+++++ checkInitialLoginStatus ++++++')
 
     // If this is the browser, look for the JWT as a URL parameter
     if (window) {
@@ -264,11 +264,11 @@ class LoginService {
       let jwt = this.getURLParameterByName("AUTHSERVICE_JWT")
       if (jwt) {
         if (debug) {
-          console.log("***")
-          console.log("***")
+          // console.log("***")
+          // console.log("***")
           console.log("*** LOGINSERVICE_JWT IN URL")
-          console.log("***")
-          console.log("***")
+          // console.log("***")
+          // console.log("***")
         }
         const isFromCookie = false
         if (this.setCurrentUserFromJWT(jwt, isFromCookie)) {
@@ -287,11 +287,11 @@ class LoginService {
     let jwt = this.getCookie(JWT_COOKIE_NAME)
     if (jwt) {
       if (debug) {
-        console.log("***")
-        console.log("***")
+        // console.log("***")
+        // console.log("***")
         console.log("*** LOGINSERVICE_JWT IN A COOKIE")
-        console.log("***")
-        console.log("***")
+        // console.log("***")
+        // console.log("***")
       }
       // var isFromCookie = true;
       const isFromCookie = false // Check if it is stale ZZZZ
@@ -307,11 +307,11 @@ class LoginService {
 
     // not a good cookie
     if (debug) {
-      console.log("***")
-      console.log("***")
+      // console.log("***")
+      // console.log("***")
       console.log("*** LOGINSERVICE_JWT NOT IN URL OR COOKIE")
-      console.log("***")
-      console.log("***")
+      // console.log("***")
+      // console.log("***")
     }
     const isFromCookie = false
     this.setCurrentUserFromJWT(null, isFromCookie)
@@ -791,30 +791,39 @@ console.log(`url is ${url}`)
     // Change the current user.
     // let oldCurrentUser = user
     if (haveUser) {
+      // console.log(`USER from ident:`, ident);
       const user = {
         tenant: ident.tenant,
+        id: ident.id,
         authority: ident.authority,
-        avatar: ident.avatar,
+        entityType: ident.entity_type,
+        // externalID
         email: ident.email,
         emailStatus: ident.email_status,
-        entityType: ident.entity_type,
+        username: ident.username,
+        // hasedPassword
+        status: ident.status,
         firstname: ident.first_name,
+        middlename: ident.middle_name,
+        lastname: ident.last_name,
         fullname: ident.full_name,
         gender: ident.gender,
-        id: ident.id,
-        isAdmin: ident.is_admin,
         languages: ident.languages,
-        lastname: ident.last_name,
+        mediaPage: ident.media_page,
+        avatar: ident.avatar,
+        jobTitle: ident.job_title,
+        companyName: ident.company_name,
+        mobilePhone: ident.mobile_phone,
+        workPhone: ident.work_phone,
+        customData: ident.custom_data,
         locale: ident.locale,
         location: ident.location,
-        mediaPage: ident.media_page,
-        middlename: ident.middle_name,
+        isAdmin: ident.is_admin,
         privileges: ident.privileges,
-        status: ident.status,
         timezone: ident.timezone,
-        username: ident.username,
-        rights: [ ]
+        rights: [ ],
         // type: ident.type,
+        appdata: ident.appdata
       }
       if (ident.rights) {
         ident.rights.forEach(r => {
