@@ -461,7 +461,7 @@ class LoginService {
     url += '&fail=' + encodeURIComponent(failURL)
 console.log(`url is ${url}`)
     if (options && options.debug) {
-      alert('Initiate URL:' + url)
+      //alert('Initiate URL:' + url)
     }
     window.location = url
   }// initiateOAuth2
