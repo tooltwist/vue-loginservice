@@ -38,7 +38,7 @@
       b-dropdown-header
         h4 Login
         b-form-group(label="Username / Email")
-          b-form-input(v-model.trim="email" type="text" v-on:keydown.native="keyhandler" tabindex="31")
+          b-form-input(v-model.trim="email" type="text" v-on:keydown="keyhandler" tabindex="31")
         b-form-group(label="Password")
           b-form-input(v-model.trim="password" type="password" v-on:keydown.native="keyhandler" tabindex="32" autocomplete="current-password")
         b-alert(v-if="loginError" variant="danger" show) {{loginError}}

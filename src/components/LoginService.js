@@ -38,7 +38,7 @@ class LoginService {
   // }
 
   constructor (options) {
-    console.log('&&& LoginService constructor', options)
+    console.log('LoginService initializing:', options)
     this.host = options.host ? options.host : 'api.authservice.io'
     this.port = options.port ? options.port : 443
     this.version = options.version ? options.version : 'v2'
@@ -47,6 +47,7 @@ class LoginService {
     // Check the UrlPrefix only has a trailing slash
     this.urlPrefix = 'loginservice'
     if (typeof(options.urlPrefix) !== 'undefined') {
+      if (options.debug) console.log(`- will use options.urlPrefix`)
       this.urlPrefix = options.urlPrefix
     }
     while (this.urlPrefix.startsWith('/')) {
@@ -58,7 +59,7 @@ class LoginService {
     if (this.urlPrefix) {
       this.urlPrefix += '/'
     }
-    console.log(`urlPrefix is ${this.urlPrefix}`)
+    console.log(`- urlPrefix: ${this.urlPrefix}`)
 
     // Determine what protocol to use
     this.protocol = 'http'
@@ -74,6 +75,7 @@ class LoginService {
         // Non-standard port, probably during development
       }
     }
+    if (options.debug) console.log(`- endpoint: ${this.endpoint()}`)
 
     // Decide which icon set to use with a defaultIconPack option.
     // Loosely based on:
@@ -87,10 +89,10 @@ class LoginService {
 
     // See if we are supporting email login (default to yes)
     if (options.hints && options.hints.login && typeof(options.hints.login.email) !== 'undefined' && !options.hints.login.email) {
-      console.log(`LoginService(): Email is NOT enabled`);
+      console.log(`- Email login is NOT enabled`);
       this.emailSupported = false;
     } else {
-      console.log(`LoginService(): Email IS enabled`);
+      console.log(`- Email login IS enabled`);
       this.emailSupported = true;
     }
 
@@ -136,39 +138,40 @@ class LoginService {
     // See if registration is allowed
     if (!this.emailSupported) {
       // login.email: false
-      console.log(`LoginService(): Registration is NOT supported`);
-      console.log(`(because email is not supported)`)
+      console.log(`- Registration is NOT supported`);
+      console.log(`  (because email is not supported)`)
       this.registrationSupported = false;
     } else if (options.hints) {
 
       // Perhaps allow registration. Check we have what we need.
       if (typeof(options.hints.register) !== 'undefined' && !options.hints.register) {
         // Check for hints.register: false
-        console.log(`LoginService(): Registration is NOT supported`);
+        console.log(`- Registration is NOT supported`);
         this.registrationSupported = false;
       } else if (typeof(options.hints.register) !== 'object') {
         this.registrationSupported = false;
-        console.error('options.hints.register must be false, or an object')
+        console.log(`- Registration is NOT supported`);
+        console.error('  (options.hints.register must be false, or an object)')
       } else if (!options.hints.register.resumeURL) {
         this.registrationSupported = false;
-        console.log(`LoginService(): Registration is NOT supported`);
-        console.error('options.hints.register.resumeURL must be provided if register is enabled')
+        console.log(`- Registration is NOT supported`);
+        console.error('  (options.hints.register.resumeURL must be provided if register is enabled)')
       } else if (typeof(options.hints.register.resumeURL) !== 'string') {
         this.registrationSupported = false;
-        console.log(`LoginService(): Registration is NOT supported`);
-        console.error('options.hints.register.resumeURL must be a string')
+        console.log(`- Registration is NOT supported`);
+        console.error('  (options.hints.register.resumeURL must be a string)')
       } else {
 
         // Convert our resumeURL to a full URL (it is usually a relative path)
         this.registerResume = this.URLOnThisWebsite(options.hints.register.resumeURL)
         if (this.registerResume === null) {
           // The resumeURL is absolute, but not to the current website's domain.
-          console.error(`LoginService(): Registration will NOT be supported`);
-          console.log(`options.hints.register.resumeURL not on this website: (${options.hints.register.resumeURL})`)
+          console.error(`- Registration will NOT be supported`);
+          console.log(`  (options.hints.register.resumeURL not on this website: ${options.hints.register.resumeURL})`)
           this.registrationSupported = false;
         } else {
           // All good for registration
-          console.log(`LoginService(): Registration enabled`);
+          console.log(`- Registration enabled`);
           this.registrationSupported = true;
         }
       }
@@ -177,8 +180,8 @@ class LoginService {
     // See if forgotten password is allowed
     if (!this.emailSupported) {
       // Email is not used (options.login.email is false)
-      console.error(`LoginService(): Forgotten password will NOT be supported`);
-      console.log(`(because email is not supported)`)
+      console.error(`- Forgotten password will NOT be supported`);
+      console.log(`  (because email is not supported)`)
       this.forgottenPasswordSupported = false;
     } else if (options.hints) {
 
@@ -187,29 +190,29 @@ class LoginService {
         // Forgot password is specifically disallowed (options.hints.forgot is false)
         this.forgottenPasswordSupported = false;
       } else if (typeof(options.hints.forgot) !== 'object') {
-        console.error(`LoginService(): Forgotten password will NOT be supported`);
-        console.log('options.hints.forgot must be false, or an object')
+        console.error(`- Forgotten password will NOT be supported`);
+        console.log('  (options.hints.forgot must be false, or an object)')
         this.forgottenPasswordSupported = false;
       } else if (!options.hints.forgot || !options.hints.forgot.resumeURL) {
-        console.error(`LoginService(): Forgotten password will NOT be supported`);
-        console.log('options.hints.forgot.resumeURL must be provided')
+        console.error(`- Forgotten password will NOT be supported`);
+        console.log('  (options.hints.forgot.resumeURL must be provided)')
         this.forgottenPasswordSupported = false;
       }
       else if (typeof(options.hints.forgot.resumeURL) !== 'string') {
-        console.error(`LoginService(): Forgotten password will NOT be supported`);
-        console.log('options.hints.forgot.resumeURL must be a string')
+        console.error(`- Forgotten password will NOT be supported`);
+        console.log('  (options.hints.forgot.resumeURL must be a string)')
         this.forgottenPasswordSupported = false;
       } else {
         // Convert our resumeURL to a full URL (it is usually a relative path)
         this.forgotResume = this.URLOnThisWebsite(options.hints.forgot.resumeURL)
         if (this.forgotResume === null) {
           // The resumeURL is absolute, but not to the current website's domain.
-          console.error(`LoginService(): Forgotten password will NOT be supported`);
-          console.log(`options.hints.forgot.resumeURL not on this website: (${options.hints.forgot.resumeURL})`)
+          console.error(`- Forgotten password will NOT be supported`);
+          console.log(`  (options.hints.forgot.resumeURL not on this website: ${options.hints.forgot.resumeURL})`)
           this.forgottenPasswordSupported = false;
         } else {
           // All good for forgotten password
-          console.log(`LoginService(): Forgotten password enabled`);
+          console.log(`- Forgotten password enabled`);
           this.forgottenPasswordSupported = true;
         }
       }

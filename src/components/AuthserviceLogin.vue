@@ -65,14 +65,14 @@
             .field(v-if="loginWithUsername")
               label.label User Name
               .control.has-icons-left
-                input.input(v-model.trim="email" type="text" v-on:keydown.native="keyhandler" placeholder="Enter your User Name")
+                input.input(v-model.trim="email" type="text" v-on:keydown="keyhandler" placeholder="Enter your User Name")
                 span.icon.is-small.is-left
                   i.fas.fa-user(v-if="$authservice.icons('fas')")
                   i.fa.fa-user(v-else)
             .field(v-else)
               label.label Email
               .control.has-icons-left
-                input.input(v-model.trim="email" type="text" v-on:keydown.native="keyhandler" placeholder="Enter an Account Email")
+                input.input(v-model.trim="email" type="text" v-on:keydown="keyhandler" placeholder="Enter an Account Email")
                 span.icon.is-small.is-left
                   i.far.fa-envelope-open(v-if="$authservice.icons('fas')")
                   i.fa.fa-envelope-o(v-else)
@@ -80,7 +80,7 @@
             .field
               label.label Password
               .control.has-icons-left
-                input.input(v-model.trim="password" type="password" v-on:keydown.native="keyhandler" autocomplete="current-password" placeholder="Enter your Password")
+                input.input(v-model.trim="password" type="password" v-on:keydown="keyhandler" autocomplete="current-password" placeholder="Enter your Password")
                 span.icon.is-small.is-left
                   i.fas.fa-lock(v-if="$authservice.icons('fas')")
                   i.fa.fa-lock(v-else)
@@ -150,7 +150,7 @@
           label.label
             | User Name
           .control.has-icons-left
-            input.input(v-model.trim="registerUsername", type="text", v-on:keydown.native="keyhandler", v-on:input="validateUsername", :state="registerUsernameState", autocomplete="off", placeholder="Choose a user name")
+            input.input(v-model.trim="registerUsername", type="text", v-on:keydown="keyhandler", v-on:input="validateUsername", :state="registerUsernameState", autocomplete="off", placeholder="Choose a user name")
             span.icon.is-small.is-left
               i.fas.fa-user(v-if="$authservice.icons('fas')")
               i.fa.fa-user(v-else)
@@ -165,7 +165,7 @@
           label.label
             | Email
           .control.has-icons-left
-            input.input(v-model.trim="registerEmail" type="text" v-on:keydown.native="keyhandler" placeholder="Enter your email address")
+            input.input(v-model.trim="registerEmail" type="text" v-on:keydown="keyhandler" placeholder="Enter your email address")
             span.icon.is-small.is-left
               i.far.fa-envelope-open(v-if="$authservice.icons('fas')")
               i.fa.fa-envelope-o(v-else)
@@ -174,7 +174,7 @@
           label.label
             | Password
           .control.has-icons-left
-            input.input(v-model.trim="registerPassword" type="password" v-on:keydown.native="keyhandler" autocomplete="off" placeholder="Choose a password")
+            input.input(v-model.trim="registerPassword" type="password" v-on:keydown="keyhandler" autocomplete="off" placeholder="Choose a password")
             span.icon.is-small.is-left
               i.fas.fa-lock(v-if="$authservice.icons('fas')")
               i.fa.fa-lock(v-else)
@@ -183,19 +183,19 @@
           label.label
             | First name
           .control
-            input.input(v-model.trim="registerFirstName" v-on:keydown.native="keyhandler")
+            input.input(v-model.trim="registerFirstName" v-on:keydown="keyhandler")
 
         .field(v-if="registerRequiresMiddleName")
           label.label
             | Middle name
           .control
-            input.input(v-model.trim="registerMiddleName" v-on:keydown.native="keyhandler")
+            input.input(v-model.trim="registerMiddleName" v-on:keydown="keyhandler")
 
         .field(v-if="registerRequiresLastName")
           label.label
             | Last name
           .control
-            input.input(v-model.trim="registerLastName" v-on:keydown.native="keyhandler")
+            input.input(v-model.trim="registerLastName" v-on:keydown="keyhandler")
 
         br
         .notification.is-danger(v-if="registerError")
@@ -258,7 +258,7 @@
             label.label
               | Email
             .control.has-icons-left
-              input.input(v-model.trim="forgotEmail" type="text" v-on:keydown.native="keyhandler" placeholder="Enter your Email Address")
+              input.input(v-model.trim="forgotEmail" type="text" v-on:keydown="keyhandler" placeholder="Enter your Email Address")
               span.icon.is-small.is-left
                 i.far.fa-envelope-open(v-if="$authservice.icons('fas')")
                 i.fa.fa-envelope-o(v-else)
