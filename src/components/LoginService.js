@@ -1025,9 +1025,9 @@ console.log(`url is ${url}`)
     const l = window.location
     let baseURL = `${l.protocol}//${l.hostname}`
     if (l.port) {
-      if (l.protocol === 'http' && l.port === 80) {
+      if (l.protocol === 'http:' && l.port === 80) {
         // default port
-      } else if (l.protocol === 'https' && l.port === 443) {
+      } else if (l.protocol === 'https:' && l.port === 443) {
         // default port
       } else {
         baseURL += `:${l.port}`
@@ -1048,7 +1048,7 @@ console.log(`url is ${url}`)
 
     // Add on the path
     if (!relativeURL.startsWith('/')) {
-      baseUrl += '/'
+      baseURL += '/'
     }
     const absoluteURL = baseURL + relativeURL
     //console.log(`Absolute: ${absoluteURL}`)
