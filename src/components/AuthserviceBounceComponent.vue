@@ -1,7 +1,6 @@
 <template lang="pug">
 
-  p
-    | YARPS!
+  p(style="display:none")
     br
     | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     a(:href="url")
