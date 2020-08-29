@@ -975,10 +975,11 @@ console.log(`url is ${url}`)
     } else {
       console.log('clearing cookie (' + cname + ')')
     }
-    var d = new Date()
+    const d = new Date()
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000))
-    var expires = 'expires=' + d.toUTCString()
-    document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/'
+    const expires = 'expires=' + d.toUTCString()
+    const secure = 'secure;samesite=strict'
+    document.cookie = `${cname}=${cvalue};${expires};path=/;${secure}`
   }// setCookie()
 
   getCookie (cname) {
