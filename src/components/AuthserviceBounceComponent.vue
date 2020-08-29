@@ -159,7 +159,8 @@ console.log(`window.location.search=`, window.location.search)
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000))
     const expires = 'expires=' + d.toUTCString()
     const secure = 'secure;samesite=strict'
-    document.cookie = `${cname}=${cvalue};${expires};path=/;${secure}`
+    const value = `${cname}=${cvalue};${expires};path=/;${secure};`
+    document.cookie = value
   }// setCookie()
 
 </script>
