@@ -12,95 +12,96 @@
         //    i.fas.fa-angle-down(aria-hidden="true")
       .card-content
         .content
-          div.has-text-centered
-            div(v-if="allowFacebookLogin")
-              a.button.social-button.is-primary(v-on:click="facebookLogin()")
-                .social-button-icon
-                  i.fab.fa-facebook-f.has-text-white(v-if="$authservice.icons('fas')")
-                  i.fa.fa-facebook-f.has-text-white(v-else)
-                .social-button-text &nbsp; Login with Facebook
+          form
+            div.has-text-centered
+              div(v-if="allowFacebookLogin")
+                a.button.social-button.is-primary(v-on:click="facebookLogin()")
+                  .social-button-icon
+                    i.fab.fa-facebook-f.has-text-white(v-if="$authservice.icons('fas')")
+                    i.fa.fa-facebook-f.has-text-white(v-else)
+                  .social-button-text &nbsp; Login with Facebook
+                br
+              div(v-if="allowGoogleLogin")
+                a.button.social-button.is-primary(v-on:click="googleLogin()")
+                  .social-button-icon
+                    i.fab.fa-google.has-text-white(v-if="$authservice.icons('fas')")
+                    i.fa.fa-google.has-text-white(v-else)
+                  .social-button-text &nbsp; Login with Google
+                br
+              div(v-if="allowGithubLogin")
+                a.button.social-button.is-primary(:variant="'secondary'" v-on:click="githubLogin()" tabindex="38")
+                  .social-button-icon
+                    i.fab.fa-github.has-text-white(v-if="$authservice.icons('fas')")
+                    i.fa.fa-github.has-text-white(v-else)
+                  .social-button-text &nbsp; Login with Github
+                br
+              div(v-if="allowLinkedinLogin")
+                a.button.social-button.is-primary(:variant="'secondary'" v-on:click="linkedinLogin()" tabindex="38")
+                  .social-button-icon
+                    i.fab.fa-linkedin.has-text-white(v-if="$authservice.icons('fas')")
+                    i.fa.fa-linkedin.has-text-white(v-else)
+                  .social-button-text &nbsp; Login with LinkedIn
+                br
+              div(v-if="allowTwitterLogin")
+                a.button.social-button.is-primary(:variant="'secondary'" v-on:click="twitterLogin()" tabindex="38")
+                  .social-button-icon
+                    i.fab.fa-twitter.has-text-white(v-if="$authservice.icons('fas')")
+                    i.fa.fa-twitter.has-text-white(v-else)
+                  .social-button-text &nbsp; Login with Twitter
+                br
+              //div(v-if="allowPropertyMeLogin")
+                a.button.social-button.is-primary(v-on:click="propertyMeLogin()" tabindex="38")
+                  .social-button-icon
+                    i.fab.fa-home.has-text-white(v-if="$authservice.icons('fas')")
+                    i.fa.fa-home.has-text-white(v-else)
+                  .social-button-text &nbsp; Login with PropertyMe
+                br
+            div.has-text-centered(v-if="allowSocialLogin && loginWithEmail")
               br
-            div(v-if="allowGoogleLogin")
-              a.button.social-button.is-primary(v-on:click="googleLogin()")
-                .social-button-icon
-                  i.fab.fa-google.has-text-white(v-if="$authservice.icons('fas')")
-                  i.fa.fa-google.has-text-white(v-else)
-                .social-button-text &nbsp; Login with Google
+              b - or -&nbsp;&nbsp;&nbsp;
               br
-            div(v-if="allowGithubLogin")
-              a.button.social-button.is-primary(:variant="'secondary'" v-on:click="githubLogin()" tabindex="38")
-                .social-button-icon
-                  i.fab.fa-github.has-text-white(v-if="$authservice.icons('fas')")
-                  i.fa.fa-github.has-text-white(v-else)
-                .social-button-text &nbsp; Login with Github
               br
-            div(v-if="allowLinkedinLogin")
-              a.button.social-button.is-primary(:variant="'secondary'" v-on:click="linkedinLogin()" tabindex="38")
-                .social-button-icon
-                  i.fab.fa-linkedin.has-text-white(v-if="$authservice.icons('fas')")
-                  i.fa.fa-linkedin.has-text-white(v-else)
-                .social-button-text &nbsp; Login with LinkedIn
+
+            div(v-if="loginWithEmail")
+              .field(v-if="loginWithUsername")
+                label.label User Name
+                .control.has-icons-left
+                  input.input(v-model.trim="email" type="text" v-on:keydown="keyhandler" placeholder="Enter your User Name")
+                  span.icon.is-small.is-left
+                    i.fas.fa-user(v-if="$authservice.icons('fas')")
+                    i.fa.fa-user(v-else)
+              .field(v-else)
+                label.label Email
+                .control.has-icons-left
+                  input.input(v-model.trim="email" type="text" v-on:keydown="keyhandler" placeholder="Enter an Account Email")
+                  span.icon.is-small.is-left
+                    i.far.fa-envelope-open(v-if="$authservice.icons('fas')")
+                    i.fa.fa-envelope-o(v-else)
+
+              .field
+                label.label Password
+                .control.has-icons-left
+                  input.input(v-model.trim="password" type="password" v-on:keydown="keyhandler" autocomplete="current-password" placeholder="Enter your Password")
+                  span.icon.is-small.is-left
+                    i.fas.fa-lock(v-if="$authservice.icons('fas')")
+                    i.fa.fa-lock(v-else)
+
               br
-            div(v-if="allowTwitterLogin")
-              a.button.social-button.is-primary(:variant="'secondary'" v-on:click="twitterLogin()" tabindex="38")
-                .social-button-icon
-                  i.fab.fa-twitter.has-text-white(v-if="$authservice.icons('fas')")
-                  i.fa.fa-twitter.has-text-white(v-else)
-                .social-button-text &nbsp; Login with Twitter
-              br
-            //div(v-if="allowPropertyMeLogin")
-              a.button.social-button.is-primary(v-on:click="propertyMeLogin()" tabindex="38")
-                .social-button-icon
-                  i.fab.fa-home.has-text-white(v-if="$authservice.icons('fas')")
-                  i.fa.fa-home.has-text-white(v-else)
-                .social-button-text &nbsp; Login with PropertyMe
-              br
-          div.has-text-centered(v-if="allowSocialLogin && loginWithEmail")
+              .notification.is-danger(v-if="loginError")
+                | {{loginError}}
+                br
+
+
+              button.button.is-primary.is-pulled-right(@click="doLogin", type="submit", tabindex="33", :class="{ 'is-loading': loginInProgress }")
+                | Login
+              a(v-if="provideForgottenPassword" href="#" v-on:click="setMode('forgot')")
+                .my-hover Forgot Login Info?
+            // loginWithEmail
+
+            //a.button.is-outlined(:size="'sm'", :variant="'link'", v-on:click="setMode('forgot')") Forgot password
+            //| &nbsp;
+            //a.button.is-outlined(:size="'sm'", :variant="'link'", v-on:click="setMode('register')") Sign Up
             br
-            b - or -&nbsp;&nbsp;&nbsp;
-            br
-            br
-
-          div(v-if="loginWithEmail")
-            .field(v-if="loginWithUsername")
-              label.label User Name
-              .control.has-icons-left
-                input.input(v-model.trim="email" type="text" v-on:keydown="keyhandler" placeholder="Enter your User Name")
-                span.icon.is-small.is-left
-                  i.fas.fa-user(v-if="$authservice.icons('fas')")
-                  i.fa.fa-user(v-else)
-            .field(v-else)
-              label.label Email
-              .control.has-icons-left
-                input.input(v-model.trim="email" type="text" v-on:keydown="keyhandler" placeholder="Enter an Account Email")
-                span.icon.is-small.is-left
-                  i.far.fa-envelope-open(v-if="$authservice.icons('fas')")
-                  i.fa.fa-envelope-o(v-else)
-
-            .field
-              label.label Password
-              .control.has-icons-left
-                input.input(v-model.trim="password" type="password" v-on:keydown="keyhandler" autocomplete="current-password" placeholder="Enter your Password")
-                span.icon.is-small.is-left
-                  i.fas.fa-lock(v-if="$authservice.icons('fas')")
-                  i.fa.fa-lock(v-else)
-
-            br
-            .notification.is-danger(v-if="loginError")
-              | {{loginError}}
-              br
-
-
-            a.button.is-primary.is-pulled-right(@click="doLogin", tabindex="33", :class="{ 'is-loading': loginInProgress }")
-              | Login
-            a(v-if="provideForgottenPassword" href="#" v-on:click="setMode('forgot')")
-              .my-hover Forgot Login Info?
-          // loginWithEmail
-
-          //a.button.is-outlined(:size="'sm'", :variant="'link'", v-on:click="setMode('forgot')") Forgot password
-          //| &nbsp;
-          //a.button.is-outlined(:size="'sm'", :variant="'link'", v-on:click="setMode('register')") Sign Up
-          br
 
       .card-footer(v-if="loginWithEmail && provideRegistration")
         .card-footer-item
@@ -145,70 +146,70 @@
       header.card-header
         p.card-header-title SIGN UP
       .card-content
+        form
+          // Username
+          .field(v-if="registerRequiresUsername")
+            label.label
+              | User Name
+            .control.has-icons-left
+              input.input(v-model.trim="registerUsername", type="text", v-on:keydown="keyhandler", v-on:input="validateUsername", :state="registerUsernameState", autocomplete="off", placeholder="Choose a user name")
+              span.icon.is-small.is-left
+                i.fas.fa-user(v-if="$authservice.icons('fas')")
+                i.fa.fa-user(v-else)
 
-        // Username
-        .field(v-if="registerRequiresUsername")
-          label.label
-            | User Name
-          .control.has-icons-left
-            input.input(v-model.trim="registerUsername", type="text", v-on:keydown="keyhandler", v-on:input="validateUsername", :state="registerUsernameState", autocomplete="off", placeholder="Choose a user name")
-            span.icon.is-small.is-left
-              i.fas.fa-user(v-if="$authservice.icons('fas')")
-              i.fa.fa-user(v-else)
+            .notification.is-danger(v-if="registerUsernameError")
+              // This will only be shown if the preceeding input has an invalid state
+              | {{registerUsernameError}}
+              br
 
-          .notification.is-danger(v-if="registerUsernameError")
-            // This will only be shown if the preceeding input has an invalid state
-            | {{registerUsernameError}}
+          // Email
+          .field
+            label.label
+              | Email
+            .control.has-icons-left
+              input.input(v-model.trim="registerEmail" type="text" v-on:keydown="keyhandler" placeholder="Enter your email address")
+              span.icon.is-small.is-left
+                i.far.fa-envelope-open(v-if="$authservice.icons('fas')")
+                i.fa.fa-envelope-o(v-else)
+
+          .field(v-if="registerRequiresPassword")
+            label.label
+              | Password
+            .control.has-icons-left
+              input.input(v-model.trim="registerPassword" type="password" v-on:keydown="keyhandler" autocomplete="off" placeholder="Choose a password")
+              span.icon.is-small.is-left
+                i.fas.fa-lock(v-if="$authservice.icons('fas')")
+                i.fa.fa-lock(v-else)
+
+          .field(v-if="registerRequiresFirstName")
+            label.label
+              | First name
+            .control
+              input.input(v-model.trim="registerFirstName" v-on:keydown="keyhandler")
+
+          .field(v-if="registerRequiresMiddleName")
+            label.label
+              | Middle name
+            .control
+              input.input(v-model.trim="registerMiddleName" v-on:keydown="keyhandler")
+
+          .field(v-if="registerRequiresLastName")
+            label.label
+              | Last name
+            .control
+              input.input(v-model.trim="registerLastName" v-on:keydown="keyhandler")
+
+          br
+          .notification.is-danger(v-if="registerError")
+            | {{registerError}}
             br
 
-        // Email
-        .field
-          label.label
-            | Email
-          .control.has-icons-left
-            input.input(v-model.trim="registerEmail" type="text" v-on:keydown="keyhandler" placeholder="Enter your email address")
-            span.icon.is-small.is-left
-              i.far.fa-envelope-open(v-if="$authservice.icons('fas')")
-              i.fa.fa-envelope-o(v-else)
-
-        .field(v-if="registerRequiresPassword")
-          label.label
-            | Password
-          .control.has-icons-left
-            input.input(v-model.trim="registerPassword" type="password" v-on:keydown="keyhandler" autocomplete="off" placeholder="Choose a password")
-            span.icon.is-small.is-left
-              i.fas.fa-lock(v-if="$authservice.icons('fas')")
-              i.fa.fa-lock(v-else)
-
-        .field(v-if="registerRequiresFirstName")
-          label.label
-            | First name
-          .control
-            input.input(v-model.trim="registerFirstName" v-on:keydown="keyhandler")
-
-        .field(v-if="registerRequiresMiddleName")
-          label.label
-            | Middle name
-          .control
-            input.input(v-model.trim="registerMiddleName" v-on:keydown="keyhandler")
-
-        .field(v-if="registerRequiresLastName")
-          label.label
-            | Last name
-          .control
-            input.input(v-model.trim="registerLastName" v-on:keydown="keyhandler")
-
-        br
-        .notification.is-danger(v-if="registerError")
-          | {{registerError}}
+          button.button.is-primary.is-pulled-right(type="submit", @click="register", :class="{ 'is-loading': registerInProgress }")
+            | SIGN UP
+          span.is-pulled-left
+            | Already have an account? &nbsp;
+            a.my-hover(href="#" v-on:click="setMode('login')") Log in
           br
-
-        a.button.is-primary.is-pulled-right(@click="register", :class="{ 'is-loading': registerInProgress }")
-          | SIGN UP
-        span.is-pulled-left
-          | Already have an account? &nbsp;
-          a.my-hover(href="#" v-on:click="setMode('login')") Log in
-        br
 
 
       .card-footer(v-if="termsMessage")
@@ -225,19 +226,20 @@
       header.card-header
         p.card-header-title Congratulations
       .card-content
-        // h4 Registration
-        p
-          | Congratulations, you now have a user account.
-          | We have sent you an email to verify your email address.
-        p
-          | Please take a moment to check your email and complete
-          | the registration process.
-        // Should just close the dropdown VVVVV
-        // a.button(:size="'sm'", :variant="'primary'", v-on:click="setMode('login')") Ok
-        br
-        button.button.is-pulled-right.is-primary(type="submit", v-on:click="setMode('login')") OK
-        br
-        br
+        form
+          // h4 Registration
+          p
+            | Congratulations, you now have a user account.
+            | We have sent you an email to verify your email address.
+          p
+            | Please take a moment to check your email and complete
+            | the registration process.
+          // Should just close the dropdown VVVVV
+          // a.button(:size="'sm'", :variant="'primary'", v-on:click="setMode('login')") Ok
+          br
+          button.button.is-pulled-right.is-primary(type="submit", v-on:click="setMode('login')") OK
+          br
+          br
     //- .b-form
 
     //
@@ -251,30 +253,31 @@
           p.card-header-title
             | Forgot your Login Information?
         .card-content
-          | Enter your email address and we'll send you an email with recovery instructions.
-          br
-          br
+          form
+            | Enter your email address and we'll send you an email with recovery instructions.
+            br
+            br
 
-          .field
-            label.label
-              | Email
-            .control.has-icons-left
-              input.input(v-model.trim="forgotEmail" type="text" v-on:keydown="keyhandler" placeholder="Enter your Email Address")
-              span.icon.is-small.is-left
-                i.far.fa-envelope-open(v-if="$authservice.icons('fas')")
-                i.fa.fa-envelope-o(v-else)
+            .field
+              label.label
+                | Email
+              .control.has-icons-left
+                input.input(v-model.trim="forgotEmail" type="text" v-on:keydown="keyhandler" placeholder="Enter your Email Address")
+                span.icon.is-small.is-left
+                  i.far.fa-envelope-open(v-if="$authservice.icons('fas')")
+                  i.fa.fa-envelope-o(v-else)
 
-          .notification.is-danger(v-if="forgotError" show)
-            | {{forgotError}}
-          br
+            .notification.is-danger(v-if="forgotError" show)
+              | {{forgotError}}
+            br
 
-          // https://bootstrap-vue.js.org/docs/components/button
-          a.button.is-primary.is-pulled-right(@click="forgot", :class="{ 'is-loading': forgotInProgress }")
-            | Send the Email
-          .my-spacer.is-pulled-right
-          a.button.is-pulled-right(v-on:click="setMode('login')")
-            | Cancel
-          br
+            // https://bootstrap-vue.js.org/docs/components/button
+            button.button.is-primary.is-pulled-right(type="submit", @click="forgot", :class="{ 'is-loading': forgotInProgress }")
+              | Send the Email
+            .my-spacer.is-pulled-right
+            button.button.is-pulled-right(v-on:click="setMode('login')")
+              | Cancel
+            br
       br
       br
     //- forget
@@ -285,34 +288,26 @@
         p.card-header-title
           | Forgotten Password
       .card-content
-        | We have sent an email to {{forgotEmail}} with
-        | instructions to reset your password.
-        br
-        br
+        form
+          | We have sent an email to {{forgotEmail}} with
+          | instructions to reset your password.
+          br
+          br
 
-        // Should just close the dropdown VVVVV
-        a.button.is-primary.is-pulled-right(v-on:click="setMode('login')") Ok
-        br
+          // Should just close the dropdown VVVVV
+          button.button.is-primary.is-pulled-right(type="submit", v-on:click="setMode('login')") Ok
+          br
     //- div
 
   //- b-nav-item-dropdown
 </template>
 
-<script zlang="javascript">
+<script lang="javascript">
   import debounce from 'debounce'
   // Icons from vue-awesome
   // See https://github.com/Justineo/vue-awesome
   //import 'vue-awesome/icons/refresh'
   import Icon from 'vue-awesome/components/Icon.vue'
-
-  // const LOGIN_DETAILS_COOKIE_NAME = 'authservice-login-details'
-
-  // VVVVV Remove these
-  // const JWT_COOKIE_NAME = 'authservice-jwt'
-  // const LOGIN_TIMEOUT_DAYS = 3
-
-  // const AUTHORIZED = true
-  // const NOT_AUTHORIZED = false
 
   /**
    *  This component provides a login menu on the navbar of a page.
@@ -400,35 +395,6 @@
         registerError: '',
         registerInProgress: false,
 
-        // registerRequiresUsername: registerWithField(this, 'username'),
-        // registerRequiresPassword: registerWithField(this, 'password'),
-        // registerRequiresFirstName: registerWithField(this, 'first_name'),
-        // registerRequiresMiddleName: registerWithField(this, 'middle_name'),
-        // registerRequiresLastName: registerWithField(this, 'last_name'),
-
-        // freshCredentials: '<', // boolean, don't use JWT from cookie
-
-        // // UI-related
-        // signin: '<', // boolean
-        // hideRegister: '<', // boolean
-        // hideForgot: '<', // boolean
-        // hideAvatar: '<', // boolean
-        // hideLogout: '<', // boolean
-        // bindToDom: '<', // boolean
-        // extraMenuItems: '<', // string ([+-]tag:label, ...) + = logged in, - = logged out.
-        //
-        // // Registration-related
-        // registerFields: '<', // string (password,first_name,middle_name,last_name)
-        // registerResume: '<', // URL - where to go after email verification
-        // forgotResume: '<', // URL - where to go after email verification
-        //
-        // // OAuth2-related
-        // facebook: '<', // boolean
-        // google: '<', // boolean
-        // github: '<', // boolean
-        // resume: '<', // URL, where to go after OAuth2 login
-        // fail: '<' // URL, where to go after OAuth2 error
-
         user: null,
         jwt: null,
         fromCache: false,
@@ -456,16 +422,6 @@
         // Need to use the email address
         return this.$authservice.user.email
       },// headerName
-    //   usernameState () {
-    //     return new Promise((resolve, reject) => {
-    //       // return this.registerUsername.length > 2 ? null : false
-    //       if (this.registerUsername.length > 2) {
-    //         return resolve(null)
-    //       } else {
-    //         return reject()
-    //       }
-    //     })// new promise
-    //   }
       loginWithEmail: function () {
         return !!this.optionValue('hints.login.email', true)
       },
@@ -544,23 +500,12 @@
     // Once the componented has been created, see if we are already
     // logged in (as shown by having a valid JWT in a cookie)
     created: function () {
-
       // See if the user wants to start in a particular mode
       if (this.$authservice && this.$authservice.user) {
         this.mode = 'loggedIn'
       } else if (this.initialMode === 'login' || this.initialMode === 'forgot' || this.initialMode === 'register') {
         this.mode = this.initialMode
       }
-
-      // console.log('============= NEW COMPONENT ================')
-      // console.log('\n\n\n1 ====>', this.$authservice)
-      // console.log('\n\n\n2 ====>', this.$authservice.user)
-      // registerRequiresUsername: registerWithField(this, 'username'),
-      // registerRequiresPassword: registerWithField(this, 'password'),
-      // registerRequiresFirstName: registerWithField(this, 'first_name'),
-      // registerRequiresMiddleName: registerWithField(this, 'middle_name'),
-      // registerRequiresLastName: registerWithField(this, 'last_name'),
-
     },
     methods: {
 
@@ -621,7 +566,8 @@
             this.mode = 'login'
             this.$emit('userchange', 0)
           })
-        // event.stopPropagation()
+        // Don't do the default form action
+        event.preventDefault();
         return false
       }, // doLogin
 
@@ -732,7 +678,8 @@
             this.registerError = error
             this.registerInProgress = false
           })
-        // return true
+        // Don't do the default form action
+        event.preventDefault();
         return false
       },
 
@@ -751,122 +698,20 @@
             this.forgotError = error
             this.forgotInProgress = false
           })
-        return true
+        // Don't do the default form action
+        event.preventDefault();
+        return false
       },
 
       // Set the current component mode (loggedIn, login, register, forgot, etc)
       setMode: function (mode) {
         this.mode = mode
+        // Don't do the default form action
+        event.preventDefault();
         return false
       }
     }
   }
-
-  // VVVVV Obsolete, no longer used
-  // function setCurrentUser (me, user, jwt, fromCookie) {
-  //   // console.log();
-  //   // console.log('++++++++>  setCurrentUser(): ttuat=' + ttuat + ', user=', user)
-  //
-  //   // Change the current user.
-  //   // var oldCurrentUser = user
-  //   if (user) {
-  //     // console.log('Setting user to ', user);
-  //
-  //     // // If relationships are loaded, sort the summey
-  //     // if (user.relationshipSummary) {
-  //     //   var arrayOfFriends = user.relationshipSummary.hasFriend
-  //     //   arrayOfFriends.sort(sortRelationshipSummaryByFullname)
-  //     //
-  //     //   // Short those who have friended me
-  //     //   var arrayOfFriendedBy = user.relationshipSummary.isFriendedBy;
-  //     //   arrayOfFriendedBy.sort(sortRelationshipSummaryByFullname)
-  //     // }
-  //     me.user = user
-  //     me.entityId = user.id
-  //     if (jwt) {
-  //       me.jwt = jwt
-  //     }
-  //     setCookieFromCurrentUser(me)
-  //
-  //     // VVVVV need event
-  //     // if (_onUserChange) { // && oldCurrentUser==null) {
-  //     //
-  //     //   var newUser = getCurrentUser() // may be a clone
-  //     //   var newTtuat = _ttuat
-  //     //   (_onUserChange)(newUser, newTtuat, fromCookie)
-  //     // }
-  //   } else {
-  //     // No longer logged in
-  //     me.user = null
-  //     me.entityId = -1
-  //     me.jwt = null
-  //     setCookieFromCurrentUser(me)
-  //
-  //     // if (_onUserChange) { // && oldCurrentUser != null) {
-  //     //   var fromCookie = false
-  //     //   _onUserChange(null, null, fromCookie)
-  //     // }
-  //   }
-  // }
-
-  /*
-   *  Place the current user details and access token in a cookie,
-   *  so the next page we go to knows who are logged in as.
-   */
-  // VVVVV Obsolete, no longer used
-  // function setCookieFromCurrentUser (me) {
-  //   if (me.user) {
-  //     // Create a new object here, but not with all the details
-  //     let cookieObj = {
-  //       user: {
-  //         id: me.user.id,
-  //         fullname: me.user.fullname,
-  //         avatar: me.user.avatar,
-  //         firstname: me.user.firstname,
-  //         lastname: me.user.lastname
-  //       },
-  //       jwt: me.jwt
-  //     }
-  //     console.log('Setting ' + LOGIN_DETAILS_COOKIE_NAME + ' (not sure why)')
-  //     setCookie(LOGIN_DETAILS_COOKIE_NAME, JSON.stringify(cookieObj), LOGIN_TIMEOUT_DAYS)
-  //   } else {
-  //     // Remove the cookie
-  //     console.log('Removing ' + LOGIN_DETAILS_COOKIE_NAME + ' (no current user)')
-  //     setCookie(LOGIN_DETAILS_COOKIE_NAME, null, 0)
-  //   }
-  // }
-
-  /*
-   *    Get the current URL, and remove any LoginService parameters.
-   */
-  // function currentPageURL () {
-  //   let l = window.location
-  //   let s = l.search // ?....&....&....
-  //   if (s !== '') {
-  //     s = '&' + s.substring(1) // Replace initial ? with &
-  //     s = s
-  //       .replace(/&AUTHSERVICE_JWT=[^&]*/, '')
-  //       .replace(/&AUTHSERVICE_ERROR=[^&]*/, '')
-  //     if (s !== '') {
-  //       s = '?' + s.substring(1) // Replace initial & with ?
-  //     }
-  //   }
-  //   let thisPageURL = l.protocol + "//" + l.host + l.pathname + s + l.hash
-  //   return thisPageURL
-  // }
-
-  // Return the URL to jump to the bounce page.
-  // function getBounceURL (me, bouncePageRelativePath, resumeURL) {
-  //   console.log('getBounceURL(' + bouncePageRelativePath + ',' + resumeURL + ')')
-  //   if (!resumeURL) {
-  //     resumeURL = currentPageURL()
-  //   }
-  //   let l = window.location
-  //   let thisPageURL = l.protocol + "//" + l.host // + l.pathname + s + l.hash;
-  //   let url = thisPageURL + bouncePageRelativePath + '?resume=' + encodeURIComponent(resumeURL)
-  //   return url
-  // }
-
 
   function registerWithField (me, fieldname) {
     if (me.registerFields) {
@@ -879,13 +724,6 @@
     }
     return false
   }
-
-  // function endpoint (me) {
-  //   let endpoint = '//' + me.host + ':' + me.port + '/' + me.version + '/' + me.apikey
-  //   console.log('endpoint is ' + endpoint)
-  //   return endpoint
-  // }
-
 </script>
 
 <style scoped lang="scss">
