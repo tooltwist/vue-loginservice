@@ -19,7 +19,6 @@ import { assert, inBrowser } from './misc'
 
 // const debug = process.env.NODE_ENV !== 'production'
 
-const JWT_COOKIE_NAME = 'authservice-jwt'
 const LOGIN_TIMEOUT_DAYS = 3
 const NETWORK_ERROR_MSG = 'Could not contact authentication server'
 
@@ -276,18 +275,18 @@ class LoginService {
         const isFromCookie = false
         if (this.setCurrentUserFromJWT(jwt, isFromCookie)) {
         // Remember this JWT in a cookie for the next page.
-          this.setCookie(JWT_COOKIE_NAME, jwt, LOGIN_TIMEOUT_DAYS)
+          this.setCookie(jwt, LOGIN_TIMEOUT_DAYS)
           return true
         } else {
           // Invalid JWT
-          this.removeCookie(JWT_COOKIE_NAME)
+          this.removeCookie()
           return false
         }
       }
     }
 
     // See if we have a cookie containing the current JWT
-    let jwt = this.getCookie(JWT_COOKIE_NAME)
+    let jwt = this.getCookie()
     if (jwt) {
       if (debug) {
         // console.log("***")
@@ -303,7 +302,7 @@ class LoginService {
         return true
       } else {
         // Dud cookie
-        this.removeCookie(JWT_COOKIE_NAME)
+        this.removeCookie()
         return false
       }
     }
@@ -357,13 +356,13 @@ class LoginService {
             const isFromCookie = false
             if (this.setCurrentUserFromJWT(jwt, isFromCookie)) {
               // Good JWT login
-              this.setCookie(JWT_COOKIE_NAME, jwt, LOGIN_TIMEOUT_DAYS)
+              this.setCookie(jwt, LOGIN_TIMEOUT_DAYS)
               resolve(this.user.id)
               return
             } else {
               console.log('ok 4')
               // Bad JWT
-              this.removeCookie(JWT_COOKIE_NAME)
+              this.removeCookie()
               console.log('ok 5')
               reject('Invalid credentials')
               return
@@ -373,7 +372,7 @@ class LoginService {
             // -> No current user
             const isFromCookie = false
             this.setCurrentUserFromJWT(null, isFromCookie)
-            this.removeCookie(JWT_COOKIE_NAME)
+            this.removeCookie()
             reject(response.data.message)
             return
           }
@@ -383,7 +382,7 @@ class LoginService {
           // => No current user
           const isFromCache = false
           this.setCurrentUserFromJWT(null, isFromCache)
-          this.removeCookie(JWT_COOKIE_NAME)
+          this.removeCookie()
           console.log(`e=`, e);
           console.log(`e.response:`, e.response);
           console.log(`e.status:`, e.status);
@@ -477,7 +476,7 @@ console.log(`url is ${url}`)
       // VVVVV Call the server
       var isFromCache = false
       this.setCurrentUserFromJWT(null, isFromCache)
-      this.removeCookie(JWT_COOKIE_NAME)
+      this.removeCookie()
       resolve(0)
       return
     })// new Promise
@@ -634,10 +633,10 @@ console.log(`url is ${url}`)
               var isFromCookie = false
               if (this.setCurrentUserFromJWT(jwt, isFromCookie)) {
                 // Good registration
-                this.setCookie(JWT_COOKIE_NAME, jwt, LOGIN_TIMEOUT_DAYS)
+                this.setCookie(jwt, LOGIN_TIMEOUT_DAYS)
               } else {
                 // All okay, but no auto-login in from registration
-                this.removeCookie(JWT_COOKIE_NAME)
+                this.removeCookie()
               }
             }
             resolve(jwt)
@@ -964,12 +963,20 @@ console.log(`url is ${url}`)
     })// new Promise
   }
 
+  cookieName () {
+    // const len = this.apikey.length
+    // const shortApikey = this.apikey.substring(len - 10)
+    // return `_loginservice${shortApikey}`
+    return `_loginservice${this.apikey}`
+  }
+
   /*
    *  Cookie handling
+   *  See https://www.w3schools.com/js/js_cookies.asp
    */
-  setCookie (cname, cvalue, exdays) {
-    cname = `${cname}-${this.apikey}`
-    // console.log('setCookie(' + cname + ', ' + cvalue + ')')
+  setCookie (cvalue, exdays) {
+    // console.log('setCookie(' + cvalue + ')')
+    const cname = this.cookieName()
     if (cvalue) {
       console.log('setting cookie (' + cname + ')')
     } else {
@@ -978,13 +985,13 @@ console.log(`url is ${url}`)
     const d = new Date()
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000))
     const expires = 'expires=' + d.toUTCString()
-    const secure = 'secure;samesite=strict'
+    const secure = 'samesite=strict'
     const value = `${cname}=${cvalue};${expires};path=/;${secure};`
     document.cookie = value
   }// setCookie()
 
-  getCookie (cname) {
-    cname = `${cname}-${this.apikey}`
+  getCookie () {
+    const cname = this.cookieName()
     // console.log('getCookie(' + cname + ')')
     var name = cname + "="
     var ca = document.cookie.split(';')
@@ -1002,9 +1009,10 @@ console.log(`url is ${url}`)
     return ""
   }// getCookie()
 
-  removeCookie (cname) {
+  removeCookie () {
+    const cname = this.cookieName()
     // console.log('removeCookie(' + cname + ')')
-    this.setCookie(cname, null, 0)
+    this.setCookie(null, 0)
   }// removeCookie()
 
   isEmailSupported () {

@@ -94,7 +94,7 @@
             a.button.is-primary.is-pulled-right(@click="doLogin", tabindex="33", :class="{ 'is-loading': loginInProgress }")
               | Login
             a(v-if="provideForgottenPassword" href="#" v-on:click="setMode('forgot')")
-              | Forgot Login Info?
+              .my-hover Forgot Login Info?
           // loginWithEmail
 
           //a.button.is-outlined(:size="'sm'", :variant="'link'", v-on:click="setMode('forgot')") Forgot password
@@ -104,9 +104,10 @@
 
       .card-footer(v-if="loginWithEmail && provideRegistration")
         .card-footer-item
-          | {{loginSignupMessage}} &nbsp;&nbsp;
+          | {{loginSignupMessage}}
+          .my-spacer
           a(href="#" v-on:click="setMode('register')")
-            | Sign up
+            .my-hover Sign up
 
 
 
@@ -206,7 +207,7 @@
           | SIGN UP
         span.is-pulled-left
           | Already have an account? &nbsp;
-          a(href="#" v-on:click="setMode('login')") Log in
+          a.my-hover(href="#" v-on:click="setMode('login')") Log in
         br
 
 
@@ -270,7 +271,7 @@
           // https://bootstrap-vue.js.org/docs/components/button
           a.button.is-primary.is-pulled-right(@click="forgot", :class="{ 'is-loading': forgotInProgress }")
             | Send the Email
-          .is-pulled-right &nbsp;&nbsp;
+          .my-spacer.is-pulled-right
           a.button.is-pulled-right(v-on:click="setMode('login')")
             | Cancel
           br
@@ -945,5 +946,14 @@ label {
 .register-form {
   width: 350px;
   word-wrap: break-word;
+}
+.my-spacer {
+  min-width: 8px;
+  min-height: 1px;
+}
+.my-hover:hover {
+  color: #0099ff;
+  color: #0066ff;
+  font-weight: 600;
 }
 </style>
