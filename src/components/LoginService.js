@@ -36,7 +36,7 @@ class LoginService {
   //   })
   // }
 
-  constructor (options) {
+  constructor(options) {
     console.log('LoginService initializing:', options)
     this.host = options.host ? options.host : 'api.authservice.io'
     this.port = options.port ? options.port : 443
@@ -45,7 +45,7 @@ class LoginService {
 
     // Check the UrlPrefix only has a trailing slash
     this.urlPrefix = 'loginservice'
-    if (typeof(options.urlPrefix) !== 'undefined') {
+    if (typeof (options.urlPrefix) !== 'undefined') {
       if (options.debug) console.log(`- will use options.urlPrefix`)
       this.urlPrefix = options.urlPrefix
     }
@@ -62,7 +62,7 @@ class LoginService {
 
     // Determine what protocol to use
     this.protocol = 'http'
-    if (options.protocol && (options.protocol==='http' || options.protocol==='https')) {
+    if (options.protocol && (options.protocol === 'http' || options.protocol === 'https')) {
       this.protocol = options.protocol
     } else {
       // See if we can determine the protocol from the port
@@ -87,7 +87,7 @@ class LoginService {
     this.icons = (pack) => { return this.defaultIconPack === pack }
 
     // See if we are supporting email login (default to yes)
-    if (options.hints && options.hints.login && typeof(options.hints.login.email) !== 'undefined' && !options.hints.login.email) {
+    if (options.hints && options.hints.login && typeof (options.hints.login.email) !== 'undefined' && !options.hints.login.email) {
       console.log(`- Email login is NOT enabled`);
       this.emailSupported = false;
     } else {
@@ -103,7 +103,7 @@ class LoginService {
 
       // See if we have a resumeURL
       if (options.hints.login.resumeURL) {
-        if (typeof(options.hints.login.resumeURL) !== 'string') {
+        if (typeof (options.hints.login.resumeURL) !== 'string') {
           console.error('options.hints.login.resumeURL must be a string')
           console.log(`Will return to current page after login`);
         } else {
@@ -119,7 +119,7 @@ class LoginService {
 
       // See if we have a failURL
       if (options.hints.login.failURL) {
-        if (typeof(options.hints.login.failURL) !== 'string') {
+        if (typeof (options.hints.login.failURL) !== 'string') {
           console.error('options.hints.login.failURL must be a string')
           console.log(`Will return to current page on error`);
         } else {
@@ -143,11 +143,11 @@ class LoginService {
     } else if (options.hints) {
 
       // Perhaps allow registration. Check we have what we need.
-      if (typeof(options.hints.register) !== 'undefined' && !options.hints.register) {
+      if (typeof (options.hints.register) !== 'undefined' && !options.hints.register) {
         // Check for hints.register: false
         console.log(`- Registration is NOT supported`);
         this.registrationSupported = false;
-      } else if (typeof(options.hints.register) !== 'object') {
+      } else if (typeof (options.hints.register) !== 'object') {
         this.registrationSupported = false;
         console.log(`- Registration is NOT supported`);
         console.error('  (options.hints.register must be false, or an object)')
@@ -155,7 +155,7 @@ class LoginService {
         this.registrationSupported = false;
         console.log(`- Registration is NOT supported`);
         console.error('  (options.hints.register.resumeURL must be provided if register is enabled)')
-      } else if (typeof(options.hints.register.resumeURL) !== 'string') {
+      } else if (typeof (options.hints.register.resumeURL) !== 'string') {
         this.registrationSupported = false;
         console.log(`- Registration is NOT supported`);
         console.error('  (options.hints.register.resumeURL must be a string)')
@@ -173,6 +173,18 @@ class LoginService {
           console.log(`- Registration enabled`);
           this.registrationSupported = true;
         }
+
+        // Convert our expiredURL to a full URL (it is usually a relative path)
+        this.registerExpired = '' // Clicking on an expired link gives an HTML return status, rather than forwarding to a page.
+        if (options.hints.register.expiredURL) {
+          this.registerExpired = this.URLOnThisWebsite(options.hints.register.expiredURL)
+          if (this.registerExpired === null) {
+            // The expiredURL is absolute, but not to the current website's domain.
+            console.error(`- Registration will NOT be supported`);
+            console.log(`  (options.hints.register.expiredURL not on this website: ${options.hints.register.expiredURL})`)
+            this.registrationSupported = false;
+          }
+        }
       }
     }
 
@@ -185,10 +197,10 @@ class LoginService {
     } else if (options.hints) {
 
       // Maybe allow forgot password. Check we have what we need.
-      if (typeof(options.hints.forgot) !== 'undefined' && !options.hints.forgot) {
+      if (typeof (options.hints.forgot) !== 'undefined' && !options.hints.forgot) {
         // Forgot password is specifically disallowed (options.hints.forgot is false)
         this.forgottenPasswordSupported = false;
-      } else if (typeof(options.hints.forgot) !== 'object') {
+      } else if (typeof (options.hints.forgot) !== 'object') {
         console.error(`- Forgotten password will NOT be supported`);
         console.log('  (options.hints.forgot must be false, or an object)')
         this.forgottenPasswordSupported = false;
@@ -197,7 +209,7 @@ class LoginService {
         console.log('  (options.hints.forgot.resumeURL must be provided)')
         this.forgottenPasswordSupported = false;
       }
-      else if (typeof(options.hints.forgot.resumeURL) !== 'string') {
+      else if (typeof (options.hints.forgot.resumeURL) !== 'string') {
         console.error(`- Forgotten password will NOT be supported`);
         console.log('  (options.hints.forgot.resumeURL must be a string)')
         this.forgottenPasswordSupported = false;
@@ -214,6 +226,18 @@ class LoginService {
           console.log(`- Forgotten password enabled`);
           this.forgottenPasswordSupported = true;
         }
+
+        // Convert our resumeURL to a full URL (it is usually a relative path)
+        this.forgotExpired = '' // Clicking on an expired link gives an HTML return status, rather than forwarding to a page.
+        if (options.hints.forgot.expiredURL) {
+          this.forgotExpired = this.URLOnThisWebsite(options.hints.forgot.expiredURL)
+          if (this.forgotExpired === null) {
+            // The expiredURL is absolute, but not to the current website's domain.
+            console.error(`- Forgotten password will NOT be supported`);
+            console.log(`  (options.hints.forgot.expiredURL not on this website: ${options.hints.forgot.expiredURL})`)
+            this.forgottenPasswordSupported = false;
+          }
+        }
       }
     }
 
@@ -227,7 +251,7 @@ class LoginService {
   }
 
   // init (app: any /* Vue component instance */) {
-  init (app /* Vue component instance */) {
+  init(app /* Vue component instance */) {
     console.log('&&& MyComponent init')
     // VVVVV This does not seem to be called
     // alert('za init()')
@@ -239,7 +263,7 @@ class LoginService {
   }
 
   // Work out the server's endpoint
-  endpoint () {
+  endpoint() {
     let portStuff = ''
     if (this.protocol === 'http' && this.port !== 80) {
       portStuff = `:${this.port}`
@@ -256,7 +280,7 @@ class LoginService {
   //  See if a JWT for the current user is provided in the URL parameters
   //  or in a cookie for this site.
   //
-  checkInitialLoginStatus (debug) {
+  checkInitialLoginStatus(debug) {
     debug = true
     //console.log('+++++ checkInitialLoginStatus ++++++')
 
@@ -274,7 +298,7 @@ class LoginService {
         }
         const isFromCookie = false
         if (this.setCurrentUserFromJWT(jwt, isFromCookie)) {
-        // Remember this JWT in a cookie for the next page.
+          // Remember this JWT in a cookie for the next page.
           this.setCookie(jwt, LOGIN_TIMEOUT_DAYS)
           return true
         } else {
@@ -323,7 +347,7 @@ class LoginService {
   /*
    *  Log in using username / password.
    */
-  login (email, password) {
+  login(email, password) {
     return new Promise((resolve, reject) => {
       console.log('login(email=' + email + ')')
       // console.log('++++++++++ email=' + email + ', password=' + password)
@@ -405,7 +429,7 @@ class LoginService {
   /*
    *  Kick off the OAuth2 login process.
    */
-  initiateOAuth (me, authority, options/*optional*/) {
+  initiateOAuth(me, authority, options/*optional*/) {
     console.log(`initiateOAuth(me, ${authority})`)
     console.log(`options=`, options)
 
@@ -461,7 +485,7 @@ class LoginService {
     let url = `${this.protocol}://${this.host}:${this.port}/${this.urlPrefix}v2/oauth2/initiate/${this.apikey}/${authority}`
     url += '?success=' + encodeURIComponent(successURL)
     url += '&fail=' + encodeURIComponent(failURL)
-console.log(`url is ${url}`)
+    console.log(`url is ${url}`)
     if (options && options.debug) {
       //alert('Initiate URL:' + url)
     }
@@ -471,7 +495,7 @@ console.log(`url is ${url}`)
   /*
    *  Log out
    */
-  logout () {
+  logout() {
     return new Promise((resolve, reject) => {
       // VVVVV Call the server
       var isFromCache = false
@@ -482,11 +506,11 @@ console.log(`url is ${url}`)
     })// new Promise
   }
 
-  register (options) {
+  register(options) {
     console.log('$authservice.register()', options);
 
     return new Promise((resolve, reject) => {
-      console.log('INside the promise:', reject)
+      console.log('Inside the promise:', reject)
 
       if (!this.registrationSupported) {
         const error = 'Registration is not available.'
@@ -517,7 +541,8 @@ console.log(`url is ${url}`)
       // Prepare the parameters to the API call
       var params = {
         email: options.email,
-        resume: this.registerResume
+        resume: this.registerResume,
+        expired: this.registerExpired
       }
 
       // Maybe check username is valid
@@ -665,7 +690,7 @@ console.log(`url is ${url}`)
     })// new Promise
   }// register()
 
-  forgot (email, options) {
+  forgot(email, options) {
     return new Promise((resolve, reject) => {
       if (!this.forgottenPasswordSupported) {
         const error = 'Password retrieval is not available.'
@@ -681,8 +706,11 @@ console.log(`url is ${url}`)
 
       // Get the URL to a "bounce page". This is a page that sets the JWT
       // cookie from a URL parameter, and then redirects to the 'resume' page.
-      const resume64 = new Buffer(this.forgotResume).toString('base64')
-      const params = QueryString.stringify({ next: resume64 })
+      // const resume64 = new Buffer(this.forgotResume).toString('base64')
+      // const expired64 = new Buffer(this.forgotExpired).toString('base64')
+      const resume64 = btoa(this.forgotResume)
+      const expired64 = btoa(this.forgotExpired)
+      const params = QueryString.stringify({ next: resume64, expired: expired64 })
       const bounceURL = this.URLOnThisWebsite(`/authservice-bounce?${params}`)
       // console.log(`this.forgotResume=${this.forgotResume}`)
       // console.log('bounceURL=', bounceURL)
@@ -734,7 +762,7 @@ console.log(`url is ${url}`)
   //
   //  Get a URL parameter.
   //
-  getURLParameterByName (name) {
+  getURLParameterByName(name) {
     var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search)
     return match && decodeURIComponent(match[1].replace(/\+/g, ' '))
   }
@@ -742,7 +770,7 @@ console.log(`url is ${url}`)
   // Set the current user from a JWT.
   // Does not change cookies.
   // Returns true on success.
-  setCurrentUserFromJWT (jwt, fromCookie) {
+  setCurrentUserFromJWT(jwt, fromCookie) {
     // console.log()
     // console.log('++++++++>  setCurrentUserFromJWT(): jwt=' + jwt)
 
@@ -757,15 +785,15 @@ console.log(`url is ${url}`)
         let decoded = jwtDecode(jwt)
         console.log('decoded=', decoded)
         ident = decoded.identity
-        if (typeof(decoded.nbf) !== 'undefined') {
+        if (typeof (decoded.nbf) !== 'undefined') {
           notBefore = decoded.nbf * 1000 // Convert from Unix to Javascript time (s->ms)
           console.log(`Have not-before time: ${new Date(notBefore)}`);
         }
-        if (typeof(decoded.iat) !== 'undefined') {
+        if (typeof (decoded.iat) !== 'undefined') {
           issuedAt = decoded.iat * 1000 // Convert from Unix to Javascript time (s->ms)
           console.log(`Have issuedAt time: ${new Date(issuedAt)}`);
         }
-        if (typeof(decoded.exp) !== 'undefined') {
+        if (typeof (decoded.exp) !== 'undefined') {
           expiryTime = decoded.exp * 1000 // Convert from Unix to Javascript time (s->ms)
           console.log(`Have expiry time: ${new Date(expiryTime)}`);
         }
@@ -823,7 +851,7 @@ console.log(`url is ${url}`)
         isAdmin: ident.is_admin,
         privileges: ident.privileges,
         timezone: ident.timezone,
-        rights: [ ],
+        rights: [],
         // type: ident.type,
         appdata: ident.appdata
       }
@@ -862,7 +890,7 @@ console.log(`url is ${url}`)
   }// setCurrentUserFromJWT
 
   // See if a username is available
-  usernameAvailability (username) {
+  usernameAvailability(username) {
     // console.log('usernameAvailability()', username)
     return new Promise((resolve, reject) => {
       // Check the length of the username
@@ -913,7 +941,7 @@ console.log(`url is ${url}`)
   }
 
   // See if an email address is already used
-  emailAvailability (email) {
+  emailAvailability(email) {
     console.log('emailAvailability()', email)
     return new Promise((resolve, reject) => {
       // Check the length of the username
@@ -963,7 +991,7 @@ console.log(`url is ${url}`)
     })// new Promise
   }
 
-  cookieName () {
+  cookieName() {
     // const len = this.apikey.length
     // const shortApikey = this.apikey.substring(len - 10)
     // return `_loginservice${shortApikey}`
@@ -974,7 +1002,7 @@ console.log(`url is ${url}`)
    *  Cookie handling
    *  See https://www.w3schools.com/js/js_cookies.asp
    */
-  setCookie (cvalue, exdays) {
+  setCookie(cvalue, exdays) {
     // console.log('setCookie(' + cvalue + ')')
     const cname = this.cookieName()
     if (cvalue) {
@@ -990,7 +1018,7 @@ console.log(`url is ${url}`)
     document.cookie = value
   }// setCookie()
 
-  getCookie () {
+  getCookie() {
     const cname = this.cookieName()
     // console.log('getCookie(' + cname + ')')
     var name = cname + "="
@@ -1009,25 +1037,25 @@ console.log(`url is ${url}`)
     return ""
   }// getCookie()
 
-  removeCookie () {
+  removeCookie() {
     const cname = this.cookieName()
     // console.log('removeCookie(' + cname + ')')
     this.setCookie(null, 0)
   }// removeCookie()
 
-  isEmailSupported () {
+  isEmailSupported() {
     return this.emailSupported
   }
 
-  isRegistrationSupported () {
+  isRegistrationSupported() {
     return this.registrationSupported
   }
 
-  isForgottenPasswordSupported () {
+  isForgottenPasswordSupported() {
     return this.forgottenPasswordSupported
   }
 
-  URLOnThisWebsite (relativeURL) {
+  URLOnThisWebsite(relativeURL) {
     //console.error(`URLOnThisWebsite(${relativeURL})`)
     //console.log(`Relative: ${relativeURL}`)
 
