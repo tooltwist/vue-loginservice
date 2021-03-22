@@ -15,42 +15,42 @@
           form
             div.has-text-centered
               div(v-if="allowFacebookLogin")
-                a.button.social-button.is-primary(v-on:click="facebookLogin()")
+                a.button.social-button.is-primary.loginservice-testhook-login-facebookLogin-button(v-on:click="facebookLogin()")
                   .social-button-icon
                     i.fab.fa-facebook-f.has-text-white(v-if="$authservice.icons('fas')")
                     i.fa.fa-facebook-f.has-text-white(v-else)
                   .social-button-text &nbsp; Login with Facebook
                 br
               div(v-if="allowGoogleLogin")
-                a.button.social-button.is-primary(v-on:click="googleLogin()")
+                a.button.social-button.is-primary.loginservice-testhook-login-googleLogin-button(v-on:click="googleLogin()")
                   .social-button-icon
                     i.fab.fa-google.has-text-white(v-if="$authservice.icons('fas')")
                     i.fa.fa-google.has-text-white(v-else)
                   .social-button-text &nbsp; Login with Google
                 br
               div(v-if="allowGithubLogin")
-                a.button.social-button.is-primary(:variant="'secondary'" v-on:click="githubLogin()" tabindex="38")
+                a.button.social-button.is-primary.loginservice-testhook-login-githubLogin-button(:variant="'secondary'" v-on:click="githubLogin()" tabindex="38")
                   .social-button-icon
                     i.fab.fa-github.has-text-white(v-if="$authservice.icons('fas')")
                     i.fa.fa-github.has-text-white(v-else)
                   .social-button-text &nbsp; Login with Github
                 br
               div(v-if="allowLinkedinLogin")
-                a.button.social-button.is-primary(:variant="'secondary'" v-on:click="linkedinLogin()" tabindex="38")
+                a.button.social-button.is-primary.loginservice-testhook-login-linkedinLogin-button(:variant="'secondary'" v-on:click="linkedinLogin()" tabindex="38")
                   .social-button-icon
                     i.fab.fa-linkedin.has-text-white(v-if="$authservice.icons('fas')")
                     i.fa.fa-linkedin.has-text-white(v-else)
                   .social-button-text &nbsp; Login with LinkedIn
                 br
               div(v-if="allowTwitterLogin")
-                a.button.social-button.is-primary(:variant="'secondary'" v-on:click="twitterLogin()" tabindex="38")
+                a.button.social-button.is-primary.loginservice-testhook-login-twitterLogin-button(:variant="'secondary'" v-on:click="twitterLogin()" tabindex="38")
                   .social-button-icon
                     i.fab.fa-twitter.has-text-white(v-if="$authservice.icons('fas')")
                     i.fa.fa-twitter.has-text-white(v-else)
                   .social-button-text &nbsp; Login with Twitter
                 br
               //div(v-if="allowPropertyMeLogin")
-                a.button.social-button.is-primary(v-on:click="propertyMeLogin()" tabindex="38")
+                a.button.social-button.is-primary.loginservice-testhook-login-propertymeLogin-button(v-on:click="propertyMeLogin()" tabindex="38")
                   .social-button-icon
                     i.fab.fa-home.has-text-white(v-if="$authservice.icons('fas')")
                     i.fa.fa-home.has-text-white(v-else)
@@ -66,14 +66,14 @@
               .field(v-if="loginWithUsername")
                 label.label User Name
                 .control.has-icons-left
-                  input.input(v-model.trim="email" type="text" v-on:keydown="keyhandler" placeholder="Enter your User Name")
+                  input.input.loginservice-testhook-loginWithEmail-username(v-model.trim="email" type="text" v-on:keydown="keyhandler" placeholder="Enter your User Name")
                   span.icon.is-small.is-left
                     i.fas.fa-user(v-if="$authservice.icons('fas')")
                     i.fa.fa-user(v-else)
               .field(v-else)
                 label.label Email
                 .control.has-icons-left
-                  input.input(v-model.trim="email" type="text" v-on:keydown="keyhandler" placeholder="Enter an Account Email")
+                  input.input.loginservice-testhook-loginWithEmail-email(v-model.trim="email" type="text" v-on:keydown="keyhandler" placeholder="Enter an Account Email")
                   span.icon.is-small.is-left
                     i.far.fa-envelope-open(v-if="$authservice.icons('fas')")
                     i.fa.fa-envelope-o(v-else)
@@ -81,7 +81,7 @@
               .field
                 label.label Password
                 .control.has-icons-left
-                  input.input(v-model.trim="password" type="password" v-on:keydown="keyhandler" autocomplete="current-password" placeholder="Enter your Password")
+                  input.input.loginservice-testhook-loginWithEmail-password(v-model.trim="password" type="password" v-on:keydown="keyhandler" autocomplete="current-password" placeholder="Enter your Password")
                   span.icon.is-small.is-left
                     i.fas.fa-lock(v-if="$authservice.icons('fas')")
                     i.fa.fa-lock(v-else)
@@ -92,9 +92,9 @@
                 br
 
 
-              button.button.is-primary.is-pulled-right(@click="doLogin", type="submit", tabindex="33", :class="{ 'is-loading': loginInProgress }")
+              button.button.is-primary.is-pulled-right.loginservice-testhook-loginWithEmail-login-button(@click="doLogin", type="submit", tabindex="33", :class="{ 'is-loading': loginInProgress }")
                 | Login
-              a(v-if="provideForgottenPassword" href="#" v-on:click="setMode('forgot')")
+              a.loginservice-testhook-loginWithEmail-forgot-button(v-if="provideForgottenPassword" href="#" v-on:click="setMode('forgot')")
                 .my-hover Forgot Login Info?
             // loginWithEmail
 
@@ -107,7 +107,7 @@
         .card-footer-item
           | {{loginSignupMessage}}
           .my-spacer
-          a(href="#" v-on:click="setMode('register')")
+          a.loginservice-testhook-loginWithEmail-signup-button(href="#" v-on:click="setMode('register')")
             .my-hover Sign up
 
 
@@ -134,7 +134,7 @@
         .box.is-size-7
           | {{$authservice.user}}
         br
-        a(v-on:click="doSignout()") {{signin ? 'Sign out' : 'Logout'}}
+        a.loginservice-testhook-loggedIn-logout-button(v-on:click="doSignout()") {{signin ? 'Sign out' : 'Logout'}}
 
 
 
@@ -152,7 +152,7 @@
             label.label
               | User Name
             .control.has-icons-left
-              input.input(v-model.trim="registerUsername", type="text", v-on:keydown="keyhandler", v-on:input="validateUsername", :state="registerUsernameState", autocomplete="off", placeholder="Choose a user name")
+              input.input.loginservice-testhook-register-username(v-model.trim="registerUsername", type="text", v-on:keydown="keyhandler", v-on:input="validateUsername", :state="registerUsernameState", autocomplete="off", placeholder="Choose a user name")
               span.icon.is-small.is-left
                 i.fas.fa-user(v-if="$authservice.icons('fas')")
                 i.fa.fa-user(v-else)
@@ -167,7 +167,7 @@
             label.label
               | Email
             .control.has-icons-left
-              input.input(v-model.trim="registerEmail" type="text" v-on:keydown="keyhandler" placeholder="Enter your email address")
+              input.input.loginservice-testhook-register-email(v-model.trim="registerEmail" type="text" v-on:keydown="keyhandler" placeholder="Enter your email address")
               span.icon.is-small.is-left
                 i.far.fa-envelope-open(v-if="$authservice.icons('fas')")
                 i.fa.fa-envelope-o(v-else)
@@ -176,7 +176,7 @@
             label.label
               | Password
             .control.has-icons-left
-              input.input(v-model.trim="registerPassword" type="password" v-on:keydown="keyhandler" autocomplete="off" placeholder="Choose a password")
+              input.input.loginservice-testhook-register-password(v-model.trim="registerPassword" type="password" v-on:keydown="keyhandler" autocomplete="off" placeholder="Choose a password")
               span.icon.is-small.is-left
                 i.fas.fa-lock(v-if="$authservice.icons('fas')")
                 i.fa.fa-lock(v-else)
@@ -185,30 +185,30 @@
             label.label
               | First name
             .control
-              input.input(v-model.trim="registerFirstName" v-on:keydown="keyhandler")
+              input.input.loginservice-testhook-register-firstname(v-model.trim="registerFirstName" v-on:keydown="keyhandler")
 
           .field(v-if="registerRequiresMiddleName")
             label.label
               | Middle name
             .control
-              input.input(v-model.trim="registerMiddleName" v-on:keydown="keyhandler")
+              input.input.loginservice-testhook-register-middlename(v-model.trim="registerMiddleName" v-on:keydown="keyhandler")
 
           .field(v-if="registerRequiresLastName")
             label.label
               | Last name
             .control
-              input.input(v-model.trim="registerLastName" v-on:keydown="keyhandler")
+              input.input.loginservice-testhook-register-lastname(v-model.trim="registerLastName" v-on:keydown="keyhandler")
 
           br
           .notification.is-danger(v-if="registerError")
             | {{registerError}}
             br
 
-          button.button.is-primary.is-pulled-right(type="submit", @click="register", :class="{ 'is-loading': registerInProgress }")
+          button.button.is-primary.is-pulled-right.loginservice-testhook-register-signup-button(type="submit", @click="register", :class="{ 'is-loading': registerInProgress }")
             | SIGN UP
           span.is-pulled-left
             | Already have an account? &nbsp;
-            a.my-hover(href="#" v-on:click="setMode('login')") Log in
+            a.my-hover.loginservice-testhook-register-login-button(href="#" v-on:click="setMode('login')") Log in
           br
 
 
@@ -217,7 +217,7 @@
           | {{termsMessage}}
           .is-small(v-if="termsRoute")
             | &nbsp;&nbsp;(
-            a.is-small(:href="termsRoute") link
+            a.is-small.loginservice-testhook-termsMessage-link-button(:href="termsRoute") link
             | )
 
 
@@ -237,7 +237,7 @@
           // Should just close the dropdown VVVVV
           // a.button(:size="'sm'", :variant="'primary'", v-on:click="setMode('login')") Ok
           br
-          button.button.is-pulled-right.is-primary(type="submit", v-on:click="setMode('login')") OK
+          button.button.is-pulled-right.is-primary.loginservice-testhook-registerAfter-ok-button(type="submit", v-on:click="setMode('login')") OK
           br
           br
     //- .b-form
@@ -262,7 +262,7 @@
               label.label
                 | Email
               .control.has-icons-left
-                input.input(v-model.trim="forgotEmail" type="text" v-on:keydown="keyhandler" placeholder="Enter your Email Address")
+                input.input.loginservice-testhook-forgot-email(v-model.trim="forgotEmail" type="text" v-on:keydown="keyhandler" placeholder="Enter your Email Address")
                 span.icon.is-small.is-left
                   i.far.fa-envelope-open(v-if="$authservice.icons('fas')")
                   i.fa.fa-envelope-o(v-else)
@@ -272,10 +272,10 @@
             br
 
             // https://bootstrap-vue.js.org/docs/components/button
-            button.button.is-primary.is-pulled-right(type="submit", @click="forgot", :class="{ 'is-loading': forgotInProgress }")
+            button.button.is-primary.is-pulled-right.loginservice-testhook-forgot-sendemail-button(type="submit", @click="forgot", :class="{ 'is-loading': forgotInProgress }")
               | Send the Email
             .my-spacer.is-pulled-right
-            button.button.is-pulled-right(v-on:click="setMode('login')")
+            button.button.is-pulled-right.loginservice-testhook-forgot-cancel-button(v-on:click="setMode('login')")
               | Cancel
             br
       br
@@ -295,14 +295,14 @@
           br
 
           // Should just close the dropdown VVVVV
-          button.button.is-primary.is-pulled-right(type="submit", v-on:click="setMode('login')") Ok
+          button.button.is-primary.is-pulled-right.loginservice-testhook-forgotAfter-ok-button(type="submit", v-on:click="setMode('login')") Ok
           br
     //- div
 
   //- b-nav-item-dropdown
 </template>
 
-<script lang="javascript">
+<script>
   import debounce from 'debounce'
   // Icons from vue-awesome
   // See https://github.com/Justineo/vue-awesome
