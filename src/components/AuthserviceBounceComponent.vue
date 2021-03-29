@@ -36,8 +36,11 @@
     },
     created: function () {
       console.log('AuthserviceBounceComponent:created() YARP 000')
-      console.log(`this.$route.query=`, this.$route.query)
-      console.log(`this.$route.params=`, this.$route.params)
+      if (this.$route) {
+        // Only defined if vue-router is in use (e.g. in Nuxt).
+        console.log(`this.$route.query=`, this.$route.query)
+        console.log(`this.$route.params=`, this.$route.params)
+      }
       if (window && window.location) {
         console.log(`window.location=`, window.location)
         console.log(`window.location.search=`, window.location.search)
@@ -64,7 +67,7 @@ console.log(`window.location.search=`, window.location.search)
     let emailToken
 
     const useRoute = true
-    if (useRoute && me.$route.query) {
+    if (useRoute && me.$route && me.$route.query) {
 
       // Use the route's query
       console.log(`Getting params from this.$route.query`);
