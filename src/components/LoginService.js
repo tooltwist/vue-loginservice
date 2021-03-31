@@ -529,7 +529,7 @@ class LoginService {
       switch (typeof (options.email)) {
         case 'string':
           if (options.email.indexOf('@') < 1) {
-            reject('Please enter a valid email address')
+            return reject('Please enter a valid email address')
           }
           break
         case 'undefined':

@@ -1,25 +1,28 @@
 <template lang="pug">
-  .list(v-show="selectStatus == 'loaded'")
-    .columns
-      .column.is-2.is-offset-10
-        .field
-          .control.has-icons-right
-            input.input.is-small.is-rounded(type="text" placeholder="filter users" v-model="filterKey" autocomplete="off")
-            .icon.is-small.is-right
-              i.fa.fa-search
-    table.table.is-fullwidth.is-bordered.is-narrow(:class=" {'is-hoverable': typeof(pathForDetails) === 'string'} ")
-      thead
-        tr
-          th(v-for="key in ourColumns", @click="sortBy(key)", :class="{ active: sortKey == key }")
-            | {{ key | capitalize }}
-            span.arrow(:class="sortOrders[key] > 0 ? 'asc' : 'dsc'")
-      tbody
-        tr(v-for="entry in filteredData" @click="selectUser(entry)")
-          td(v-for="key in ourColumns", :class="classForStatus(entry, key)")
-            //- span(v-if="key === 'icon'" v-html="icon(entry)")
-            .has-text-centered(v-if="key === 'icon'")
-              i.fa.type-icon(:class="iconClass(entry)")
-            span(v-else) {{entry[key]}}
+  .loginservice-user-list
+    .is-loaded(v-if="selectStatus == 'loaded'")
+      .columns
+        .column.is-2.is-offset-10
+          .field
+            .control.has-icons-right
+              input.input.is-small.is-rounded.loginservice-users-filter(type="text", placeholder="filter users", v-model="filterKey", autocomplete="off")
+              .icon.is-small.is-right
+                i.fa.fa-search
+      table.table.is-fullwidth.is-bordered.is-narrow(:class=" {'is-hoverable': typeof(pathForDetails) === 'string'} ")
+        thead
+          tr
+            th(v-for="key in ourColumns", @click="sortBy(key)", :class="headingClass(key)")
+              | {{ key | capitalize }}
+              span.arrow(:class="sortOrders[key] > 0 ? 'asc' : 'dsc'")
+        tbody
+          tr(v-for="entry in filteredData" @click="selectUser(entry)")
+            td(v-for="key in ourColumns", :class="classForStatus(entry, key)")
+              //- span(v-if="key === 'icon'" v-html="icon(entry)")
+              .has-text-centered(v-if="key === 'icon'")
+                i.fa.type-icon(:class="iconClass(entry)")
+              span(v-else, :class="columnClass(key)") {{entry[key]}}
+    .is-not-loaded(v-else)
+
 </template>
 
 <script>
@@ -127,7 +130,11 @@
             // Jump to the user details page
             // See http://router.vuejs.org/en/essentials/navigation.html
             // this.$router.push({ path: `/user-details/${user.tenant}/${user.id}` })
-            this.$router.push({ path: path })
+            if (this.$router) {
+              this.$router.push({ path: path })
+            } else {
+              window.location.href = path
+            }
           } else {
             console.error(`path-for-details must include ${userIdMarker}. e.g. /user-details/${tenantMarker}/${userIdMarker}`)
           }
@@ -140,7 +147,7 @@
           return `status-${user.status}`
         }
       },
-      iconClass: function(user, key) {
+      iconClass: function(user) {
         let cls
         if (user.is_admin) {
           cls = 'fa-bolt'
@@ -156,6 +163,14 @@
           }
         }
         return cls
+      },
+      headingClass: function(key) {
+        const obj = { active: this.sortKey == key }
+        obj[`loginservice-hdr-${key}`] = true
+        return obj
+      },
+      columnClass: function(key) {
+        return `loginservice-${key}`
       }
     },
     created () {
@@ -164,8 +179,8 @@
         console.log('authservice-user-list has data:', this.data.length)
       } else if (this.tenant) {
 
-        let zApikey = 'API17AATGGPTFSP2LBR4Q9IYCT1WA'
-        let zServerSecret = 'tts129rzzr2d85kw4q8apnrkpv9mdmdudsmu0zx54b9d39ske0syvm'
+        // let zApikey = 'API17AATGGPTFSP2LBR4Q9IYCT1WA'
+        // let zServerSecret = 'tts129rzzr2d85kw4q8apnrkpv9mdmdudsmu0zx54b9d39ske0syvm'
 
         // Select the users for this username/app (i.e. tenant).
         console.log('authservice-user-list is selecting users')
@@ -205,6 +220,10 @@
 </script>
 
 <style scoped lang="scss">
+
+  .loginservice-user-list {
+
+  }
 
   //$default-color:
   $dim-color: #f4f7f9;

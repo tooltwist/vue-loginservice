@@ -9,13 +9,11 @@
   div(v-else)
     .columns
       .column.is-3.has-text-centered
-
         // Show icon for the OAuth2 Authority
 
         // Font-awesome v5
         //.authservice-logo(v-if="$authservice.options.defaultIconPack==='fas'")
         .authservice-logo(v-if="$authservice.icons('fas')")
-
           i.far.fa-envelope-open(v-if="user.authority === 'email'")
           i.fab.fa-facebook-square(v-else-if="user.authority === 'facebook'")
           i.fab.fa-github(v-else-if="user.authority === 'github'")
@@ -24,7 +22,6 @@
           i.fab.fa-twitter(v-else-if="user.authority === 'twitter'")
 
         .authservice-logo(v-else)
-
           // Font-awesome v4
           i.fa.fa-envelope-o(v-if="user.authority === 'email'")
           i.fa.fa-facebook-official(v-else-if="user.authority === 'facebook'")
@@ -40,7 +37,7 @@
 
         //br
         //br
-        h3.is-5 {{loginDescription}}
+        h3.is-5 {{ loginDescription }}
         span(v-show="user.is_admin")
           | [administrator]
 
@@ -50,15 +47,18 @@
         br
         br
         br
-        button.button.is-info(v-if="mayUpdateUser" v-on:click="onSubmit") Update
+        button.button.is-info(v-if="mayUpdateUser", v-on:click="onSubmit") Update
         div(v-if="mayChangePassword")
           br
           br
-          authservice-change-password(v-if="mayChangePassword", :user="user", :demo="demo", :email-token="emailToken")
-
+          authservice-change-password(
+            v-if="mayChangePassword",
+            :user="user",
+            :demo="demo",
+            :email-token="emailToken"
+          )
 
       .column.is-8
-
         // Note:  What is this autocomplete="foo" nonsense?
         // Chrome now gives an error message when you use autocomplete="off".
         // Autofill functionality allows all the fields in a form to be inserted
@@ -74,33 +74,69 @@
           .field(v-if="user.authority === 'email'")
             .label Username
             .control
-              | {{user.username}}
+              | {{ user.username }}
           .field
             .columns
               .column.is-6
                 .label Tenant
                 .control
-                  input.input(type="text" placeholder="First name" v-model="user.tenant" autocomplete="foo" disabled)
+                  input.input(
+                    type="text",
+                    placeholder="First name",
+                    v-model="user.tenant",
+                    autocomplete="foo",
+                    disabled
+                  )
               .column.is-6
                 .label Email
                 .control
-                  input.input(type="text" placeholder="First name" v-model="user.email" autocomplete="foo" disabled)
+                  input.input(
+                    type="text",
+                    placeholder="First name",
+                    v-model="user.email",
+                    autocomplete="foo",
+                    disabled
+                  )
           .field
             .label Name
             .columns
               .column.is-4
                 .control
-                  input.input(type="text" placeholder="First name" v-model="user.first_name" autocomplete="foo", :disabled="!mayUpdateName")
+                  input.input(
+                    type="text",
+                    placeholder="First name",
+                    v-model="user.first_name",
+                    autocomplete="foo",
+                    :disabled="!mayUpdateName"
+                  )
               .column.is-4
                 .control
-                  input.input(type="text" placeholder="Middle name" v-model="user.middle_name" autocomplete="foo", :disabled="!mayUpdateName")
+                  input.input(
+                    type="text",
+                    placeholder="Middle name",
+                    v-model="user.middle_name",
+                    autocomplete="foo",
+                    :disabled="!mayUpdateName"
+                  )
               .column.is-4
                 .control
-                  input.input(type="text" placeholder="Last name" v-model="user.last_name" autocomplete="foo", :disabled="!mayUpdateName")
+                  input.input(
+                    type="text",
+                    placeholder="Last name",
+                    v-model="user.last_name",
+                    autocomplete="foo",
+                    :disabled="!mayUpdateName"
+                  )
           .field
             .label Full Name
             .control
-              input.input(type="text" placeholder="Fullname" v-model="user.full_name" autocomplete="foo", :disabled="!mayUpdateName")
+              input.input(
+                type="text",
+                placeholder="Fullname",
+                v-model="user.full_name",
+                autocomplete="foo",
+                :disabled="!mayUpdateName"
+              )
 
           //- .field
           //-   .label Client Id
@@ -112,7 +148,9 @@
             br
             .has-text-centered
               h2.title.is-3 Account Status
-            .notification.is-warning(v-if="mayUpdateStatus && editingOwnDetails")
+            .notification.is-warning(
+              v-if="mayUpdateStatus && editingOwnDetails"
+            )
               p WARNING!
                 br
                 | Updating these fields may remove your ability to log in or act as administrator.
@@ -123,7 +161,10 @@
                   .label User Status
                   .control
                     .select
-                      select.input(:disabled="!mayUpdateStatus" v-model="user.status")
+                      select.input(
+                        :disabled="!mayUpdateStatus",
+                        v-model="user.status"
+                      )
                         option(value="active") Active
                         option(value="blacklisted") Blacklisted
                         option(value="closed") Closed
@@ -134,7 +175,10 @@
                   .label Email Address Status
                   .control
                     .select
-                      select.input(:disabled="!mayUpdateStatus" v-model="user.email_status")
+                      select.input(
+                        :disabled="!mayUpdateStatus",
+                        v-model="user.email_status"
+                      )
                         option(value="blacklisted") Blacklisted
                         option(value="disabled") Disabled
                         option(value="unverified") Unverified
@@ -144,7 +188,10 @@
                   .label Is Administrator
                   .control
                     .select
-                      select.input(:disabled="!mayUpdateStatus" v-model="user.is_admin")
+                      select.input(
+                        :disabled="!mayUpdateStatus",
+                        v-model="user.is_admin"
+                      )
                         option(:value="false") No
                         option(:value="true") Yes
 
@@ -152,7 +199,6 @@
                     //-   select.input(:disabled="!mayUpdateStatus" v-model="user.isAdministrator")
                     //-     option(value="yes") Yes
                     //-     option(value="no") No
-
 
           //| {{$authservice.user.entityType}}
           //br
@@ -171,23 +217,43 @@
             .field
               .label Media Page
               .control
-                a(:href="user.media_page" target="_blank") {{user.media_page}}
+                a(:href="user.media_page", target="_blank") {{ user.media_page }}
             .field
               .label Languages
               .control
-                input.input(type="text" v-model="user.languages" autocomplete="foo" disabled)
+                input.input(
+                  type="text",
+                  v-model="user.languages",
+                  autocomplete="foo",
+                  disabled
+                )
             .field
               .label Locale
               .control
-                input.input(type="text" v-model="user.locale" autocomplete="foo" disabled)
+                input.input(
+                  type="text",
+                  v-model="user.locale",
+                  autocomplete="foo",
+                  disabled
+                )
             .field
               .label Location
               .control
-                input.input(type="text" v-model="user.location" autocomplete="foo" disabled)
+                input.input(
+                  type="text",
+                  v-model="user.location",
+                  autocomplete="foo",
+                  disabled
+                )
             .field
               .label Timezone
               .control
-                input.input(type="text" v-model="user.timezone" autocomplete="foo" disabled)
+                input.input(
+                  type="text",
+                  v-model="user.timezone",
+                  autocomplete="foo",
+                  disabled
+                )
 
           div(v-if="showPermissionFields")
             br
@@ -199,15 +265,12 @@
             .field
               .label Rights
               .control
-                | &nbsp;&nbsp;&nbsp; {{user.rights}}
+                | &nbsp;&nbsp;&nbsp; {{ user.rights }}
             .field
               .label Privileges
               .control
-                | &nbsp;&nbsp;&nbsp; {{user.privileges}}
+                | &nbsp;&nbsp;&nbsp; {{ user.privileges }}
         //- form
-
-
-
 
         //br
         //hr
@@ -223,32 +286,54 @@
         br
         .has-text-right.is-size-7
           | [ID={{ user.id }}]
+    .is-size-6(v-if="debug")
+      hr
+      | haveAdminPrivileges: {{haveAdminPrivileges}}
+      br
+      | mayUpdateName: {{mayUpdateName}}
+      br
+      | mayUpdateUser: {{mayUpdateUser}}
+      br
+      | mayUpdateStatus: {{mayUpdateStatus}}
+      hr
+      | USER BEING EDITED:
+      br
+      | {{user}}
+      hr
+      | CURRENTLY LOGGED IN USER
+      br
+      | {{$loginservice.user}}
+      hr
     //- .columns
   //- !selectError
 </template>
 
 <script>
-import axios from 'axios'
-import axiosError from '../axiosError.js'
-import AuthserviceChangePassword from './AuthserviceChangePassword'
+import axios from "axios";
+import axiosError from "../axiosError.js";
+import AuthserviceChangePassword from "./AuthserviceChangePassword";
 
 export default {
-  name: 'authservice-profile',
+  name: "authservice-profile",
   components: {
-    AuthserviceChangePassword
+    AuthserviceChangePassword,
   },
   props: {
     // Key of user
     tenant: {
       type: String,
-      required: true
+      required: true,
     },
     userId: {
       type: String,
-      required: true
+      required: true,
     },
 
     // Display options
+    debug: {
+      type: Boolean,
+      default: false,
+    },
     demo: {
       type: Boolean | String,
       default: false,
@@ -266,102 +351,99 @@ export default {
       default: false,
     },
   },
-  data () {
+  data() {
     return {
-      user: { },
+      user: {},
 
       selectError: false, // Error calling the API to get user details
-    }
+    };
   },
   computed: {
     loginDescription: function () {
       if (this.user && this.user.authority) {
-        if (this.user.authority === 'email') {
+        if (this.user.authority === "email") {
           // Regular login
           if (this.user.Username) {
-            return `Username / Password`
+            return `Username / Password`;
           } else {
-            return `Email / Password`
+            return `Email / Password`;
           }
         } else {
           // Social media login
-          let part1 = this.user.authority.substring(0, 1).toUpperCase()
-          let part2 = this.user.authority.substring(1)
-          return `Login using ${part1}${part2}`
+          let part1 = this.user.authority.substring(0, 1).toUpperCase();
+          let part2 = this.user.authority.substring(1);
+          return `Login using ${part1}${part2}`;
         }
       }
-      return null
+      return null;
     },
 
     // Are we using 'username' to login?
     useUsername: function () {
-      return false
+      return false;
     },
 
     // Can we change the name fields
     mayUpdateName: function () {
       return (
-        (this.editingOwnDetails || this.haveAdminPrivileges)
-        &&
-        (this.user && this.user.authority === 'email')
+        (this.editingOwnDetails || this.haveAdminPrivileges) &&
+        this.user &&
+        this.user.authority === "email"
       );
     },
 
     mayUpdateUser: function () {
-      return (this.editingOwnDetails || this.haveAdminPrivileges)
+      return this.editingOwnDetails || this.haveAdminPrivileges;
     },
 
     mayUpdateStatus: function () {
-      return this.haveAdminPrivileges
+      return this.haveAdminPrivileges;
     },
 
     // Are we in demo mode?
     isDemo: function () {
       return (
-        (typeof(this.demo) == 'boolean' && this.demo)
-        ||
-        (typeof(this.demo) == 'string' && this.demo !== '')
-      )
+        (typeof this.demo == "boolean" && this.demo) ||
+        (typeof this.demo == "string" && this.demo !== "")
+      );
     },
 
     // Show the status fields?
     showStatusFields: function () {
-      console.log('this.showStatus', this.showStatus)
-      console.log('this.showStatus', typeof(this.showStatus))
+      console.log("this.showStatus", this.showStatus);
+      console.log("this.showStatus", typeof this.showStatus);
       return (
-        (typeof(this.showStatus) == 'boolean' && this.showStatus)
-        ||
-        (typeof(this.showStatus) == 'string' && this.showStatus !== 'false')
-      )
+        (typeof this.showStatus == "boolean" && this.showStatus) ||
+        (typeof this.showStatus == "string" && this.showStatus !== "false")
+      );
     },
 
     showSocialMediaFields: function () {
-      return this.user && this.user.authority !== 'email'
+      return this.user && this.user.authority !== "email";
     },
 
     // Show Permission fields
     showPermissionFields: function () {
-      console.log('this.showPermissions', this.showPermissions)
-      console.log('this.showPermissions', typeof(this.showPermissions))
+      console.log("this.showPermissions", this.showPermissions);
+      console.log("this.showPermissions", typeof this.showPermissions);
 
       return (
-        (typeof(this.showPermissions) == 'boolean' && this.showPermissions)
-        ||
-        (typeof(this.showPermissions) == 'string' && this.showPermissions !== 'false')
-      )
+        (typeof this.showPermissions == "boolean" && this.showPermissions) ||
+        (typeof this.showPermissions == "string" &&
+          this.showPermissions !== "false")
+      );
     },
 
     // See if the current user is editing their own record
     editingOwnDetails: function () {
       if (
-        this.$authservice.user.tenant === this.user.tenant
-        &&
+        this.$authservice.user.tenant === this.user.tenant &&
         this.$authservice.user.id === this.user.id
       ) {
-        console.log(`- User updating themself`)
-        return true
+        console.log(`- User updating themself`);
+        return true;
       }
-      return false
+      return false;
     },
 
     // Return true if this user has some sort of admin privileges
@@ -369,28 +451,32 @@ export default {
     // Note: these rules only effect the UI - the real check is on
     // the server in ApplicationAccess.go
     haveAdminPrivileges: function () {
-      console.log(`haveAdminPrivileges()`)
-      console.log(`$authservice.user=`, this.$authservice.user)
-      console.log(`this.user=`, this.user)
+      console.log(`haveAdminPrivileges()`);
+      console.log(`$authservice.user=`, this.$authservice.user);
+      console.log(`this.user=`, this.user);
       // console.log(`$route.params.username=`, this.$route.params.username)
       // console.log(`$route.params.appname=`, this.$route.params.appname)
       //return false
 
       // See if this is a user logged into A3 (Tooltwist site)
-      if (this.$authservice.user.tenant === 'genesis/a3') {
+      if (this.$authservice.user.tenant === "genesis/a3") {
 
-	//  1. Logged into A3 and an A3 admin user.
+        //  1. Logged into A3 and an A3 admin user.
         //  (A genesis/a3 admin user may access anything)
         if (this.$authservice.user.isAdmin) {
-          console.log(`- A3 admin`)
-          return true
+          console.log(`- A3 admin`);
+          return true;
         }
 
         //  2. Logged into A3 and a user looking at one of their own apps.
         //  (A user has full access to users in their own applications)
-        if (this.$route.params.username === this.$authservice.user.username) {
-          console.log(`- Owner of the application`)
-          return true
+        if (
+          // this.$route &&
+          // this.$route.params.username === this.$authservice.user.username
+          this.user.tenant.startsWith(`${this.$authservice.user.username}/`)
+        ) {
+          console.log(`- Owner of the application`);
+          return true;
         }
       }
 
@@ -398,11 +484,14 @@ export default {
       //    user we are looking at is in that same application.
       //    (An admin user has full access to users in the application they are logged into)
       if (
+        // this.$authservice.user.isAdmin &&
+        // this.$route &&
+        // this.$authservice.user.tenant === `${this.$route.params.username}/${this.$route.params.appname}`
         this.$authservice.user.isAdmin &&
-        this.$authservice.user.tenant === `${this.$route.params.username}/${this.$route.params.appname}`
+        this.user.tenant === this.$authservice.user.tenant
       ) {
-        console.log(`- Current application's admin`)
-        return true
+        console.log(`- Current application's admin`);
+        return true;
       }
 
       //  4. A user who is a member of an organisation has access to all
@@ -410,137 +499,173 @@ export default {
       //    to their member record.
       //  5. A user granted access to an application has access according
       //     to the grant definition.
-      return false
+      return false;
     },
 
     // Can we change the user's password?
     mayChangePassword: function () {
-      console.log('this.changePassword', this.changePassword)
-      console.log('this.changePassword', typeof(this.changePassword))
+      console.log("this.changePassword", this.changePassword);
+      console.log("this.changePassword", typeof this.changePassword);
 
       // Do we even want to change password?
       if (
-        (typeof(this.changePassword) == 'boolean' && !this.changePassword)
-        ||
-        (typeof(this.changePassword) == 'string' && this.changePassword === 'false')
+        (typeof this.changePassword == "boolean" && !this.changePassword) ||
+        (typeof this.changePassword == "string" &&
+          this.changePassword === "false")
       ) {
-        return false
+        return false;
       }
 
       // Are we allowed to change the password?
-      if (this.user && this.user.authority === 'email') {
-        return (this.editingOwnDetails || this.haveAdminPrivileges)
+      if (this.user && this.user.authority === "email") {
+        return this.editingOwnDetails || this.haveAdminPrivileges;
       }
-      return false
+      return false;
     },
 
     emailToken: function () {
-
       if (this.editingOwnDetails) {
         // If we came into the page with a AUTHSERVICE_EMAIL_TOKEN parameter in
         // the URL, then jump straight into the change password screen.
-        let token = this.$route.query['AUTHSERVICE_EMAIL_TOKEN']
-        return token
+        let token
+        if (this.$route) {
+
+          // Using vue-router (e.g. in Nuxt)
+          token = this.$route.query["AUTHSERVICE_EMAIL_TOKEN"];
+        } else {
+
+          // Get token from window object's query parameters.
+          const urlParams = new URLSearchParams(window.location.search);
+          const myParam = urlParams.get('AUTHSERVICE_EMAIL_TOKEN');
+        }
+        return token;
       }
-      return null
-    }
+      return null;
+    },
   },
   methods: {
-
     // Load details of the specified user from the server.
-    loadUserDetails () {
-      console.log( `AuthserviceUserDetails.loadUserDetails()`)
-      const url = `${this.$authservice.endpoint()}/${this.tenant}/user/${this.userId}`
-      console.log(`url is ${url}`)
+    loadUserDetails() {
+      console.log(`AuthserviceUserDetails.loadUserDetails()`);
+      const url = `${this.$authservice.endpoint()}/${this.tenant}/user/${
+        this.userId
+      }`;
+      console.log(`url is ${url}`);
       let params = {
-        method: 'get',
+        method: "get",
         url,
         headers: {
-          'Authorization': 'Bearer ' + this.$authservice.jwt,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      }
+          Authorization: "Bearer " + this.$authservice.jwt,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      };
       axios(params)
-        .then(response => {
+        .then((response) => {
           // JSON responses are automatically parsed.
           if (response && response.data && response.data.length > 0) {
-            console.log(`RESPONSE IS`, response.data)
-            this.user = response.data[0]
+            console.log(`RESPONSE IS`, response.data);
+            this.user = response.data[0];
           } else {
-            console.error(`User ${this.tenant}/${this.userId} not found`)
-            this.selectError = true
+            console.error(`User ${this.tenant}/${this.userId} not found`);
+            this.selectError = true;
           }
         })
-        .catch(e => {
-          axiosError(this, url, params, e)
-          this.selectError = true
-        })
+        .catch((e) => {
+          axiosError(this, url, params, e);
+          this.selectError = true;
+        });
     },
-    onSubmit (evt) {
+    onSubmit(evt) {
       if (this.isDemo) {
-        this.modalIsActive = false
-        this.$toast.open({ message: `Password not updated (demo mode)`, type: 'is-info', duration: 4000 })
-        return
+        this.modalIsActive = false;
+        if (this.$toast && this.$toast.open) {
+          this.$toast.open({
+            message: `Password not updated (demo mode)`,
+            type: "is-info",
+            duration: 4000,
+          });
+        } else {
+            alert(`Password not updated (demo mode)`)
+        }
+        return;
       }
 
       // Save our copy of the application, and reclone it again.
-      evt.preventDefault()
+      evt.preventDefault();
 
       let data = {
         tenant: this.tenant,
         id: this.userId,
-      }
+      };
       if (this.mayUpdateName) {
-        data.first_name = this.user.first_name
-        data.middle_name = this.user.middle_name
-        data.last_name = this.user.last_name
-        data.full_name = this.user.full_name
+        data.first_name = this.user.first_name;
+        data.middle_name = this.user.middle_name;
+        data.last_name = this.user.last_name;
+        data.full_name = this.user.full_name;
       }
       if (this.mayUpdateStatus) {
-        data.status = this.user.status
-        data.email_status = this.user.email_status
-        data.is_admin = this.user.is_admin
+        data.status = this.user.status;
+        data.email_status = this.user.email_status;
+        data.is_admin = this.user.is_admin;
       }
 
       // Save the user record
-      console.log('Saving:', this.user)
+      console.log("Saving:", this.user);
       // console.log(`email status is ${this.user.email_status}`)
-      let url = `${this.$authservice.endpoint()}/user`
+      let url = `${this.$authservice.endpoint()}/user`;
       let params = {
-        method: 'post',
+        method: "post",
         url,
         headers: {
-          'Authorization': 'Bearer ' + this.$authservice.jwt,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Authorization: "Bearer " + this.$authservice.jwt,
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
-        data: data
-      }
+        data: data,
+      };
       axios(params)
-        .then(response => {
+        .then((response) => {
           // JSON responses are automatically parsed.
-          console.log('ok. response=', response)
-          if (response.data && response.data.status === 'ok') {
+          console.log("ok. response=", response);
+          if (response.data && response.data.status === "ok") {
             // All okay
-            this.$toast.open({ message: `Changes saved`, type: 'is-success', duration: 4000 })
-            this.loadUserDetails()
+            if (this.$toast && this.$toast.open) {
+              this.$toast.open({
+                message: `Changes saved`,
+                type: "is-success",
+                duration: 4000,
+              });
+            } else {
+              alert('Changes saved')
+            }
+            this.loadUserDetails();
           } else {
             // Not the expected result
-            console.log('Unexpected result while updating user record. response=', response)
-            this.$toast.open({ message: `Error: User details might not have been updated`, type: 'is-danger' })
+            console.log(
+              "Unexpected result while updating user record. response=",
+              response
+            );
+            if (this.$toast && this.$toast.open) {
+              this.$toast.open({
+                message: `Error: User details might not have been updated`,
+                type: "is-danger",
+              });
+            } else {
+              alert(`Error: User details might not have been updated`)
+            }
           }
         })
-        .catch(e => {
-          console.log('error. e=', e)
-          axiosError(this, url, params, e)
-        })
-    }
+        .catch((e) => {
+          console.log("error. e=", e);
+          axiosError(this, url, params, e);
+        });
+    },
   },
-  created () {
-    this.loadUserDetails()
-  }
-}
+  created() {
+    this.loadUserDetails();
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

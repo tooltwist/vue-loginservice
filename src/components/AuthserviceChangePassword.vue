@@ -19,20 +19,20 @@
           .field(v-if="requireOldPassword")
             .label Existing password
             .control
-              <input class="input" type="password" placeholder="Existing password" v-model="oldPassword" autocomplete="off">
+              input.input.loginservice-testhook-changePassword-existing(type="password", placeholder="Existing password", v-model="oldPassword", autocomplete="off")
           .field
             .label New password
             .control
-              <input class="input" type="password" placeholder="Please enter a password" v-model="newPassword" autocomplete="off">
+              input.input.loginservice-testhook-changePassword-new(type="password", placeholder="Please enter a password", v-model="newPassword", autocomplete="off")
           .field
             .label Confirm
             .control
-              <input class="input" type="password" placeholder="Enter the same password again" v-model="newPasswordConfirm" autocomplete="off">
+              input.input.loginservice-testhook-changePassword-confirm(type="password", placeholder="Enter the same password again", v-model="newPasswordConfirm", autocomplete="off")
           .field
             .label.passwordError {{newPasswordError}}
       footer.modal-card-foot
-        button.button.is-success(@click="updatePassword", :disabled="newPasswordError !== null") Update password
-        button.button(@click="togglePasswordModal") Cancel
+        button.button.is-success.loginservice-testhook-changePassword-update-button(@click="updatePassword", :disabled="newPasswordError !== null") Update password
+        button.button.loginservice-testhook-changePassword-cancel-button(@click="togglePasswordModal") Cancel
 
 </template>
 
