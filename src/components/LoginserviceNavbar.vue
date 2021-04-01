@@ -177,7 +177,7 @@
    *  @author Philip Callender
    */
   export default {
-    name: 'authservice-navbar',
+    name: 'LoginserviceNavbar',
     components: {
       Icon
     },

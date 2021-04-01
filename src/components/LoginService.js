@@ -15,7 +15,9 @@ import axios from 'axios'
 import QueryString from 'query-string'
 import { assert, inBrowser } from './misc'
 
-
+// See https://fsymbols.com/signs/tick/
+const CHECKBOX_YES = '\u2713'
+const CHECKBOX_NO = '\u2717'
 
 // const debug = process.env.NODE_ENV !== 'production'
 
@@ -37,7 +39,8 @@ class LoginService {
   // }
 
   constructor(options) {
-    console.log('LoginService initializing:', options)
+    console.log('** initializing vue-loginservice')
+    console.log(options)
     this.host = options.host ? options.host : 'api.authservice.io'
     this.port = options.port ? options.port : 443
     this.version = options.version ? options.version : 'v2'
@@ -58,7 +61,7 @@ class LoginService {
     if (this.urlPrefix) {
       this.urlPrefix += '/'
     }
-    console.log(`- urlPrefix: ${this.urlPrefix}`)
+    // console.log(`UrlPrefix: ${this.urlPrefix}`)
 
     // Determine what protocol to use
     this.protocol = 'http'
@@ -88,11 +91,20 @@ class LoginService {
 
     // See if we are supporting email login (default to yes)
     if (options.hints && options.hints.login && typeof (options.hints.login.email) !== 'undefined' && !options.hints.login.email) {
-      console.log(`- Email login is NOT enabled`);
+      console.log(`${CHECKBOX_NO} Email login`);
       this.emailSupported = false;
     } else {
-      console.log(`- Email login IS enabled`);
+      console.log(`${CHECKBOX_YES} Email login`);
       this.emailSupported = true;
+    }
+
+    // See if we are supporting usernames
+    if (options.hints && typeof (options.hints.usernames) !== 'undefined' && !options.hints.usernames) {
+      console.log(`${CHECKBOX_NO} User names (use email as identifier)`);
+      this.usernamesSupported = false;
+    } else {
+      console.log(`${CHECKBOX_YES} Support user names`);
+      this.usernamesSupported = true;
     }
 
     // See if we have URLs specified for successful login and failure.
@@ -137,7 +149,7 @@ class LoginService {
     // See if registration is allowed
     if (!this.emailSupported) {
       // login.email: false
-      console.log(`- Registration is NOT supported`);
+      console.log(`${CHECKBOX_NO} Registration`);
       console.log(`  (because email is not supported)`)
       this.registrationSupported = false;
     } else if (options.hints) {
@@ -145,19 +157,19 @@ class LoginService {
       // Perhaps allow registration. Check we have what we need.
       if (typeof (options.hints.register) !== 'undefined' && !options.hints.register) {
         // Check for hints.register: false
-        console.log(`- Registration is NOT supported`);
+        console.log(`${CHECKBOX_NO} Registration`);
         this.registrationSupported = false;
       } else if (typeof (options.hints.register) !== 'object') {
         this.registrationSupported = false;
-        console.log(`- Registration is NOT supported`);
+        console.log(`${CHECKBOX_NO} Registration`);
         console.error('  (options.hints.register must be false, or an object)')
       } else if (!options.hints.register.resumeURL) {
         this.registrationSupported = false;
-        console.log(`- Registration is NOT supported`);
+        console.log(`${CHECKBOX_NO} Registration`);
         console.error('  (options.hints.register.resumeURL must be provided if register is enabled)')
       } else if (typeof (options.hints.register.resumeURL) !== 'string') {
         this.registrationSupported = false;
-        console.log(`- Registration is NOT supported`);
+        console.log(`${CHECKBOX_NO} Registration`);
         console.error('  (options.hints.register.resumeURL must be a string)')
       } else {
 
@@ -165,12 +177,12 @@ class LoginService {
         this.registerResume = this.URLOnThisWebsite(options.hints.register.resumeURL)
         if (this.registerResume === null) {
           // The resumeURL is absolute, but not to the current website's domain.
-          console.error(`- Registration will NOT be supported`);
+          console.error(`${CHECKBOX_NO} Registration`);
           console.log(`  (options.hints.register.resumeURL not on this website: ${options.hints.register.resumeURL})`)
           this.registrationSupported = false;
         } else {
           // All good for registration
-          console.log(`- Registration enabled`);
+          console.log(`${CHECKBOX_YES} Registration`);
           this.registrationSupported = true;
         }
 
@@ -180,7 +192,7 @@ class LoginService {
           this.registerExpired = this.URLOnThisWebsite(options.hints.register.expiredURL)
           if (this.registerExpired === null) {
             // The expiredURL is absolute, but not to the current website's domain.
-            console.error(`- Registration will NOT be supported`);
+            console.error(`${CHECKBOX_YES} Registration`);
             console.log(`  (options.hints.register.expiredURL not on this website: ${options.hints.register.expiredURL})`)
             this.registrationSupported = false;
           }
@@ -191,7 +203,7 @@ class LoginService {
     // See if forgotten password is allowed
     if (!this.emailSupported) {
       // Email is not used (options.login.email is false)
-      console.error(`- Forgotten password will NOT be supported`);
+      console.error(`${CHECKBOX_NO} Password retrieval`);
       console.log(`  (because email is not supported)`)
       this.forgottenPasswordSupported = false;
     } else if (options.hints) {
@@ -201,16 +213,16 @@ class LoginService {
         // Forgot password is specifically disallowed (options.hints.forgot is false)
         this.forgottenPasswordSupported = false;
       } else if (typeof (options.hints.forgot) !== 'object') {
-        console.error(`- Forgotten password will NOT be supported`);
+        console.error(`${CHECKBOX_NO} Password retrieval`);
         console.log('  (options.hints.forgot must be false, or an object)')
         this.forgottenPasswordSupported = false;
       } else if (!options.hints.forgot || !options.hints.forgot.resumeURL) {
-        console.error(`- Forgotten password will NOT be supported`);
+        console.error(`${CHECKBOX_NO} Password retrieval`);
         console.log('  (options.hints.forgot.resumeURL must be provided)')
         this.forgottenPasswordSupported = false;
       }
       else if (typeof (options.hints.forgot.resumeURL) !== 'string') {
-        console.error(`- Forgotten password will NOT be supported`);
+        console.error(`${CHECKBOX_NO} Password retrieval`);
         console.log('  (options.hints.forgot.resumeURL must be a string)')
         this.forgottenPasswordSupported = false;
       } else {
@@ -218,12 +230,12 @@ class LoginService {
         this.forgotResume = this.URLOnThisWebsite(options.hints.forgot.resumeURL)
         if (this.forgotResume === null) {
           // The resumeURL is absolute, but not to the current website's domain.
-          console.error(`- Forgotten password will NOT be supported`);
+          console.error(`${CHECKBOX_NO} Password retrieval`);
           console.log(`  (options.hints.forgot.resumeURL not on this website: ${options.hints.forgot.resumeURL})`)
           this.forgottenPasswordSupported = false;
         } else {
           // All good for forgotten password
-          console.log(`- Forgotten password enabled`);
+          console.log(`${CHECKBOX_YES} Password retrieval`);
           this.forgottenPasswordSupported = true;
         }
 
@@ -233,13 +245,21 @@ class LoginService {
           this.forgotExpired = this.URLOnThisWebsite(options.hints.forgot.expiredURL)
           if (this.forgotExpired === null) {
             // The expiredURL is absolute, but not to the current website's domain.
-            console.error(`- Forgotten password will NOT be supported`);
+            console.error(`${CHECKBOX_NO} Password retrieval`);
             console.log(`  (options.hints.forgot.expiredURL not on this website: ${options.hints.forgot.expiredURL})`)
             this.forgottenPasswordSupported = false;
           }
         }
       }
     }
+
+    // Check for a non-default bounce page.
+    if (options.hints && typeof(options.hints.bouncePage) === 'string') {
+      this.bouncePage = options.hints.bouncePage
+    } else {
+      this.bouncePage = '/authservice-bounce'
+    }
+    console.log(`Bounce page: ${this.bouncePage}`)
 
     // Remember the options
     this.options = options
@@ -252,7 +272,7 @@ class LoginService {
 
   // init (app: any /* Vue component instance */) {
   init(app /* Vue component instance */) {
-    console.log('&&& MyComponent init')
+    // console.log('&&& MyComponent init')
     // VVVVV This does not seem to be called
     // alert('za init()')
     process.env.NODE_ENV !== 'production' && assert(
@@ -292,7 +312,7 @@ class LoginService {
         if (debug) {
           // console.log("***")
           // console.log("***")
-          console.log("*** LOGINSERVICE_JWT IN URL")
+          console.log("JWT specified in URL")
           // console.log("***")
           // console.log("***")
         }
@@ -315,7 +335,7 @@ class LoginService {
       if (debug) {
         // console.log("***")
         // console.log("***")
-        console.log("*** LOGINSERVICE_JWT IN A COOKIE")
+        console.log("JWT found in a cookie")
         // console.log("***")
         // console.log("***")
       }
@@ -335,7 +355,7 @@ class LoginService {
     if (debug) {
       // console.log("***")
       // console.log("***")
-      console.log("*** LOGINSERVICE_JWT NOT IN URL OR COOKIE")
+      console.log("JWT not in URL or COOKIE")
       // console.log("***")
       // console.log("***")
     }
@@ -349,7 +369,7 @@ class LoginService {
    */
   login(email, password) {
     return new Promise((resolve, reject) => {
-      console.log('login(email=' + email + ')')
+      // console.log('login(email=' + email + ')')
       // console.log('++++++++++ email=' + email + ', password=' + password)
 
       /*
@@ -445,6 +465,7 @@ class LoginService {
       console.log('resume to current page after oauth login', l)
       const parsed = QueryString.parse(l.search)
       delete parsed['LOGINSERVICE_JWT']
+      delete parsed['AUTHSERVICE_JWT']
       delete parsed['AUTHSERVICE_ERROR']
       const params = QueryString.stringify(parsed)
       // console.log(parsed)
@@ -456,12 +477,14 @@ class LoginService {
       }
       resumeURL += l.hash
       console.log('\n\nresumeURL=', resumeURL)
-      console.log(new Buffer(resumeURL).toString('base64'))
+      // console.log(new Buffer(resumeURL).toString('base64'))
+      console.log(btoa(resumeURL))
     }
 
     // Get the URL to a "bounce page". This is a page that sets the JWT
     // cookie from a URL parameter, and then redirects to the 'resume' page.
-    const resume64 = new Buffer(resumeURL).toString('base64')
+    // const resume64 = new Buffer(resumeURL).toString('base64')
+    const resume64 = btoa(resumeURL)
     const params = QueryString.stringify({ next: resume64 })
     const hash = ''
     const bounceURL = this.URLOnThisWebsite(`/authservice-bounce?${params}#${hash}`)
@@ -783,19 +806,21 @@ class LoginService {
       // See https://github.com/auth0/jwt-decode
       try {
         let decoded = jwtDecode(jwt)
-        console.log('decoded=', decoded)
+        // console.log('Decoded JWT:')
+        // console.log(decoded)
         ident = decoded.identity
+        console.log(ident)
         if (typeof (decoded.nbf) !== 'undefined') {
           notBefore = decoded.nbf * 1000 // Convert from Unix to Javascript time (s->ms)
-          console.log(`Have not-before time: ${new Date(notBefore)}`);
+          // console.log(`Have not-before time: ${new Date(notBefore)}`);
         }
         if (typeof (decoded.iat) !== 'undefined') {
           issuedAt = decoded.iat * 1000 // Convert from Unix to Javascript time (s->ms)
-          console.log(`Have issuedAt time: ${new Date(issuedAt)}`);
+          // console.log(`Have issuedAt time: ${new Date(issuedAt)}`);
         }
         if (typeof (decoded.exp) !== 'undefined') {
           expiryTime = decoded.exp * 1000 // Convert from Unix to Javascript time (s->ms)
-          console.log(`Have expiry time: ${new Date(expiryTime)}`);
+          // console.log(`Have expiry time: ${new Date(expiryTime)}`);
         }
         haveUser = true
 
@@ -805,9 +830,9 @@ class LoginService {
           let nowMs = new Date().getTime()
           let expiresMs = expiryTime + LENIENCY
           let remaining = expiryTime - nowMs
-          console.log(`Token expires in ${remaining} ms`);
+          // console.log(`Token expires in ${remaining} ms`);
           if (remaining < 0) {
-            console.log(`Token has expired`);
+            // console.log(`Token has expired`);
             haveUser = false
           }
         }
@@ -866,7 +891,7 @@ class LoginService {
           user.rights.push(right)
         })
       } else {
-        console.error(`JWT does not contain field {rights}.`)
+        // console.error(`JWT does not contain field {rights}.`)
       }
 
       // console.log('Setting user to ', user)
@@ -1005,11 +1030,11 @@ class LoginService {
   setCookie(cvalue, exdays) {
     // console.log('setCookie(' + cvalue + ')')
     const cname = this.cookieName()
-    if (cvalue) {
-      console.log('setting cookie (' + cname + ')')
-    } else {
-      console.log('clearing cookie (' + cname + ')')
-    }
+    // if (cvalue) {
+    //   console.log('setting cookie (' + cname + ')')
+    // } else {
+    //   console.log('clearing cookie (' + cname + ')')
+    // }
     const d = new Date()
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000))
     const expires = 'expires=' + d.toUTCString()

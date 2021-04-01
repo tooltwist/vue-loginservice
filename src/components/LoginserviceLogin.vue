@@ -62,18 +62,19 @@
               br
               br
 
-            div(v-if="loginWithEmail")
+            div.has-text-left(v-if="loginWithEmail")
               .field(v-if="loginWithUsername")
                 label.label User Name
                 .control.has-icons-left
-                  input.input.loginservice-testhook-loginWithEmail-username(v-model.trim="email" type="text" v-on:keydown="keyhandler" placeholder="Enter your User Name")
+                  // Yes, we map this onto email. In username mode you can log in with either.
+                  input.input.loginservice-testhook-loginWithEmail-username(v-model.trim="email" type="text" v-on:keydown="keyhandler" placeholder="Enter your User Name", autocomplete="username")
                   span.icon.is-small.is-left
                     i.fas.fa-user(v-if="$authservice.icons('fas')")
                     i.fa.fa-user(v-else)
               .field(v-else)
                 label.label Email
                 .control.has-icons-left
-                  input.input.loginservice-testhook-loginWithEmail-email(v-model.trim="email" type="text" v-on:keydown="keyhandler" placeholder="Enter an Account Email")
+                  input.input.loginservice-testhook-loginWithEmail-email(v-model.trim="email" type="text" v-on:keydown="keyhandler" placeholder="Enter an Account Email", autocomplete="email")
                   span.icon.is-small.is-left
                     i.far.fa-envelope-open(v-if="$authservice.icons('fas')")
                     i.fa.fa-envelope-o(v-else)
@@ -81,7 +82,7 @@
               .field
                 label.label Password
                 .control.has-icons-left
-                  input.input.loginservice-testhook-loginWithEmail-password(v-model.trim="password" type="password" v-on:keydown="keyhandler" autocomplete="current-password" placeholder="Enter your Password")
+                  input.input.loginservice-testhook-loginWithEmail-password(v-model.trim="password" type="password" v-on:keydown="keyhandler" autocomplete="password" placeholder="Enter your Password")
                   span.icon.is-small.is-left
                     i.fas.fa-lock(v-if="$authservice.icons('fas')")
                     i.fa.fa-lock(v-else)
@@ -145,7 +146,7 @@
     .card(v-if="mode === 'register'")
       header.card-header
         p.card-header-title SIGN UP
-      .card-content
+      .card-content.has-text-left
         form
           // Username
           .field(v-if="registerRequiresUsername")
@@ -208,17 +209,22 @@
             | SIGN UP
           span.is-pulled-left
             | Already have an account? &nbsp;
-            a.my-hover.loginservice-testhook-register-login-button(href="#" v-on:click="setMode('login')") Log in
+            a.my-hover.loginservice-testhook-register-login-button(href="#", v-on:click="setMode('login')") Log in
           br
 
 
       .card-footer(v-if="termsMessage")
         .card-footer-item.has-text-centered
-          | {{termsMessage}}
           .is-small(v-if="termsRoute")
-            | &nbsp;&nbsp;(
-            a.is-small.loginservice-testhook-termsMessage-link-button(:href="termsRoute") link
-            | )
+            a.is-small.loginservice-testhook-termsMessage-link-button(:href="termsRoute", target="_blank") {{termsMessage}}
+          .is-small(v-else)
+            | {{termsMessage}}
+          //- // For some reaason &nbsp; gets ignored, so use &ensp; (double space)
+          //- | {{termsMessage}} &ensp;
+          //- .is-small(v-if="termsRoute")
+          //-   | &ensp;(
+          //-   a.is-small.loginservice-testhook-termsMessage-link-button(:href="termsRoute", target="_blank") link
+          //-   | )
 
 
     // Message for after the register email has been sent
@@ -252,7 +258,7 @@
         header.card-header
           p.card-header-title
             | Forgot your Login Information?
-        .card-content
+        .card-content.has-text-left
           form
             | Enter your email address and we'll send you an email with recovery instructions.
             br
@@ -427,7 +433,7 @@
       },
       loginWithUsername: function () {
         let val = this.optionValue('hints.usernames', false)
-        console.log(`loginWithUsername: ${val}`);
+        // console.log(`loginWithUsername: ${val}`);
         return !!this.optionValue('hints.usernames', false)
       },
       allowFacebookLogin: function () {
@@ -546,7 +552,7 @@
 
       // Sign in using email/password or username/password
       doLogin: function (event) {
-        console.log('doLogin(' + this.email + ', ' + this.password + ')')
+        // console.log('doLogin(' + this.email + ', ' + this.password + ')')
 
         const password = this.password
         this.password = ''

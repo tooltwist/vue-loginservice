@@ -41,7 +41,7 @@ import axios from 'axios'
 import axiosError from '../axiosError.js'
 
 export default {
-  name: 'authservice-change-password',
+  name: 'LoginserviceChangePassword',
   props: {
 
     // The user to have the password updated

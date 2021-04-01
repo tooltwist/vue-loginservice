@@ -30,7 +30,7 @@
   import axiosError from '../axiosError.js'
 
   export default {
-    name: 'userList',
+    name: 'LoginserviceUserList',
     props: {
       pathForDetails: String,
       data: Array,
@@ -51,6 +51,7 @@
           'username',
           'email',
           'id',
+          'isAdmin',
           'status'
         ]
       }

@@ -1,30 +1,28 @@
-//import Vue from 'vue'
-// export default Vue => Vue.component(Component.name, Component)
-
 import LoginService from './LoginService'
-import AuthserviceLogin from './AuthserviceLogin.vue'
-import AuthserviceBounceComponent from './AuthserviceBounceComponent.vue'
-import AuthserviceUserList from './AuthserviceUserList.vue'
-import AuthserviceUserDetails from './AuthserviceUserDetails.vue'
-import AuthserviceChangePassword from './AuthserviceChangePassword.vue'
-import Banner from "./Banner.vue";
+import LoginserviceLogin from './LoginserviceLogin.vue'
+import LoginserviceBounceComponent from './LoginserviceBounceComponent.vue'
+import LoginserviceUserList from './LoginserviceUserList.vue'
+import LoginserviceUserDetails from './LoginserviceUserDetails.vue'
+import LoginserviceChangePassword from './LoginserviceChangePassword.vue'
+import LoginserviceNavbar from './LoginserviceNavbar.vue'
+// import Banner from "./Banner.vue";
 
 export let _Vue
 
-let _authservice = null
+let _loginserviceObject = null
 
 
 function install (Vue, options) {
-  console.log('vue-loginservice.install()', options)
+  // console.log('Installing vue-loginservice', options)
 
-  if (_authservice) {
+  if (_loginserviceObject) {
     console.error("Vue.use(LoginService) has already been called.")
     return
   }
 
   // Create ourselves an LoginService Object
-  _authservice = new LoginService(options)
-  _authservice.checkInitialLoginStatus(false)
+  _loginserviceObject = new LoginService(options)
+  _loginserviceObject.checkInitialLoginStatus(false)
 
 
   _Vue = Vue
@@ -45,14 +43,14 @@ function install (Vue, options) {
       //if (isDef(this.$options.authservice)) {
         // console.error('Initializing ROOT *********')
         // This must be the root, since we found authservice in it's options.
-        this._authserviceRoot = this
-        this._authservice = _authservice
-        this._loginservice = _authservice
-        // this._authservice.init(this)
-        Vue.util.defineReactive(this, '_authservice', this.$authservice)
+        this._loginserviceRoot = this
+        this._authservice = _loginserviceObject
+        this._loginservice = _loginserviceObject
+        // this._loginserviceObject.init(this)
+        Vue.util.defineReactive(this, '_loginserviceObject', this.$authservice)
         Vue.util.defineReactive(this, '_loginservice', this.$authservice)
       } else {
-        this._authserviceRoot = (this.$parent && this.$parent._authserviceRoot) || this
+        this._loginserviceRoot = (this.$parent && this.$parent._loginserviceRoot) || this
       }
 
     },
@@ -62,51 +60,53 @@ function install (Vue, options) {
   })
 
   // As described above, the Vue instances form a hierachy. The mixin
-  // above ensures that each instance has an '_authserviceRoot' field
+  // above ensures that each instance has an '_loginserviceRoot' field
   // that points to the instance where 'authservice' was passed to new Vue({  }).
-  // Note that it's _authserviceRoot might actually point to itself.
+  // Note that it's possible _loginserviceRoot might actually point to itself.
   Object.defineProperty(Vue.prototype, '$authservice', {
-    get () { return this._authserviceRoot._authservice }
+    get () { return this._loginserviceRoot._loginservice }
   })
   Object.defineProperty(Vue.prototype, '$loginservice', {
-    get () { return this._authserviceRoot._authservice }
+    get () { return this._loginserviceRoot._loginservice }
   })
   // Object.defineProperty(Vue.prototype, '$login', {
-  //   get () { return this._authserviceRoot._authservice }
+  //   get () { return this._loginserviceRoot._loginservice }
   // })
 
   // Define the components
-  Vue.component('authservice-login', AuthserviceLogin)
-  Vue.component('authservice-bounce-component', AuthserviceBounceComponent)
-  Vue.component('authservice-change-password', AuthserviceChangePassword)
-  Vue.component('authservice-user-list', AuthserviceUserList)
-  Vue.component('authservice-user-details', AuthserviceUserDetails)
+  Vue.component('authservice-login', LoginserviceLogin)
+  Vue.component('authservice-bounce-component', LoginserviceBounceComponent)
+  Vue.component('authservice-change-password', LoginserviceChangePassword)
+  Vue.component('authservice-user-list', LoginserviceUserList)
+  Vue.component('authservice-user-details', LoginserviceUserDetails)
 
-  Vue.component('loginservice-login', AuthserviceLogin)
-  Vue.component('loginservice-bounce-component', AuthserviceBounceComponent)
-  Vue.component('loginservice-change-password', AuthserviceChangePassword)
-  Vue.component('loginservice-user-list', AuthserviceUserList)
-  Vue.component('loginservice-user-details', AuthserviceUserDetails)
+  Vue.component('loginservice-login', LoginserviceLogin)
+  Vue.component('loginservice-bounce-component', LoginserviceBounceComponent)
+  Vue.component('loginservice-change-password', LoginserviceChangePassword)
+  Vue.component('loginservice-user-list', LoginserviceUserList)
+  Vue.component('loginservice-user-details', LoginserviceUserDetails)
 
-  // Vue.component('authservice-navbar', AuthserviceNavbar)
+  Vue.component('authservice-navbar', LoginserviceNavbar)
+  Vue.component('loginservice-navbar', LoginserviceNavbar)
+
   // Vue.component('authservice-navbar-blu', AuthserviceNavbarBlu)
   // Vue.component('authservice-bulma', AuthserviceBulma)
   // Vue.component('my-component', MyComponent)
   // Vue.component('authservice-firstname', AuthserviceFirstname)
   // Vue.component('authservice-fullname', AuthserviceFullName)
 
-  Vue.component("banner", Banner);
+  // Vue.component("banner", Banner);
 
-  return _authservice
+  return _loginserviceObject
 }
 
 const LoginServiceLib = {
   install: install
 }
 
-Object.defineProperty(LoginServiceLib, '_authservice', {
+Object.defineProperty(LoginServiceLib, '_loginserviceObject', {
   get: function() {
-      return _authservice;
+      return _loginserviceObject;
   }
 });
 

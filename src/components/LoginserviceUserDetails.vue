@@ -1,12 +1,12 @@
 <template lang="pug">
-.authservice-profile
-  div(v-if="selectError")
+.loginservice-user-details.authservice-profile
+  .is-not-loaded(v-if="selectError")
     .notification.is-danger
       p Error: We were unable to select the user details.
       p This may mean that you do not have permission
         | , or it could be a network or server error.
 
-  div(v-else)
+  .is-loaded(v-else)
     .columns
       .column.is-3.has-text-centered
         // Show icon for the OAuth2 Authority
@@ -38,7 +38,7 @@
         //br
         //br
         h3.is-5 {{ loginDescription }}
-        span(v-show="user.is_admin")
+        span.loginservice-userdetails-admin-indicator(v-show="user.is_admin")
           | [administrator]
 
         br
@@ -47,11 +47,11 @@
         br
         br
         br
-        button.button.is-info(v-if="mayUpdateUser", v-on:click="onSubmit") Update
+        button.button.is-info.loginservice-userdetails-update-button(v-if="mayUpdateUser", v-on:click="onSubmit") Update
         div(v-if="mayChangePassword")
           br
           br
-          authservice-change-password(
+          authservice-change-password.loginservice-userdetails-change-password-button(
             v-if="mayChangePassword",
             :user="user",
             :demo="demo",
@@ -72,15 +72,22 @@
         // See https://html.spec.whatwg.org/multipage/forms.html#autofill
         form
           .field(v-if="user.authority === 'email'")
-            .label Username
-            .control
-              | {{ user.username }}
+            .columns
+              .column.is-6
+                .label Username
+                .control
+                  //- | {{ user.username }}
+                  input.input.loginservice-userdetails-username(
+                    type="text",
+                    v-model="user.username",
+                    disabled
+                  )
           .field
             .columns
               .column.is-6
                 .label Tenant
                 .control
-                  input.input(
+                  input.input.loginservice-userdetails-tenant(
                     type="text",
                     placeholder="First name",
                     v-model="user.tenant",
@@ -90,7 +97,7 @@
               .column.is-6
                 .label Email
                 .control
-                  input.input(
+                  input.input.loginservice-userdetails-email(
                     type="text",
                     placeholder="First name",
                     v-model="user.email",
@@ -102,7 +109,7 @@
             .columns
               .column.is-4
                 .control
-                  input.input(
+                  input.input.loginservice-userdetails-firstname(
                     type="text",
                     placeholder="First name",
                     v-model="user.first_name",
@@ -111,7 +118,7 @@
                   )
               .column.is-4
                 .control
-                  input.input(
+                  input.input.loginservice-userdetails-middlename(
                     type="text",
                     placeholder="Middle name",
                     v-model="user.middle_name",
@@ -120,7 +127,7 @@
                   )
               .column.is-4
                 .control
-                  input.input(
+                  input.input.loginservice-userdetails-lastname(
                     type="text",
                     placeholder="Last name",
                     v-model="user.last_name",
@@ -130,7 +137,7 @@
           .field
             .label Full Name
             .control
-              input.input(
+              input.input.loginservice-userdetails-fullname(
                 type="text",
                 placeholder="Fullname",
                 v-model="user.full_name",
@@ -148,7 +155,7 @@
             br
             .has-text-centered
               h2.title.is-3 Account Status
-            .notification.is-warning(
+            .notification.is-warning.loginservice-userdetails-admin-warning(
               v-if="mayUpdateStatus && editingOwnDetails"
             )
               p WARNING!
@@ -161,7 +168,7 @@
                   .label User Status
                   .control
                     .select
-                      select.input(
+                      select.input.loginservice-userdetails-status(
                         :disabled="!mayUpdateStatus",
                         v-model="user.status"
                       )
@@ -175,7 +182,7 @@
                   .label Email Address Status
                   .control
                     .select
-                      select.input(
+                      select.input.loginservice-userdetails-emailstatus(
                         :disabled="!mayUpdateStatus",
                         v-model="user.email_status"
                       )
@@ -188,7 +195,7 @@
                   .label Is Administrator
                   .control
                     .select
-                      select.input(
+                      select.input.loginservice-userdetails-isAdmin(
                         :disabled="!mayUpdateStatus",
                         v-model="user.is_admin"
                       )
@@ -221,7 +228,7 @@
             .field
               .label Languages
               .control
-                input.input(
+                input.input.loginservice-userdetails-languages(
                   type="text",
                   v-model="user.languages",
                   autocomplete="foo",
@@ -230,7 +237,7 @@
             .field
               .label Locale
               .control
-                input.input(
+                input.input.loginservice-userdetails-locale(
                   type="text",
                   v-model="user.locale",
                   autocomplete="foo",
@@ -239,7 +246,7 @@
             .field
               .label Location
               .control
-                input.input(
+                input.input.loginservice-userdetails-location(
                   type="text",
                   v-model="user.location",
                   autocomplete="foo",
@@ -248,7 +255,7 @@
             .field
               .label Timezone
               .control
-                input.input(
+                input.input.loginservice-userdetails-timezone(
                   type="text",
                   v-model="user.timezone",
                   autocomplete="foo",
@@ -311,12 +318,12 @@
 <script>
 import axios from "axios";
 import axiosError from "../axiosError.js";
-import AuthserviceChangePassword from "./AuthserviceChangePassword";
+import LoginserviceChangePassword from "./LoginserviceChangePassword";
 
 export default {
-  name: "authservice-profile",
+  name: "LoginserviceUserDetails",
   components: {
-    AuthserviceChangePassword,
+    LoginserviceChangePassword,
   },
   props: {
     // Key of user
@@ -546,7 +553,7 @@ export default {
   methods: {
     // Load details of the specified user from the server.
     loadUserDetails() {
-      console.log(`AuthserviceUserDetails.loadUserDetails()`);
+      console.log(`LoginserviceUserDetails.loadUserDetails()`);
       const url = `${this.$authservice.endpoint()}/${this.tenant}/user/${
         this.userId
       }`;
@@ -670,7 +677,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.authservice-profile {
+.authservice-user-details {
   .authservice-logo {
     margin-top: 5px;
     margin-bottom: 25px;
