@@ -1,74 +1,7 @@
 {
   "name": "@tooltwist/vue-loginservice",
-  "version": "5.0.5",
+  "version": "5.1.0",
   "private": false,
-  "scripts": {
-    "serve": "vue-cli-service serve --open",
-    "build": "vue-cli-service build",
-    "test": "vue-cli-service build",
-    "e2e": "vue-cli-service e2e",
-    "lint": "vue-cli-service lint",
-    "build-bundle": "vue-cli-service build --target lib --name vue-loginservice ./src/components/index.js",
-    "e2e:open": "vue-cli-service e2e:open",
-    "patch-release": "npm version patch && npm publish --registry=https://registry.npmjs.org/ --access public && git push --follow-tags",
-    "p1": "npm version patch",
-    "p2": "npm publish",
-    "p3": "git push --follow-tags",
-    "test:e2e": "vue-cli-service test:e2e",
-    "test:unit": "vue-cli-service test:unit"
-  },
-  "dependencies": {
-    "axios": "^0.21.1",
-    "debounce": "^1.1.0",
-    "jwt-decode": "^2.2.0",
-    "minimist": "^1.2.3",
-    "query-string": "^6.12.1",
-    "vue": "^2.6.11",
-    "vue-awesome": "^3.0.3"
-  },
-  "peerDependencies": {},
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.12.1",
-    "@vue/cli-plugin-e2e-cypress": "^3.12.1",
-    "@vue/cli-plugin-eslint": "^3.12.1",
-    "@vue/cli-plugin-unit-mocha": "^4.4.0",
-    "@vue/cli-service": "^4.4.0",
-    "@vue/test-utils": "^1.0.3",
-    "babel-preset-vue-app": "^2.0.0",
-    "chai": "^4.1.2",
-    "eslint": "^5.0.1",
-    "eslint-loader": "^2.0.0",
-    "eslint-plugin-vue": "^4.5.0",
-    "node-sass": "^4.14.1",
-    "pug": "^3.0.1",
-    "pug-plain-loader": "^1.0.0",
-    "sass-loader": "^10.1.1",
-    "vue-template-compiler": "^2.6.11"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "rules": {},
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/tooltwist/vue-loginservice.git"
@@ -88,5 +21,73 @@
     "vue",
     "tooltwist",
     "loginservice"
+  ],
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "build-bundle": "vue-cli-service build --target lib --name vue-loginservice ./src/components/index.js",
+    "lint": "vue-cli-service lint",
+    "styleguide": "vue-cli-service styleguidist",
+    "styleguide:build": "vue-cli-service styleguidist:build",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
+    "docs:publish": "./deploy-documentation.sh"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "core-js": "^3.6.5",
+    "debounce": "^1.2.1",
+    "jwt-decode": "^3.1.2",
+    "sass": "^1.32.8",
+    "vue": "^2.6.11",
+    "vue-awesome": "^4.1.0",
+    "vue-docgen-api": "^4.36.1",
+    "vue-docgen-cli": "^4.36.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vuepress/plugin-back-to-top": "^1.8.2",
+    "@vuepress/plugin-medium-zoom": "^1.8.2",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "pug-plain-loader": "^1.1.0",
+    "sass-loader": "^10.0.1",
+    "vue-cli-plugin-styleguidist": "^4.36.1",
+    "vue-template-compiler": "^2.6.11",
+    "vuepress": "^1.8.2"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {
+      "no-unused-vars": [
+        "error",
+        {
+          "args": "none"
+        }
+      ]
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
   ]
 }

@@ -30,12 +30,36 @@
   import axiosError from '../axiosError.js'
 
   export default {
-    name: 'LoginserviceUserList',
+    name: 'loginservice-user-list',
     props: {
-      pathForDetails: String,
+      /**
+       * Tenant (application) of the users.
+       */
+      tenant: String,
+      /**
+       * Link to follow a user in the list is clicked.
+       * May contain markers {TENANT} and {USERID} which get replace by the appropriate values for the selected user.
+       */
+      pathForDetails: {
+        type: String,
+        default: '/user/{USERID}'
+      },
+      /**
+       *  An optionally provided list of user records.
+       *  This is used in cases where you do not wish to show all users for the
+       *  application in the list.
+       */
       data: Array,
-      columns: Array,
-      tenant: String
+      /**
+       * A list of columns to be displayed for the user list. If you provide `data` with
+       * extra fields added to the records, they may be included in your field list.
+       * The defaults columns are 'icon', 'authority', 'first_name', 'last_name', 'username',
+       * 'email', 'id', 'isAdmin', 'status'.
+       */
+      columns: {
+        type: Array,
+        required: false
+      }
     },
     data: function () {
 
@@ -118,7 +142,7 @@
           // For example '/myapp/{TENANT}/user/{USERID}'
           const tenantMarker = '{TENANT}'
           const userIdMarker = '{USERID}'
-          let replaceTenant = this.pathForDetails.includes(tenantMarker);
+          // let replaceTenant = this.pathForDetails.includes(tenantMarker);
           let replaceUserId = this.pathForDetails.includes(userIdMarker);
 
           if (replaceUserId) {
@@ -353,3 +377,30 @@
     border-top: 4px solid #fff;
   }
 </style>
+
+
+<docs>
+
+This component displays a list of users for an application.
+
+Normally you just provide your application ID in the _tenant_ parameter (e.g. freddy/myapp)
+and all the users for your application will be displayed. Alternatively you can select the user records yourself using the Loginservice API
+and provide the user list using the _data_ prop.
+
+### Permissions
+If the `data` prop is not provided, the component will call the server API to select
+all the users in the application. In order to select the user records you must be
+logged in as either:
+
+1. An admin user of the application where your are showing the user records, or
+2. The owner of the application (e.g. as the tooltwist user _freddy_).
+
+
+### Examples
+
+```jsx
+<p>NOT YET</p>
+<loginservice-user-list tenant="fred/myapp"/>
+```
+</docs>
+

@@ -1,5 +1,6 @@
 <template lang="pug">
-.loginservice-user-details.authservice-profile
+.loginservice-user-details.loginservice-profile
+
   .is-not-loaded(v-if="selectError")
     .notification.is-danger
       p Error: We were unable to select the user details.
@@ -12,8 +13,8 @@
         // Show icon for the OAuth2 Authority
 
         // Font-awesome v5
-        //.authservice-logo(v-if="$authservice.options.defaultIconPack==='fas'")
-        .authservice-logo(v-if="$authservice.icons('fas')")
+        //.loginservice-logo(v-if="$authservice.options.defaultIconPack==='fas'")
+        .loginservice-logo(v-if="$authservice.icons('fas')")
           i.far.fa-envelope-open(v-if="user.authority === 'email'")
           i.fab.fa-facebook-square(v-else-if="user.authority === 'facebook'")
           i.fab.fa-github(v-else-if="user.authority === 'github'")
@@ -21,7 +22,7 @@
           i.fab.fa-linkedin(v-else-if="user.authority === 'linkedin'")
           i.fab.fa-twitter(v-else-if="user.authority === 'twitter'")
 
-        .authservice-logo(v-else)
+        .loginservice-logo(v-else)
           // Font-awesome v4
           i.fa.fa-envelope-o(v-if="user.authority === 'email'")
           i.fa.fa-facebook-official(v-else-if="user.authority === 'facebook'")
@@ -51,7 +52,7 @@
         div(v-if="mayChangePassword")
           br
           br
-          authservice-change-password.loginservice-userdetails-change-password-button(
+          loginservice-password.loginservice-userdetails-change-password-button(
             v-if="mayChangePassword",
             :user="user",
             :demo="demo",
@@ -145,6 +146,149 @@
                 :disabled="!mayUpdateName"
               )
 
+          div(v-if="show2faFields")
+            br
+            hr
+            br
+            .has-text-centered
+              h2.title.is-3 Two Factor Authentication
+            br
+            p
+              | Two-factor authentication (2FA) adds a layer of security in addition to your user name and password.
+              | When you login with 2FA enabled you will be asked to
+              | use a security key
+              | , enter a verification code
+              | or approve the login from your mobile device, depending on your settings below.
+            p
+            br
+              //- | This OTP is obtained
+            .columns
+              //-   .column.is-1
+              //- .column.is-4
+                .card.my-card
+                  .card-content.has-text-justified.is-size-6
+                    h1.title.is-size-6 Authentication Device (U2F)
+                    .text-2fa-option
+                      | This is the most secure authentication, where
+                      | you plug a physical device into your computer.
+                      | You can use&nbsp;
+                      a(href="https://www.yubico.com/", target="_blank") Yubikey
+                      | &nbsp;or similar U2F key, and it works with Chrome, Firefox and Edge browsers.
+                    .has-text-centered.my-2fa-button
+                      button.button.is-small.is-light() Enable U2F
+                    //- br
+
+              //- .column.is-4
+              //- .column.is-1
+              .column.is-6
+                .card.my-card
+                  //- .card-content.has-text-justified.is-size-6
+                  .card-content.has-text-justified.is-size-6
+                    h1.title.is-size-5 Authentication App (TOTP)
+                    .text-2fa-option
+                      | Use an Authentication app like&nbsp;
+                      a(href="https://www.yubico.com/", target="_blank") Google Authenticator
+                      | &nbsp;or&nbsp;
+                      a(href="https://authy.com/download/", target="_blank") Authy
+                      | &nbsp;to create a Time based One-time Password (TOPT) each time you log in.
+                    //- button.button.is-pulled-right.is-small.is-info(v-if="user.totp_enabled", :disabled="!mayUpdate2fa") Enable
+                    //- button.button.is-pulled-right.is-small.is-info(v-if="user.totp_enabled", :disabled="!mayUpdate2fa") Enable
+
+                    .has-text-centered.my-2fa-button(v-if="user.totp_enabled")
+                      button.button.is-small.is-link(v-if="mayUpdate2fa", @click.prevent="disableTotp") Disable TOTP
+                      button.button.is-small(v-else, disabled) Enabled
+                      //- .tag.is-small(v-else) Enabled
+                      //- | Enabled
+                      //- br
+                    .has-text-centered.my-2fa-button(v-else)
+                      button.button.is-small.is-info(v-if="mayUpdate2fa", @click.prevent="enableTotp") Enable
+                      button.button.is-small(v-else, disabled) Disabled
+                      //- | Not configured
+                      //- .tag.is-small(v-else) Not configured
+
+
+                    //- br
+                    //- button.button.is-pulled-right.is-small.is-danger(@click.prevent="enableTotp") Enable
+                    //- button.button.is-pulled-right.is-small.is-danger(@click.prevent="disableTotp") Disable
+
+
+              //- .column.is-4
+              .column.is-6
+                .card.my-card
+                  //- .card-content.has-text-justified.is-size-6
+                  .card-content.has-text-justified.is-size-6
+                    h1.title.is-size-5 SMS Authentication
+                    .text-2fa-option
+                      | Receive a text message each time you log in with your username and password, containing an access code to complete the login process.
+                    .has-text-centered.my-2fa-button
+                      button.button.is-small.is-light() Enable
+                    //- br
+
+
+                    //- | Enabled
+                    //- .field.is-horizontal
+                      .field-label.is-small
+                        //- label.label Authy / Authenticator:
+                        label.label Use phone App:
+                      .field-body
+                        .field
+                          .control
+                            template(v-if="user.totp_enabled")
+                              button.button.is-pulled-rightZ.is-small(v-if="mayUpdate2fa", @click.prevent="disableTotp") Disable 2FA
+                              .tag.is-small(v-else) Enabled
+                              //- | Enabled
+                              //- br
+                            template(v-else)
+                              button.button.is-pulled-rightZ.is-small(v-if="mayUpdate2fa", @click.prevent="enableTotp") Set up Authy or Google Authenticator now
+                              //- | Not configured
+                              .tag.is-small(v-else) Not configured
+                              //- br
+              //- .column.is-1
+              //- .column.is-4
+              //- .column.is-4
+                .field.is-horizontal
+                  .field-label.is-small
+                    //- label.label SMS phone number:
+                    label.label Receive SMS:
+                  .field-body
+                    .field
+                      .control
+                        input.input.loginservice-userdetails-firstname(
+                          type="phone",
+                          placeholder="+63 9xx xxx xxxx",
+                          v-model="user.otp_sms",
+                          autocomplete="foo",
+                          :disabled="!mayUpdateSMS"
+                          )
+
+                    //- .select
+                      select.input.loginservice-userdetails-opt(
+                        :disabled="!mayUpdate2fa",
+                        v-model="user.totp_enabled"
+                        @change="totpChanged"
+                      )
+                        option(:value="false") Inactive
+                        option(:value="true") Active
+                      .tag.is-success Verified
+                    //- input.input.loginservice-userdetails-firstname(
+                      type="text",
+                      placeholder="First name",
+                      v-model="user.first_name",
+                      autocomplete="foo",
+                      :disabled="!mayUpdateName"
+                        )
+              //- .column.is-5
+                .field
+                  .label SMS phone number
+                    input.input.loginservice-userdetails-firstname(
+                      type="phone",
+                      placeholder="+63 9xx xxx xxxx",
+                      v-model="user.otp_sms",
+                      autocomplete="foo",
+                      :disabled="!mayUpdateSMS"
+                        )
+
+
           //- .field
           //-   .label Client Id
           //-   .control
@@ -155,12 +299,12 @@
             br
             .has-text-centered
               h2.title.is-3 Account Status
-            .notification.is-warning.loginservice-userdetails-admin-warning(
-              v-if="mayUpdateStatus && editingOwnDetails"
-            )
-              p WARNING!
-                br
-                | Updating these fields may remove your ability to log in or act as administrator.
+            template(v-if="mayUpdateStatus && editingOwnDetails")
+              br
+              .notification.is-warning.loginservice-userdetails-admin-warning
+                p WARNING!
+                  br
+                  | Updating these fields may remove your ability to log in or act as administrator.
             .columns
               .column.is-1
               .column.is-4
@@ -302,6 +446,12 @@
       | mayUpdateUser: {{mayUpdateUser}}
       br
       | mayUpdateStatus: {{mayUpdateStatus}}
+      br
+      | mayUpdate2fa: {{mayUpdate2fa}}
+      br
+      | mayUpdateTotp: {{mayUpdateTotp}}
+      br
+      | mayUpdateOtpSms: {{mayUpdateOtpSms}}
       hr
       | USER BEING EDITED:
       br
@@ -313,48 +463,120 @@
       hr
     //- .columns
   //- !selectError
+
+
+  //
+  //  Modal for activating TOTP (Authy, Google Authenticator etc)
+  //
+  .modal(:class="{ 'is-active': showTotpModal }").has-text-left
+    .modal-background
+    .modal-card
+      header.modal-card-head
+        p.modal-card-title
+          | Activate 2FA
+        button.delete(aria-label="close" @click="toggleTotpModal")
+      section.modal-card-body
+        // QR Code
+        .has-text-centered
+          img(width="300", height="300", :src="`data:image/png;base64,${QRCodeBase64}`")
+          br
+          .my-readbable-secret
+            | {{readableSecret}}
+
+        br
+        br
+
+        //- .notification.is-danger(v-if="warningMsg") {{warningMsg}}
+        form
+          .field
+            .label Token
+            .control
+              input.input.loginservice-testhook-enableTotp-confirm(type="number",  maxlength="6", placeholder="", v-model="totpToken", autocomplete="off")
+      footer.modal-card-foot
+        button.button.is-success.loginservice-testhook-enableTotp-update-button(@click="confirmTotp", :disabled="!enableTotpConfirmButton") Confirm
+        button.button.loginservice-testhook-enableTotp-cancel-button(@click="toggleTotpModal") Cancel
+
 </template>
 
 <script>
 import axios from "axios";
 import axiosError from "../axiosError.js";
-import LoginserviceChangePassword from "./LoginserviceChangePassword";
+import LoginservicePassword from "./LoginservicePassword";
 
 export default {
-  name: "LoginserviceUserDetails",
+  name: "loginservice-user-details",
   components: {
-    LoginserviceChangePassword,
+    LoginservicePassword,
   },
   props: {
-    // Key of user
+    /**
+     * Application to which the user belongs. For example 'freddy/myapp'.
+     * In most cases this will be the same tenant as the currently logged in user
+     * (`this.$loginservice.user.tenant`).
+     */
     tenant: {
       type: String,
       required: true,
     },
+
+    /**
+     * The userID of the user to be displayed.
+     */
     userId: {
       type: String,
       required: true,
     },
 
-    // Display options
+    /**
+     * In **debug** mode the component will display a data dump of the currently
+     * logged in user, and the user being displayed by this compnent.
+     */
     debug: {
       type: Boolean,
       default: false,
     },
+
+    /**
+     * In **demo** mode, the user can log in, but cannot change the password.
+     * Use this when you provide a demonstration account and password that people
+     * can use to try out your application.
+     */
     demo: {
+      type: Boolean,
+      default: false,
+    },
+
+    /**
+     * Show options for Two factor authentication. The exact options provided
+     * will come from the application's configuration in the dashboard.
+     */
+    show2fa: {
       type: Boolean | String,
       default: false,
     },
+
+    /**
+     * Show the status values - account status, email status. and the 'isAdmin' setting.
+     * If the current user is an administrator then these values can be updated.
+     */
     showStatus: {
-      type: Boolean | String,
+      type: Boolean,
       default: false,
     },
+
+    /**
+     * @ignore
+     */
     showPermissions: {
-      type: Boolean | String,
+      type: Boolean,
       default: false,
     },
+
+    /**
+     * Allow the user's password to be changed.
+     */
     changePassword: {
-      type: Boolean | String,
+      type: Boolean,
       default: false,
     },
   },
@@ -363,6 +585,12 @@ export default {
       user: {},
 
       selectError: false, // Error calling the API to get user details
+
+      // 2FA fields
+      showTotpModal: false,
+      QRCodeBase64: '',
+      readableSecret: '',
+      totpToken: '',
     };
   },
   computed: {
@@ -407,6 +635,29 @@ export default {
       return this.haveAdminPrivileges;
     },
 
+    mayUpdate2fa: function () {
+      return this.editingOwnDetails || this.haveAdminPrivileges;
+    },
+
+    mayUpdateTotp: function () {
+      // Only the user can set up their Authy / Google Authenticator
+//ZZZZZ
+      return true
+    },
+
+    mayUpdateOtpSms: function () {
+      // Only the user can set up their Authy / Google Authenticator
+//ZZZZZ
+      return true
+    },
+
+    enableTotpConfirmButton () {
+      if (this.showTotpModal && this.totpToken.length === 6) {
+        return true
+      }
+      return false
+    },
+
     // Are we in demo mode?
     isDemo: function () {
       return (
@@ -415,10 +666,20 @@ export default {
       );
     },
 
+    // Show the 2FA fields?
+    show2faFields: function () {
+      console.log("this.show2fa", this.show2fa);
+      console.log("this.show2faStatus", typeof this.show2fa);
+      return (
+        (typeof this.show2fa == "boolean" && this.show2fa) ||
+        (typeof this.show2fa == "string" && this.show2fa !== "false")
+      );
+    },
+
     // Show the status fields?
     showStatusFields: function () {
-      console.log("this.showStatus", this.showStatus);
-      console.log("this.showStatus", typeof this.showStatus);
+      // console.log("this.showStatus", this.showStatus);
+      // console.log("this.showStatus", typeof this.showStatus);
       return (
         (typeof this.showStatus == "boolean" && this.showStatus) ||
         (typeof this.showStatus == "string" && this.showStatus !== "false")
@@ -543,7 +804,7 @@ export default {
 
           // Get token from window object's query parameters.
           const urlParams = new URLSearchParams(window.location.search);
-          const myParam = urlParams.get('AUTHSERVICE_EMAIL_TOKEN');
+          token = urlParams.get('AUTHSERVICE_EMAIL_TOKEN');
         }
         return token;
       }
@@ -583,6 +844,163 @@ export default {
           this.selectError = true;
         });
     },
+
+    // totpChanged(evt) {
+    //   console.log(`totpChanged(${this.user.totp_enabled})`, evt)
+    //   this.showTotpModal = true
+    // },
+
+    async enableTotp(evt) {
+      console.log(`enableTotp(${this.user.totp_enabled})`, evt)
+
+      // Get a QRCode for the Authentication App.
+      let url = `${this.$authservice.endpoint()}/totp/activate/step1`;
+      console.log(`url=`, url)
+      let params = {
+        method: "post",
+        url,
+        headers: {
+          Authorization: "Bearer " + this.$authservice.jwt,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        }
+      };
+
+      try {
+        const reply = await axios(params)
+        // console.log(`reply=`, reply)
+
+        // Create a readable version of the secret.
+        // Google Authenticator secrets are 80 bits = 10 bytes = 16 chars of base32.
+        const secret = reply.data.secret
+        this.readableSecret = secret
+        if (secret.length >= 16) {
+          const p1 = secret.substring(0, 4)
+          const p2 = secret.substring(4, 8)
+          const p3 = secret.substring(8, 12)
+          const p4 = secret.substring(12, 16)
+          this.readableSecret = `${p1} ${p2} ${p3} ${p4}`
+        }
+        // There is talk of longer secrets being required, and the RFC
+        // recommends 160 bits, so this is for the future...
+        // 160 bits = 20 bytes = 32 chars of base32
+        if (secret.length >= 32) {
+          const p5 = secret.substring(16, 20)
+          const p6 = secret.substring(20, 24)
+          const p7 = secret.substring(24, 28)
+          const p8 = secret.substring(28, 32)
+          this.readableSecret += ` ${p5} ${p6} ${p7} ${p8}`
+        }
+
+        this.QRCodeBase64 = reply.data.image
+        this.totpToken = ''
+        this.showTotpModal = true
+      } catch (e) {
+        console.log("error. e=", e);
+        axiosError(this, url, params, e);
+      }
+
+  // return
+  //     axios(params)
+  //       .then((response) => {
+  //         // JSON responses are automatically parsed.
+  //         console.log("ok. response=", response);
+  //         // if (response.data && response.data.status === "ok") {
+  //         //   // All okay
+  //         //   if (this.$toast && this.$toast.open) {
+  //         //     this.$toast.open({
+  //         //       message: `Changes saved`,
+  //         //       type: "is-success",
+  //         //       duration: 4000,
+  //         //     });
+  //         //   } else {
+  //         //     alert('Changes saved')
+  //         //   }
+  //         //   this.loadUserDetails();
+  //         // } else {
+  //         //   // Not the expected result
+  //         //   console.log(
+  //         //     "Unexpected result while updating user record. response=",
+  //         //     response
+  //         //   );
+  //         //   if (this.$toast && this.$toast.open) {
+  //         //     this.$toast.open({
+  //         //       message: `Error: User details might not have been updated`,
+  //         //       type: "is-danger",
+  //         //     });
+  //         //   } else {
+  //         //     alert(`Error: User details might not have been updated`)
+  //         //   }
+  //         // }
+  //       })
+  //       .catch((e) => {
+  //         console.log("error. e=", e);
+  //         axiosError(this, url, params, e);
+  //       });
+
+  //     this.showTotpModal = true
+    },
+
+    async disableTotp( ) {
+      console.log(`disableTotp(${this.user.totp_enabled})`)
+      let url = `${this.$authservice.endpoint()}/totp/deactivate`;
+      console.log(`url=`, url)
+      let params = {
+        method: "post",
+        url,
+        headers: {
+          Authorization: "Bearer " + this.$authservice.jwt,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        // data: data,
+      };
+
+      const reply = await axios(params)
+      console.log(`reply=`, reply)
+
+      this.user.totp_enabled = false
+
+      //ZZZZ Should have got new credentials in reply?
+    },
+
+
+    async confirmTotp() {
+      console.log(`confirmTotp(${this.user.totp_enabled})`)
+      let url = `${this.$authservice.endpoint()}/totp/activate/step2`;
+      console.log(`url=`, url)
+      const data = {
+        token: this.totpToken
+      }
+      let params = {
+        method: "post",
+        url,
+        headers: {
+          Authorization: "Bearer " + this.$authservice.jwt,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        data: data,
+      };
+
+      const reply = await axios(params)
+      console.log(`reply=`, reply)
+
+      if (reply.data.valid) {
+        // Sucessfully enabled
+        this.user.totp_enabled = true
+        this.showTotpModal = false
+      } else {
+        alert('Invalid token')
+      }
+
+      //ZZZZ Should have got new credentials in reply?
+    },
+
+    toggleTotpModal() {
+      this.showTotpModal = !this.showTotpModal
+    },
+
     onSubmit(evt) {
       if (this.isDemo) {
         this.modalIsActive = false;
@@ -668,7 +1086,7 @@ export default {
           axiosError(this, url, params, e);
         });
     },
-  },
+  },//- methods
   created() {
     this.loadUserDetails();
   },
@@ -677,8 +1095,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.authservice-user-details {
-  .authservice-logo {
+.loginservice-user-details {
+  .loginservice-logo {
     margin-top: 5px;
     margin-bottom: 25px;
     font-size: 112px;
@@ -687,5 +1105,49 @@ export default {
       color: #d0d0d0;
     }
   }
+
+  .text-2fa-option {
+    // font-size: 0.9em;
+    // min-height: 160px;
+    min-height: 140px;
+  }
+
+  .my-readbable-secret {
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Courier New', Courier, monospace;
+  }
+
+  .my-card {
+    height: 100%;
+
+    .my-2fa-button {
+      margin-top: auto;
+      padding-top: 8px;
+      // background-color: bisque;
+    }
+    button {
+      margin-top: auto;
+    }
+  }
 }
 </style>
+
+
+<docs>
+Display and update a user's details (i.e. their profile).
+
+
+### Example
+
+```vue
+<loginservice-user-details
+    v-if="$loginservice.user"
+    tenant="$loginservice.user.tenant"
+    userId="$loginservice.user.id"
+    :changePassword="true"
+    :showStatus="true"/>
+```
+
+
+</docs>

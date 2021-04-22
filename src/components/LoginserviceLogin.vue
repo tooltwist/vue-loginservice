@@ -15,42 +15,42 @@
           form
             div.has-text-centered
               div(v-if="allowFacebookLogin")
-                a.button.social-button.is-primary.loginservice-testhook-login-facebookLogin-button(v-on:click="facebookLogin()")
+                a.button.social-button.is-primary.loginservice-testhook-login-facebookLogin-button(@click.prevent="facebookLogin()")
                   .social-button-icon
                     i.fab.fa-facebook-f.has-text-white(v-if="$authservice.icons('fas')")
                     i.fa.fa-facebook-f.has-text-white(v-else)
                   .social-button-text &nbsp; Login with Facebook
                 br
               div(v-if="allowGoogleLogin")
-                a.button.social-button.is-primary.loginservice-testhook-login-googleLogin-button(v-on:click="googleLogin()")
+                a.button.social-button.is-primary.loginservice-testhook-login-googleLogin-button(@click.prevent="googleLogin()")
                   .social-button-icon
                     i.fab.fa-google.has-text-white(v-if="$authservice.icons('fas')")
                     i.fa.fa-google.has-text-white(v-else)
                   .social-button-text &nbsp; Login with Google
                 br
               div(v-if="allowGithubLogin")
-                a.button.social-button.is-primary.loginservice-testhook-login-githubLogin-button(:variant="'secondary'" v-on:click="githubLogin()" tabindex="38")
+                a.button.social-button.is-primary.loginservice-testhook-login-githubLogin-button(:variant="'secondary'", @click.prevent="githubLogin()" tabindex="38")
                   .social-button-icon
                     i.fab.fa-github.has-text-white(v-if="$authservice.icons('fas')")
                     i.fa.fa-github.has-text-white(v-else)
                   .social-button-text &nbsp; Login with Github
                 br
               div(v-if="allowLinkedinLogin")
-                a.button.social-button.is-primary.loginservice-testhook-login-linkedinLogin-button(:variant="'secondary'" v-on:click="linkedinLogin()" tabindex="38")
+                a.button.social-button.is-primary.loginservice-testhook-login-linkedinLogin-button(:variant="'secondary'", @click.prevent="linkedinLogin()" tabindex="38")
                   .social-button-icon
                     i.fab.fa-linkedin.has-text-white(v-if="$authservice.icons('fas')")
                     i.fa.fa-linkedin.has-text-white(v-else)
                   .social-button-text &nbsp; Login with LinkedIn
                 br
               div(v-if="allowTwitterLogin")
-                a.button.social-button.is-primary.loginservice-testhook-login-twitterLogin-button(:variant="'secondary'" v-on:click="twitterLogin()" tabindex="38")
+                a.button.social-button.is-primary.loginservice-testhook-login-twitterLogin-button(:variant="'secondary'", @click.prevent="twitterLogin()" tabindex="38")
                   .social-button-icon
                     i.fab.fa-twitter.has-text-white(v-if="$authservice.icons('fas')")
                     i.fa.fa-twitter.has-text-white(v-else)
                   .social-button-text &nbsp; Login with Twitter
                 br
               //div(v-if="allowPropertyMeLogin")
-                a.button.social-button.is-primary.loginservice-testhook-login-propertymeLogin-button(v-on:click="propertyMeLogin()" tabindex="38")
+                a.button.social-button.is-primary.loginservice-testhook-login-propertymeLogin-button(@click.prevent="propertyMeLogin()" tabindex="38")
                   .social-button-icon
                     i.fab.fa-home.has-text-white(v-if="$authservice.icons('fas')")
                     i.fa.fa-home.has-text-white(v-else)
@@ -92,32 +92,51 @@
                 | {{loginError}}
                 br
 
-
               button.button.is-primary.is-pulled-right.loginservice-testhook-loginWithEmail-login-button(@click="doLogin", type="submit", tabindex="33", :class="{ 'is-loading': loginInProgress }")
                 | Login
-              a.loginservice-testhook-loginWithEmail-forgot-button(v-if="provideForgottenPassword" href="#" v-on:click="setMode('forgot')")
+              a.loginservice-testhook-loginWithEmail-forgot-button(v-if="provideForgottenPassword" href="#", @click.prevent="setMode('forgot')")
                 .my-hover Forgot Login Info?
-            // loginWithEmail
 
-            //a.button.is-outlined(:size="'sm'", :variant="'link'", v-on:click="setMode('forgot')") Forgot password
+            //a.button.is-outlined(:size="'sm'", :variant="'link'", @click.prevent="setMode('forgot')") Forgot password
             //| &nbsp;
-            //a.button.is-outlined(:size="'sm'", :variant="'link'", v-on:click="setMode('register')") Sign Up
+            //a.button.is-outlined(:size="'sm'", :variant="'link'", @click.prevent="setMode('register')") Sign Up
             br
 
       .card-footer(v-if="loginWithEmail && provideRegistration")
         .card-footer-item
           | {{loginSignupMessage}}
           .my-spacer
-          a.loginservice-testhook-loginWithEmail-signup-button(href="#" v-on:click="setMode('register')")
+          a.loginservice-testhook-loginWithEmail-signup-button(href="#", @click.prevent="setMode('register')")
             .my-hover Sign up
 
+    //
+    //  One Time Password
+    //
+    .card(v-if="mode === 'otp'")
+      header.card-header
+        p.card-header-title
+          | Please enter your OTP
+      //- .card-header
+        | Please enter your OTP
+      .card-content
+        .field
+          //- label.label One Time Password
+          .control.has-icons-left
+            input.input.loginservice-testhook-loginWithEmail-otp(v-model.trim="otp", type="number", autocomplete="off", placeholder="Enter your OTP")
+            span.icon.is-small.is-left
+              i.fas.fa-lock(v-if="$authservice.icons('fas')")
+              i.fa.fa-lock(v-else)
+        br
+        .notification.is-danger(v-if="loginError")
+          | {{loginError}}
+          br
+        button.button.is-primary.is-pulled-right.loginservice-testhook-otp-login-button(@click="doLogin", type="submit", tabindex="33", :class="{ 'is-loading': loginInProgress }")
+          | Login
+        .my-spacer.is-pulled-right
+        button.button.is-pulled-right.loginservice-testhook-otp-cancel-button(@click.prevent="cancelOtp")
+          | Cancel
+        br
 
-
-
-      //- footer.card-footer
-      //-   a.card-footer-item(href="#") Save
-      //-   a.card-footer-item(href="#") Edit
-      //-   a.card-footer-item(href="#") Delete
 
     //
     //  Logged in mode
@@ -135,7 +154,7 @@
         .box.is-size-7
           | {{$authservice.user}}
         br
-        a.loginservice-testhook-loggedIn-logout-button(v-on:click="doSignout()") {{signin ? 'Sign out' : 'Logout'}}
+        a.loginservice-testhook-loggedIn-logout-button(@click.prevent="doSignout()") {{signin ? 'Sign out' : 'Logout'}}
 
 
 
@@ -209,7 +228,7 @@
             | SIGN UP
           span.is-pulled-left
             | Already have an account? &nbsp;
-            a.my-hover.loginservice-testhook-register-login-button(href="#", v-on:click="setMode('login')") Log in
+            a.my-hover.loginservice-testhook-register-login-button(href="#", @click.prevent="setMode('login')") Log in
           br
 
 
@@ -241,9 +260,9 @@
             | Please take a moment to check your email and complete
             | the registration process.
           // Should just close the dropdown VVVVV
-          // a.button(:size="'sm'", :variant="'primary'", v-on:click="setMode('login')") Ok
+          // a.button(:size="'sm'", :variant="'primary'", @click.prevent="setMode('login')") Ok
           br
-          button.button.is-pulled-right.is-primary.loginservice-testhook-registerAfter-ok-button(type="submit", v-on:click="setMode('login')") OK
+          button.button.is-pulled-right.is-primary.loginservice-testhook-registerAfter-ok-button(type="submit", @click.prevent="setMode('login')") OK
           br
           br
     //- .b-form
@@ -277,11 +296,10 @@
               | {{forgotError}}
             br
 
-            // https://bootstrap-vue.js.org/docs/components/button
-            button.button.is-primary.is-pulled-right.loginservice-testhook-forgot-sendemail-button(type="submit", @click="forgot", :class="{ 'is-loading': forgotInProgress }")
+            button.button.is-primary.is-pulled-right.loginservice-testhook-forgot-sendemail-button(type="submit", @click.prevent="forgot", :class="{ 'is-loading': forgotInProgress }")
               | Send the Email
             .my-spacer.is-pulled-right
-            button.button.is-pulled-right.loginservice-testhook-forgot-cancel-button(v-on:click="setMode('login')")
+            button.button.is-pulled-right.loginservice-testhook-forgot-cancel-button(@click.prevent="setMode('login')")
               | Cancel
             br
       br
@@ -301,11 +319,8 @@
           br
 
           // Should just close the dropdown VVVVV
-          button.button.is-primary.is-pulled-right.loginservice-testhook-forgotAfter-ok-button(type="submit", v-on:click="setMode('login')") Ok
+          button.button.is-primary.is-pulled-right.loginservice-testhook-forgotAfter-ok-button(type="submit", @click.prevent="setMode('login')") Ok
           br
-    //- div
-
-  //- b-nav-item-dropdown
 </template>
 
 <script>
@@ -321,7 +336,7 @@
    *  @author Philip Callender
    */
   export default {
-    name: 'authservice-login',
+    name: 'loginservice-login',
     components: {
       Icon
     },
@@ -340,38 +355,25 @@
         type: Boolean,
         default: false
       },
-      hideRegister: {
-        type: Boolean,
-        default: false
-      },
-      hideForgot: {
-        type: Boolean,
-        default: false
-      },
-      hideAvatar: {
-        type: Boolean,
-        default: false
-      },
-      hideLogout: {
-        type: Boolean,
-        default: false
-      },
-      // extraMenuItems: '<', // string ([+-]tag:label, ...) + = logged in, - = logged out.
 
       /*
        *  Registration-related
        */
       // Which fields required for registration
-      registerFields: String,
-      registerResume: String, // URL - where to go after email verification
+      // registerFields: String,
+      // registerResume: String, // URL - where to go after email verification
 
       // Forgotten password related
+      /**
+       * @ignore
+       */
       forgotResume: String, // URL - where to go after email verification
 
-      // Initial mode (e.g. 'register' or 'signup')
-      initialMode: String,
-
-      nocomma: String
+      /**
+       * Display this component in a specific mode.
+       * @values login, register, forgot
+       */
+      initialMode: String
     },
     data () {
       // console.log('data(): this=', this)
@@ -379,6 +381,7 @@
         username: '',
         email: '',
         password: '',
+        otp: '',
         loggedIn: false,
         mode: (this.$authservice && this.$authservice.user) ? 'loggedIn' : 'login',
 
@@ -432,7 +435,7 @@
         return !!this.optionValue('hints.login.email', true)
       },
       loginWithUsername: function () {
-        let val = this.optionValue('hints.usernames', false)
+        // let val = this.optionValue('hints.usernames', false)
         // console.log(`loginWithUsername: ${val}`);
         return !!this.optionValue('hints.usernames', false)
       },
@@ -550,26 +553,46 @@
         return obj
       },
 
-      // Sign in using email/password or username/password
+      /**
+       * Sign in using email/password or username/password
+       */
       doLogin: function (event) {
-        // console.log('doLogin(' + this.email + ', ' + this.password + ')')
+        // // DO NOT UNCOMMENT, EXCEPT WHILE DEBUGGING
+        // console.log(`doLogin(${this.email}, ${this.password}, ${this.otp})`)
 
-        const password = this.password
-        this.password = ''
         this.loginError = ''
         this.loginInProgress = true
 
-        this.$authservice.login(this.email, password)
+        this.$authservice.login(this.email, this.password, this.otp)
           .then((userDetails) => {
-            this.loginError = ''
-            this.loginInProgress = false
-            this.mode = 'loggedIn'
-            this.$emit('userchange', this.$authservice.user.id)
+            if (userDetails === 'require-otp') {
+              // Leave the password as-is
+              this.otp = ''
+              this.loginError = ''
+              this.loginInProgress = false
+              this.mode = 'otp'
+            } else {
+              this.password = ''
+              this.otp = ''
+              this.loginError = ''
+              this.loginInProgress = false
+              this.mode = 'loggedIn'
+              /**
+               * Triggered current user has been changed, due to login or logout.
+               * @property {string} userId New userID, or 0 if no longer logged in.
+               */
+              this.$emit('userchange', this.$authservice.user.id)
+            }
           })
           .catch((errmsg) => {
+            if (this.mode === 'otp') {
+              this.otp = ''
+            } else {
+              this.password = ''
+              this.mode = 'login'
+            }
             this.loginError = errmsg
             this.loginInProgress = false
-            this.mode = 'login'
             this.$emit('userchange', 0)
           })
         // Don't do the default form action
@@ -577,11 +600,18 @@
         return false
       }, // doLogin
 
+      cancelOtp: function () {
+        this.loginError = ''
+        this.loginInProgress = false
+        this.setMode('login')
+      },
+
       // Sign out from the menu
       doSignout: function () {
         this.mode = 'login'
         this.email = ''
         this.password = ''
+        this.otp = ''
 
         this.$authservice.logout()
       },
@@ -704,31 +734,15 @@
             this.forgotError = error
             this.forgotInProgress = false
           })
-        // Don't do the default form action
-        event.preventDefault();
         return false
       },
 
       // Set the current component mode (loggedIn, login, register, forgot, etc)
       setMode: function (mode) {
         this.mode = mode
-        // Don't do the default form action
-        event.preventDefault();
         return false
       }
     }
-  }
-
-  function registerWithField (me, fieldname) {
-    if (me.registerFields) {
-      var fields = me.registerFields.split(',')
-      for (var i = 0; i < fields.length; i++) {
-        if (fields[i].trim() === fieldname) {
-          return true
-        }
-      }
-    }
-    return false
   }
 </script>
 
@@ -801,3 +815,19 @@ label {
   font-weight: 600;
 }
 </style>
+
+
+<docs>
+
+Handle login, registration, and forgotten password functionality.
+
+The behaviour of this component is dictated by the application configuration
+provided when you initialise this package, and also by your settings in the
+Tooltwist dashboard at tooltwist.com.
+
+### Example
+```jsx
+<loginservice-login/>
+```
+</docs>
+

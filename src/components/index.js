@@ -1,9 +1,9 @@
 import LoginService from './LoginService'
 import LoginserviceLogin from './LoginserviceLogin.vue'
-import LoginserviceBounceComponent from './LoginserviceBounceComponent.vue'
+import LoginserviceBounce from './LoginserviceBounce.vue'
 import LoginserviceUserList from './LoginserviceUserList.vue'
 import LoginserviceUserDetails from './LoginserviceUserDetails.vue'
-import LoginserviceChangePassword from './LoginserviceChangePassword.vue'
+import LoginservicePassword from './LoginservicePassword.vue'
 import LoginserviceNavbar from './LoginserviceNavbar.vue'
 // import Banner from "./Banner.vue";
 
@@ -12,8 +12,12 @@ export let _Vue
 let _loginserviceObject = null
 
 
+// See https://vuejs.org/v2/cookbook/packaging-sfc-for-npm.html#What-does-my-packaged-component-look-like
 function install (Vue, options) {
   // console.log('Installing vue-loginservice', options)
+
+  if (install.installed) return;
+	install.installed = true;
 
   if (_loginserviceObject) {
     console.error("Vue.use(LoginService) has already been called.")
@@ -46,7 +50,7 @@ function install (Vue, options) {
         this._loginserviceRoot = this
         this._authservice = _loginserviceObject
         this._loginservice = _loginserviceObject
-        // this._loginserviceObject.init(this)
+
         Vue.util.defineReactive(this, '_loginserviceObject', this.$authservice)
         Vue.util.defineReactive(this, '_loginservice', this.$authservice)
       } else {
@@ -74,28 +78,26 @@ function install (Vue, options) {
   // })
 
   // Define the components
-  Vue.component('authservice-login', LoginserviceLogin)
-  Vue.component('authservice-bounce-component', LoginserviceBounceComponent)
-  Vue.component('authservice-change-password', LoginserviceChangePassword)
-  Vue.component('authservice-user-list', LoginserviceUserList)
-  Vue.component('authservice-user-details', LoginserviceUserDetails)
-
   Vue.component('loginservice-login', LoginserviceLogin)
-  Vue.component('loginservice-bounce-component', LoginserviceBounceComponent)
-  Vue.component('loginservice-change-password', LoginserviceChangePassword)
+  Vue.component('loginservice-bounce', LoginserviceBounce)
+  Vue.component('loginservice-password', LoginservicePassword)
   Vue.component('loginservice-user-list', LoginserviceUserList)
   Vue.component('loginservice-user-details', LoginserviceUserDetails)
 
   Vue.component('authservice-navbar', LoginserviceNavbar)
   Vue.component('loginservice-navbar', LoginserviceNavbar)
 
-  // Vue.component('authservice-navbar-blu', AuthserviceNavbarBlu)
-  // Vue.component('authservice-bulma', AuthserviceBulma)
-  // Vue.component('my-component', MyComponent)
-  // Vue.component('authservice-firstname', AuthserviceFirstname)
-  // Vue.component('authservice-fullname', AuthserviceFullName)
+  // @deprecated
+  Vue.component('authservice-login', LoginserviceLogin)
+  Vue.component('authservice-bounce', LoginserviceBounce)
+  Vue.component('authservice-bounce-component', LoginserviceBounce)
+  Vue.component('authservice-password', LoginservicePassword)
+  Vue.component('authservice-change-password', LoginservicePassword)
+  Vue.component('authservice-user-list', LoginserviceUserList)
+  Vue.component('authservice-user-details', LoginserviceUserDetails)
 
-  // Vue.component("banner", Banner);
+  Vue.component('loginservice-bounce-component', LoginserviceBounce)
+  Vue.component('loginservice-change-password', LoginservicePassword)
 
   return _loginserviceObject
 }

@@ -150,9 +150,6 @@
       b-dropdown-header
         // Should just close the dropdown VVVVV
         b-button(:size="'sm'", :variant="'primary'", v-on:click="setMode('login')") Ok
-    //- div
-
-  //- b-nav-item-dropdown
 </template>
 
 <script zlang="javascript">
@@ -177,7 +174,7 @@
    *  @author Philip Callender
    */
   export default {
-    name: 'LoginserviceNavbar',
+    name: 'loginservice-navbar',
     components: {
       Icon
     },

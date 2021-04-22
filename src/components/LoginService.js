@@ -1,19 +1,10 @@
-/* @flZZow */
-
 /*
  *  Client API for LoginService.io
  *  See https://authservice.io
  */
-// import Vue from 'vue'
-// import Vuex from 'vuex'
-
-// Vue.use(Vuex)
-
-//import { install } from './install'
 import jwtDecode from 'jwt-decode'
 import axios from 'axios'
 import QueryString from 'query-string'
-import { assert, inBrowser } from './misc'
 
 // See https://fsymbols.com/signs/tick/
 const CHECKBOX_YES = '\u2713'
@@ -270,17 +261,16 @@ class LoginService {
     this.fromCache = false
   }
 
-  // init (app: any /* Vue component instance */) {
-  init(app /* Vue component instance */) {
-    // console.log('&&& MyComponent init')
-    // VVVVV This does not seem to be called
-    // alert('za init()')
-    process.env.NODE_ENV !== 'production' && assert(
-      install.installed,
-      `not installed. Make sure to call \`Vue.use(LoginService, options)\` ` +
-      `before creating root instance.`
-    )
-  }
+  // init(app /* Vue component instance */) {
+  //   // console.log('&&& MyComponent init')
+  //   // VVVVV This does not seem to be called
+  //   // alert('za init()')
+  //   process.env.NODE_ENV !== 'production' && assert(
+  //     install.installed,
+  //     `not installed. Make sure to call \`Vue.use(LoginService, options)\` ` +
+  //     `before creating root instance.`
+  //   )
+  // }
 
   // Work out the server's endpoint
   endpoint() {
@@ -367,7 +357,10 @@ class LoginService {
   /*
    *  Log in using username / password.
    */
-  login(email, password) {
+  login(email, password, otp) {
+      // // DO NOT UNCOMMENT, EXCEPT WHILE DEBUGGING
+      // console.log(`login(${email}, ${password}, ${otp})`)
+
     return new Promise((resolve, reject) => {
       // console.log('login(email=' + email + ')')
       // console.log('++++++++++ email=' + email + ', password=' + password)
@@ -385,7 +378,8 @@ class LoginService {
         },
         data: {
           email: email,
-          password: password
+          password: password,
+          otp: otp,
         }
       })
         .then(response => {
@@ -404,13 +398,19 @@ class LoginService {
               resolve(this.user.id)
               return
             } else {
-              console.log('ok 4')
               // Bad JWT
               this.removeCookie()
-              console.log('ok 5')
               reject('Invalid credentials')
               return
             }
+          } else if (response.data.status == 'require-otp') {
+            // Not an error - we need to prompt for a One Time Password and repeat the call.
+            console.log('Require OTP')
+            const isFromCookie = false
+            this.setCurrentUserFromJWT(null, isFromCookie)
+            this.removeCookie()
+            resolve('require-otp')
+            return
           } else {
             // We did not sucessfully login
             // -> No current user
@@ -427,13 +427,17 @@ class LoginService {
           const isFromCache = false
           this.setCurrentUserFromJWT(null, isFromCache)
           this.removeCookie()
-          console.log(`e=`, e);
-          console.log(`e.response:`, e.response);
-          console.log(`e.status:`, e.status);
           if (!e.response) {
             // Network error from browser
             // See https://github.com/axios/axios/issues/383#issuecomment-234079506
+            console.log(`e=`, e);
+            console.log(`e.response:`, e.response);
+            console.log(`e.status:`, e.status);
             reject(NETWORK_ERROR_MSG)
+            return
+          } else if (e.response.status === 401) {
+            console.log(`Unauthorized (401)`)
+            reject(e.response.data.message)
             return
           } else {
             console.log(`e:`, e);
@@ -571,7 +575,7 @@ class LoginService {
       // Maybe check username is valid
       console.log('username is ' + options.username)
       switch (typeof (options.username)) {
-        case 'string':
+        case 'string': {
           const username = options.username.trim().toLowerCase()
           if (username.indexOf(' ') >= 0) {
             reject('Username may not contain spaces')
@@ -583,10 +587,12 @@ class LoginService {
           }
           params.username = username
           break
-        case 'undefined':
+        }
+        case 'undefined': {
           // alert('using email for username')
           params.username = params.email
           break
+        }
         default:
           return reject('If provided, options.username must be a string')
       }
@@ -826,9 +832,9 @@ class LoginService {
 
         // Check the token has not expired
         if (expiryTime) {
-          const LENIENCY = 2 * 60 * 1000 // Two minutes in ms, to allow for badly set clock.
+          // const LENIENCY = 2 * 60 * 1000 // Two minutes in ms, to allow for badly set clock.
           let nowMs = new Date().getTime()
-          let expiresMs = expiryTime + LENIENCY
+          // let expiresMs = expiryTime + LENIENCY
           let remaining = expiryTime - nowMs
           // console.log(`Token expires in ${remaining} ms`);
           if (remaining < 0) {
@@ -856,7 +862,14 @@ class LoginService {
         email: ident.email,
         emailStatus: ident.email_status,
         username: ident.username,
-        // hasedPassword
+        // hashedPassword
+        // passwordDate
+        // pastPassword1
+        // pastPassword2
+        // pastPassword3
+        totpEnabled: ident.totp_enabled,
+        // totpHash
+        otpSMS: ident.otp_sms,
         status: ident.status,
         firstname: ident.first_name,
         middlename: ident.middle_name,
@@ -1063,7 +1076,7 @@ class LoginService {
   }// getCookie()
 
   removeCookie() {
-    const cname = this.cookieName()
+    // const cname = this.cookieName()
     // console.log('removeCookie(' + cname + ')')
     this.setCookie(null, 0)
   }// removeCookie()

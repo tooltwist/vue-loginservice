@@ -1,6 +1,5 @@
 .DS_Store
-/node_modules
-/node_modules.junk
+node_modules
 /dist
 
 # local env files
@@ -21,3 +20,6 @@ yarn-error.log*
 *.sln
 *.sw*
 /j1
+
+*-saved
+/2021-04
