@@ -1,6 +1,6 @@
 {
   "name": "@tooltwist/vue-loginservice",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "private": false,
   "repository": {
     "type": "git",
@@ -13,19 +13,24 @@
     "*.json",
     "*.js"
   ],
-  "author": "Philip Callender <philip.callender@tooltwist.com",
-  "description": "VueJS plugin for loginservice.io",
+  "author": {
+    "name": "Philip Callender",
+    "email": "philip.callender@tooltwist.com"
+  },
+  "description": "Loginservice components for VueJS",
   "license": "MIT",
   "main": "./dist/vue-loginservice.common.js",
   "keywords": [
     "vue",
     "tooltwist",
-    "loginservice"
+    "loginservice",
+    "authentication"
   ],
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "build-bundle": "vue-cli-service build --target lib --name vue-loginservice ./src/components/index.js",
+    "patch-release": "yarn version --patch && yarn publish --access public && git push --follow-tags",
     "lint": "vue-cli-service lint",
     "styleguide": "vue-cli-service styleguidist",
     "styleguide:build": "vue-cli-service styleguidist:build",
