@@ -431,7 +431,6 @@ class LoginService {
             // Network error from browser
             // See https://github.com/axios/axios/issues/383#issuecomment-234079506
             console.log(`e=`, e);
-            console.log(`e.response:`, e.response);
             console.log(`e.status:`, e.status);
             reject(NETWORK_ERROR_MSG)
             return
@@ -491,7 +490,7 @@ class LoginService {
     const resume64 = btoa(resumeURL)
     const params = QueryString.stringify({ next: resume64 })
     const hash = ''
-    const bounceURL = this.URLOnThisWebsite(`/authservice-bounce?${params}#${hash}`)
+    const bounceURL = this.URLOnThisWebsite(`${this.bouncePage}?${params}#${hash}`)
     console.log('\n\nbounceURL=', bounceURL)
     const successURL = bounceURL
 
@@ -667,7 +666,7 @@ class LoginService {
       // Call the server
       console.log('params=', params)
       axios({
-        method: 'put',
+        method: 'post',
         url: this.endpoint() + '/email/register',
         headers: {
           // 'Authorization': 'Bearer ' + jwt
@@ -720,6 +719,8 @@ class LoginService {
   }// register()
 
   forgot(email, options) {
+    console.log(`forgot(${email})`)
+
     return new Promise((resolve, reject) => {
       if (!this.forgottenPasswordSupported) {
         const error = 'Password retrieval is not available.'
@@ -740,7 +741,7 @@ class LoginService {
       const resume64 = btoa(this.forgotResume)
       const expired64 = btoa(this.forgotExpired)
       const params = QueryString.stringify({ next: resume64, expired: expired64 })
-      const bounceURL = this.URLOnThisWebsite(`/authservice-bounce?${params}`)
+      const bounceURL = this.URLOnThisWebsite(`${this.bouncePage}?${params}`)
       // console.log(`this.forgotResume=${this.forgotResume}`)
       // console.log('bounceURL=', bounceURL)
 
