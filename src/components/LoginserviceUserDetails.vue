@@ -195,14 +195,14 @@
                     //- button.button.is-pulled-right.is-small.is-info(v-if="user.totp_enabled", :disabled="!mayUpdate2fa") Enable
 
                     .has-text-centered.my-2fa-button(v-if="user.totp_enabled")
-                      button.button.is-small.is-link(v-if="mayUpdate2fa", @click.prevent="disableTotp") Disable TOTP
-                      button.button.is-small(v-else, disabled) Enabled
+                      button.button.is-small.is-link.loginservice-testhook-totp-disable-button-enabled(v-if="mayUpdate2fa", @click.prevent="disableTotp") Disable TOTP
+                      button.button.is-small.loginservice-testhook-totp-disable-button-disabled(v-else, disabled) Enabled
                       //- .tag.is-small(v-else) Enabled
                       //- | Enabled
                       //- br
                     .has-text-centered.my-2fa-button(v-else)
-                      button.button.is-small.is-info(v-if="mayUpdate2fa", @click.prevent="enableTotp") Enable
-                      button.button.is-small(v-else, disabled) Disabled
+                      button.button.is-small.is-info.loginservice-testhook-totp-enable-button-enabled(v-if="mayUpdate2fa", @click.prevent="enableTotp") Enable
+                      button.button.is-small.loginservice-testhook-totp-enable-button-disabled(v-else, disabled) Disabled
                       //- | Not configured
                       //- .tag.is-small(v-else) Not configured
 
@@ -221,7 +221,7 @@
                     .text-2fa-option
                       | Receive a text message each time you log in with your username and password, containing an access code to complete the login process.
                     .has-text-centered.my-2fa-button
-                      button.button.is-small.is-light() Enable
+                      button.button.is-small.is-light.loginservice-testhook-smsOtp-enable-button-disabled(disabled) Enable
                     //- br
 
 
@@ -480,20 +480,35 @@
         .has-text-centered
           img(width="300", height="300", :src="`data:image/png;base64,${QRCodeBase64}`")
           br
-          .my-readbable-secret
+          .my-readable-secret.loginservice-testhook-enableTotp-totp-secret
             | {{readableSecret}}
 
-        br
-        br
+        template(v-if="totpError")
+          br
+          .notification.is-danger
+            | {{totpError}}
+        //- br
 
         //- .notification.is-danger(v-if="warningMsg") {{warningMsg}}
-        form
-          .field
-            .label Token
-            .control
-              input.input.loginservice-testhook-enableTotp-confirm(type="number",  maxlength="6", placeholder="", v-model="totpToken", autocomplete="off")
+        .has-text-centered
+          form
+            .field
+              .label Token
+              .control.my-totp-token-entry
+                //- input.input.loginservice-testhook-enableTotp-token(type="number",  maxlength="6", placeholder="", v-model="totpToken", autocomplete="off", @keyup="totpTokenChange")
+                //- | {{totpToken0}} {{totpToken1}} {{totpToken2}} {{totpToken3}} {{totpToken4}} {{totpToken5}}
+                //- br
+                input.input.my-totpdigit(type="number", ref="totpToken0", v-model="totpToken0", autocomplete="off", @keyup="totpTokenInput(0, $event)")
+                input.input.my-totpdigit(type="number", ref="totpToken1", v-model="totpToken1", autocomplete="off", @keyup="totpTokenInput(1, $event)")
+                input.input.my-totpdigit(type="number", ref="totpToken2", v-model="totpToken2", autocomplete="off", @keyup="totpTokenInput(2, $event)")
+                input.input.my-totpdigit(type="number", ref="totpToken3", v-model="totpToken3", autocomplete="off", @keyup="totpTokenInput(3, $event)")
+                input.input.my-totpdigit(type="number", ref="totpToken4", v-model="totpToken4", autocomplete="off", @keyup="totpTokenInput(4, $event)")
+                input.input.my-totpdigit(type="number", ref="totpToken5", v-model="totpToken5", autocomplete="off", @keyup="totpTokenInput(5, $event)")
+                //- br
+                //- | {{totpToken}}
+
       footer.modal-card-foot
-        button.button.is-success.loginservice-testhook-enableTotp-update-button(@click="confirmTotp", :disabled="!enableTotpConfirmButton") Confirm
+        button.button.is-success.loginservice-testhook-enableTotp-verify-button(@click="verifyTotp", :disabled="!enableTotpConfirmButton") Verify
         button.button.loginservice-testhook-enableTotp-cancel-button(@click="toggleTotpModal") Cancel
 
 </template>
@@ -551,7 +566,7 @@ export default {
      * will come from the application's configuration in the dashboard.
      */
     show2fa: {
-      type: Boolean | String,
+      type: Boolean,
       default: false,
     },
 
@@ -591,6 +606,7 @@ export default {
       QRCodeBase64: '',
       readableSecret: '',
       totpToken: '',
+      totpError: '',
     };
   },
   computed: {
@@ -810,8 +826,76 @@ export default {
       }
       return null;
     },
-  },
+
+    totpToken0: { get: function () { return this.getTotpTokenChar(0) }, set: function () { } },
+    totpToken1: { get: function () { return this.getTotpTokenChar(1) }, set: function () { } },
+    totpToken2: { get: function () { return this.getTotpTokenChar(2) }, set: function () { } },
+    totpToken3: { get: function () { return this.getTotpTokenChar(3) }, set: function () { } },
+    totpToken4: { get: function () { return this.getTotpTokenChar(4) }, set: function () { } },
+    totpToken5: { get: function () { return this.getTotpTokenChar(5) }, set: function () { } },
+  },//- computed
+
   methods: {
+
+    totpTokenInput (pos, evt) {
+      // console.log(`totpTokenInput(${pos})`, event)
+      evt.preventDefault();
+      evt.stopPropagation()
+      this.totpError = ''
+
+      switch (evt.code) {
+        case 'Digit0':
+        case 'Digit1':
+        case 'Digit2':
+        case 'Digit3':
+        case 'Digit4':
+        case 'Digit5':
+        case 'Digit6':
+        case 'Digit7':
+        case 'Digit8':
+        case 'Digit9':
+          this.totpToken = this.totpToken.substring(0, pos) + evt.key
+          break
+          // const elem = this.$refs[`totpToken${this.totpToken.length}`]
+          // if (elem) elem.focus()
+        case 'Backspace':
+          if (this.totpToken.length > pos) {
+            // if (pos === 5 && this.totpToken.length === 6) {
+            this.totpToken = this.totpToken.substring(0, pos)
+          } else if (pos > 0) {
+            this.totpToken = this.totpToken.substring(0, pos - 1)
+          }
+          break
+          // const elem = this.$refs[`totpToken${this.totpToken.length - 1}`]
+          // if (elem) elem.focus()
+
+        default:
+          // Ignore this keypress, but delete any character in this pos
+          this.totpToken = this.totpToken.substring(0, pos)
+          break
+      }
+
+      // Set the focus
+      const elem = this.$refs[`totpToken${this.totpToken.length}`]
+      if (elem) elem.focus()
+
+      // Perhaps go straight into verifying
+      if (this.totpToken.length === 6) {
+        this.verifyTotp()
+      }
+
+      return false
+    },
+
+    getTotpTokenChar(pos) {
+      // console.log(`getTotpTokenChar(${pos}) - ${this.totpToken}.`)
+      if (this.totpToken.length > pos) {
+        const singleChar = this.totpToken.substring(pos, pos + 1)
+        return singleChar
+      }
+      return ''
+    },
+
     // Load details of the specified user from the server.
     loadUserDetails() {
       console.log(`LoginserviceUserDetails.loadUserDetails()`);
@@ -895,50 +979,17 @@ export default {
         this.QRCodeBase64 = reply.data.image
         this.totpToken = ''
         this.showTotpModal = true
+
+        // Wait a bit, then position the cursor on the first digit field
+        const self = this
+        setTimeout(() => {
+          const firstDigit = self.$refs.totpToken0
+          if (firstDigit) firstDigit.focus()
+        }, 250)
       } catch (e) {
         console.log("error. e=", e);
         axiosError(this, url, params, e);
       }
-
-  // return
-  //     axios(params)
-  //       .then((response) => {
-  //         // JSON responses are automatically parsed.
-  //         console.log("ok. response=", response);
-  //         // if (response.data && response.data.status === "ok") {
-  //         //   // All okay
-  //         //   if (this.$toast && this.$toast.open) {
-  //         //     this.$toast.open({
-  //         //       message: `Changes saved`,
-  //         //       type: "is-success",
-  //         //       duration: 4000,
-  //         //     });
-  //         //   } else {
-  //         //     alert('Changes saved')
-  //         //   }
-  //         //   this.loadUserDetails();
-  //         // } else {
-  //         //   // Not the expected result
-  //         //   console.log(
-  //         //     "Unexpected result while updating user record. response=",
-  //         //     response
-  //         //   );
-  //         //   if (this.$toast && this.$toast.open) {
-  //         //     this.$toast.open({
-  //         //       message: `Error: User details might not have been updated`,
-  //         //       type: "is-danger",
-  //         //     });
-  //         //   } else {
-  //         //     alert(`Error: User details might not have been updated`)
-  //         //   }
-  //         // }
-  //       })
-  //       .catch((e) => {
-  //         console.log("error. e=", e);
-  //         axiosError(this, url, params, e);
-  //       });
-
-  //     this.showTotpModal = true
     },
 
     async disableTotp( ) {
@@ -964,9 +1015,15 @@ export default {
       //ZZZZ Should have got new credentials in reply?
     },
 
+    totpTokenChange (evt) {
+      console.log(`this.totpToken=`, this.totpToken)
+      console.log(`evt=`, evt)
+      this.totpError = ''
+      return false
+    },
 
-    async confirmTotp() {
-      console.log(`confirmTotp(${this.user.totp_enabled})`)
+    async verifyTotp() {
+      console.log(`verifyTotp(${this.user.totp_enabled})`)
       let url = `${this.$authservice.endpoint()}/totp/activate/step2`;
       console.log(`url=`, url)
       const data = {
@@ -991,7 +1048,7 @@ export default {
         this.user.totp_enabled = true
         this.showTotpModal = false
       } else {
-        alert('Invalid token')
+        this.totpError = 'Invalid token'
       }
 
       //ZZZZ Should have got new credentials in reply?
@@ -1112,7 +1169,7 @@ export default {
     min-height: 140px;
   }
 
-  .my-readbable-secret {
+  .my-readable-secret {
     font-size: 13px;
     font-weight: 600;
     font-family: 'Courier New', Courier, monospace;
@@ -1128,6 +1185,42 @@ export default {
     }
     button {
       margin-top: auto;
+    }
+  }
+
+  .my-totp-token-entry {
+
+    .my-totpdigit {
+      width: 50px;
+      text-align: center;
+      font-weight: 600;
+      margin-right: 12px;
+    }
+
+    // // Disable the up/down number arrows.
+    // /* Chrome, Safari, Edge, Opera */
+    // // input::-webkit-outer-spin-button,
+    // // input::-webkit-inner-spin-button {
+    //   -webkit-appearance: none;
+    //   margin: 0;
+    // // }
+
+    // /* Firefox */
+    // // input[type=number] {
+    //   -moz-appearance: textfield;
+    // // }
+
+    // Disable the up/down number arrows.
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
     }
   }
 }
