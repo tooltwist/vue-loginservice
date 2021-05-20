@@ -144,7 +144,7 @@ export default {
         return 'Please enter your new password'
       }
       if (!this.newPassword || this.newPassword.length < 8) {
-        return 'Passwords must be eight or more character'
+        return 'Passwords must be eight or more characters'
       }
       // Other rules might be placed here
       //zzz
@@ -335,13 +335,24 @@ export default {
         })
         .catch(e => {
           console.log(`response is`, e.response)
-          if (e.response.status === 404 && e.response.data && e.response.data.Error) {
+          if (!e.response) {
+            // Network error from browser
+            // See https://github.com/axios/axios/issues/383#issuecomment-234079506
+            console.log(`e.response not defined. e=`, e)
+            const message = `Error while updating password`
+            if (this.$toast) {
+              this.$toast.open({ message, type: 'is-danger', duration: 4000 })
+            } else {
+              alert(message)
+            }
+          } else if (e.response.status === 404 && e.response.data && e.response.data.Error) {
             // Display the error message the server provided
-            this.$toast.open({
-              message: `The password could not be updated: "${e.response.data.Error}"`,
-              type: 'is-danger',
-              duration: 4000
-            })
+            const message = `The password could not be updated: "${e.response.data.Error}"`
+            if (this.$toast) {
+              this.$toast.open({ message, type: 'is-danger', duration: 4000 })
+            } else {
+              alert(message)
+            }
           } else {
             axiosError(this, url, params, e)
           }
