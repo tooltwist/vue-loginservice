@@ -106,7 +106,7 @@ const LoginServiceLib = {
   install: install
 }
 
-Object.defineProperty(LoginServiceLib, '_loginserviceObject', {
+Object.defineProperty(LoginServiceLib, '_loginservice', {
   get: function() {
       return _loginserviceObject;
   }
