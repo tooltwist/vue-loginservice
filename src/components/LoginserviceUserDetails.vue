@@ -185,12 +185,19 @@
                   //- .card-content.has-text-justified.is-size-6
                   .card-content.has-text-justified.is-size-6
                     h1.title.is-size-5 Authentication App (TOTP)
-                    .text-2fa-option
+                    //- .text-2fa-option
                       | Use an Authentication app like&nbsp;
                       a(href="https://www.yubico.com/", target="_blank") Google Authenticator
                       | &nbsp;or&nbsp;
                       a(href="https://authy.com/download/", target="_blank") Authy
                       | &nbsp;to create a Time based One-time Password (TOPT) each time you log in.
+                    .text-2fa-option
+                      | Using an Authentication app on your phone, such as&nbsp;
+                      a(href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2", target="_blank") Google Authenticator
+                      | &nbsp;or&nbsp;
+                      a(href="https://authy.com/download/", target="_blank") Authy
+                      | &nbsp;, you can have a different Time-based One-Time Password (TOPT) each time you log in.
+
                     //- button.button.is-pulled-right.is-small.is-info(v-if="user.totp_enabled", :disabled="!mayUpdate2fa") Enable
                     //- button.button.is-pulled-right.is-small.is-info(v-if="user.totp_enabled", :disabled="!mayUpdate2fa") Enable
 

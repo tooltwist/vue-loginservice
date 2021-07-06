@@ -112,6 +112,13 @@ Object.defineProperty(LoginServiceLib, '_loginservice', {
   }
 });
 
+// For backwards compatibility
+Object.defineProperty(LoginServiceLib, '_authservice', {
+  get: function() {
+      return _loginserviceObject;
+  }
+});
+
 export default LoginServiceLib
 
 // This is used when the npm package is included directly into an HTML page
