@@ -861,6 +861,16 @@ export default {
         case 'Digit7':
         case 'Digit8':
         case 'Digit9':
+        case 'Numpad0':
+        case 'Numpad1':
+        case 'Numpad2':
+        case 'Numpad3':
+        case 'Numpad4':
+        case 'Numpad5':
+        case 'Numpad6':
+        case 'Numpad7':
+        case 'Numpad8':
+        case 'Numpad9':
           this.totpToken = this.totpToken.substring(0, pos) + evt.key
           break
           // const elem = this.$refs[`totpToken${this.totpToken.length}`]

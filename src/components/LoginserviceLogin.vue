@@ -115,14 +115,14 @@
     .card(v-if="mode === 'otp'")
       header.card-header
         p.card-header-title
-          | Please enter your OTP
+          | Two Factor Authentication
       //- .card-header
         | Please enter your OTP
       .card-content
         .field
           //- label.label One Time Password
           .control.has-icons-left
-            input.input.loginservice-testhook-loginWithEmail-otp(v-model.trim="otp", type="number", autocomplete="off", placeholder="Enter your OTP")
+            input.input.loginservice-testhook-loginWithEmail-otp(v-model.trim="otp", type="number", autocomplete="off", placeholder="Please enter your One-Time Password (OTP)")
             span.icon.is-small.is-left
               i.fas.fa-lock(v-if="$authservice.icons('fas')")
               i.fa.fa-lock(v-else)
@@ -601,6 +601,7 @@
       }, // doLogin
 
       cancelOtp: function () {
+        this.otp = ''
         this.loginError = ''
         this.loginInProgress = false
         this.setMode('login')
